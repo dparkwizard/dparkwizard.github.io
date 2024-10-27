@@ -56,7 +56,7 @@
         </div>
         <button id="username" style="display:none;" onclick="showUsername()"></button>
         <div class="g-signin2 sign-in-button" data-onsuccess="onSignIn"></div>
-        <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button> <!-- New button added -->
+        <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button>
     </div>
     <footer>
         <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.9. Last updated: October 26, 2024 8:17 P.M.</p>
@@ -87,17 +87,29 @@
         document.querySelectorAll('.purchase-button').forEach(button => {
             button.addEventListener('click', async (event) => {
                 const minutes = event.target.getAttribute('data-minutes');
-                const response = await fetch('/create-checkout-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ minutes })
-                });
-                const session = await response.json();
-                const result = await stripe.redirectToCheckout({ sessionId: session.id });
-                if (result.error) {
-                    alert(result.error.message);
+                try {
+                    const response = await fetch('/create-checkout-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ minutes })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const session = await response.json();
+                    const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+                    if (result.error) {
+                        console.error(result.error.message);
+                        alert(result.error.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('There was an error processing your request. Please try again.');
                 }
             });
         });
