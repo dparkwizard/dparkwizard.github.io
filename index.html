@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talk</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             display: flex;
@@ -36,6 +35,20 @@
         .verification-container input {
             margin-bottom: 10px;
         }
+        .purchase-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .purchase-button:hover {
+            background-color: #45a049;
+        }
     </style>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -57,9 +70,8 @@
         <div class="g-signin2 sign-in-button" data-onsuccess="onSignIn"></div>
         <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button>
     </div>
-    <button class="purchase-button" style="display: block; margin: 20px auto;">Buy</button>
     <footer>
-        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.13. Last updated: 10/26/2024 9:21 P.M.</p>
+        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.14. Last updated: 10/26/2024 9:37 P.M.</p>
     </footer>
     <script src="index.js"></script>
     <script>
@@ -73,11 +85,52 @@
                 button.parentNode.replaceChild(checkbox, button);
             });
 
-            // Add a single purchase button at the bottom
+            // Add a single purchase button below the minute selection
+            const optionsDiv = document.querySelector('.options');
             const purchaseButton = document.createElement('button');
-            purchaseButton.textContent = 'Purchase';
+            purchaseButton.textContent = 'Buy';
             purchaseButton.className = 'purchase-button';
-            document.body.appendChild(purchaseButton);
+            optionsDiv.appendChild(purchaseButton);
+
+            // Add click event handler to the purchase button
+            purchaseButton.addEventListener('click', async function() {
+                const selectedOptions = document.querySelectorAll('.selection-toggle:checked');
+                if (selectedOptions.length === 0) {
+                    alert('Please select at least one option.');
+                    return;
+                }
+
+                const stripe = Stripe('pk_test_51QEMwJQuGWNDNoDwtiLLlXCTDKvHD3cjfAZ8aZO13kky0hWo5nteaOam9Va0ccXl2trfC0i6wqxtPsUj44bAMEls00md6kF4Fc'); // Replace with your Stripe publishable key
+
+                const items = Array.from(selectedOptions).map(option => ({
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: `${option.dataset.minutes} Minutes`,
+                        },
+                        unit_amount: option.dataset.minutes * 100,
+                    },
+                    quantity: 1,
+                }));
+
+                const response = await fetch('https://talk-89b49.cloudfunctions.net/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ items }),
+                });
+
+                const session = await response.json();
+
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id,
+                });
+
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            });
         });
     </script>
 </body>
