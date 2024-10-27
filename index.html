@@ -42,6 +42,7 @@
     <!-- Add Firebase products that you want to use -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://js.stripe.com/v3/"></script> <!-- Stripe.js library -->
     <meta name="google-signin-client_id" content="370153813454-lkjg1u7gurqj3vfp3adqbsoe9p2ss9ht.apps.googleusercontent.com">
 </head>
 <body>
@@ -49,15 +50,16 @@
         <h1>Talk</h1>
         <div class="options">
             <button class="purchase-button" data-minutes="1">1 Minutes - $1</button>
-            <button class="purchase-button" data-minutes="100">100 Minutes - $20</button>
-            <button class="purchase-button" data-minutes="90">200 Minutes - $35</button>
+            <button class="purchase-button" data-minutes="100">5 Minutes - $5</button>
+            <button class="purchase-button" data-minutes="90">20 Minutes - $20</button>
+            <button class="purchase-button" data-minutes="90">110 Minutes - $100</button>
         </div>
         <button id="username" style="display:none;" onclick="showUsername()"></button>
         <div class="g-signin2 sign-in-button" data-onsuccess="onSignIn"></div>
         <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button> <!-- New button added -->
     </div>
     <footer>
-        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.8. Last updated: October 26, 2024 7:43 P.M.</p>
+        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.9. Last updated: October 26, 2024 8:17 P.M.</p>
     </footer>
     <script>
         async function initializeFirebase() {
@@ -79,12 +81,26 @@
             document.getElementById('user-signed-in').classList.remove('hidden');
         }
 
-        function showUsername() {
-            const user = firebase.auth().currentUser;
-            if (user) {
-                alert(`Username: ${user.phoneNumber}`);
-            }
-        }
+        // Stripe initialization
+        const stripe = Stripe('pk_test_51QEMwJQuGWNDNoDwtiLLlXCTDKvHD3cjfAZ8aZO13kky0hWo5nteaOam9Va0ccXl2trfC0i6wqxtPsUj44bAMEls00md6kF4Fc');
+
+        document.querySelectorAll('.purchase-button').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const minutes = event.target.getAttribute('data-minutes');
+                const response = await fetch('/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ minutes })
+                });
+                const session = await response.json();
+                const result = await stripe.redirectToCheckout({ sessionId: session.id });
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            });
+        });
     </script>
 </body>
 </html>
