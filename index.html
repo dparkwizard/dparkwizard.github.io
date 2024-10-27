@@ -27,6 +27,15 @@
         .hidden {
             display: none;
         }
+        .verification-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .verification-container button,
+        .verification-container input {
+            margin-bottom: 10px;
+        }
     </style>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -50,13 +59,15 @@
             <h2>Phone Number Verification</h2>
             <input type="text" id="phone-number" placeholder="Enter phone number">
             <div id="recaptcha-container"></div>
-            <button onclick="sendVerificationCode()">Send Verification Code</button>
-            <input type="text" id="verification-code" placeholder="Enter verification code">
-            <button onclick="verifyCode()">Verify Code</button>
+            <div class="verification-container">
+                <button onclick="sendVerificationCode()">Send Verification Code</button>
+                <input type="text" id="verification-code" placeholder="Enter verification code">
+                <button onclick="verifyCode()">Verify Code</button>
+            </div>
         </div>
     </div>
     <footer>
-        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.6. Last updated: October 26, 2024 7:19 P.M.</p>
+        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.7. Last updated: October 26, 2024 7:28 P.M.</p>
     </footer>
     <script>
         async function initializeFirebase() {
