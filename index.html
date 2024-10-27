@@ -24,6 +24,9 @@
             top: 10px;
             right: 10px;
         }
+        .hidden {
+            display: none;
+        }
     </style>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -42,11 +45,12 @@
         </div>
         <button id="username" style="display:none;" onclick="showUsername()"></button>
         <div class="g-signin2 sign-in-button" data-onsuccess="onSignIn"></div>
+        <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button> <!-- New button added -->
         <div>
             <h2>Phone Number Verification</h2>
             <input type="text" id="phone-number" placeholder="Enter phone number">
             <div id="recaptcha-container"></div>
-            <button onclick="sendVerificationCode()">Send Verification Code</button> <!-- New button added -->
+            <button onclick="sendVerificationCode()">Send Verification Code</button>
             <input type="text" id="verification-code" placeholder="Enter verification code">
             <button onclick="verifyCode()">Verify Code</button>
         </div>
@@ -62,6 +66,17 @@
         }
 
         initializeFirebase();
+
+        function onSignIn(googleUser) {
+            const profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId());
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail());
+
+            // Show the user-signed-in button
+            document.getElementById('user-signed-in').classList.remove('hidden');
+        }
 
         function sendVerificationCode() {
             const phoneNumber = document.getElementById('phone-number').value;
@@ -89,14 +104,6 @@
             if (user) {
                 alert(`Username: ${user.phoneNumber}`);
             }
-        }
-
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            document.querySelector('.g-signin2').style.display = 'none';
-            const usernameButton = document.getElementById('username');
-            usernameButton.style.display = 'block';
-            usernameButton.textContent = profile.getName();
         }
     </script>
 </body>
