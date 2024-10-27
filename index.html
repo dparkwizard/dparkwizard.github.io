@@ -97,6 +97,7 @@
                     });
 
                     if (!response.ok) {
+                        console.error('Error:', response.json());
                         throw new Error('Network response was not ok');
                     }
 

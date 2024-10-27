@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
-const stripe = require('stripe')('sk_test_51QEMwJQuGWNDNoDweLXBpHpsOclwBeI548PhN6aS4tfJgdD2m1SVoZXTeMFGlcsGmCBhOetn79rJGf7cQ1WQEPxt0085YNpvRH');
+const stripe = require('stripe')('spk_test_51QEMwJQuGWNDNoDwtiLLlXCTDKvHD3cjfAZ8aZO13kky0hWo5nteaOam9Va0ccXl2trfC0i6wqxtPsUj44bAMEls00md6kF4Fc');
 
 // Firebase configuration
 const firebaseConfig = {
@@ -20,6 +20,7 @@ exports.getFirebaseConfig = functions.https.onRequest((req, res) => {
 
 exports.createCheckoutSession = functions.https.onRequest(async (req, res) => {
     if (req.method !== 'POST') {
+        console.error('req.method:', req.method);
         return res.status(405).send('Method Not Allowed');
     }
 
