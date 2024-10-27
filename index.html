@@ -59,7 +59,7 @@
         <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button>
     </div>
     <footer>
-        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.9. Last updated: October 26, 2024 8:50 P.M.</p>
+        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.11. Last updated: October 26, 2024 9:02 P.M.</p>
     </footer>
     <script>
         async function initializeFirebase() {
@@ -97,19 +97,25 @@
                     });
 
                     if (!response.ok) {
+                        console.error('Network response was not ok');
+                        console.error('Status:', response.status);
+                        console.error('Status Text:', response.statusText);
+                        const errorResponse = await response.json();
+                        console.error('Response Body:', errorResponse);
                         throw new Error('Network response was not ok');
-                        console.error('Error:', await response.json());
                     }
 
                     const session = await response.json();
                     const result = await stripe.redirectToCheckout({ sessionId: session.id });
 
                     if (result.error) {
-                        console.error(result.error.message);
+                        console.error('Stripe Checkout error:', result.error.message);
                         alert(result.error.message);
                     }
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('Error occurred during the purchase process:');
+                    console.error('Error Message:', error.message);
+                    console.error('Error Stack:', error.stack);
                     alert('There was an error processing your request. Please try again.');
                 }
             });
