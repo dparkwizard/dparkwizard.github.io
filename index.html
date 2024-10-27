@@ -55,19 +55,9 @@
         <button id="username" style="display:none;" onclick="showUsername()"></button>
         <div class="g-signin2 sign-in-button" data-onsuccess="onSignIn"></div>
         <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button> <!-- New button added -->
-        <div>
-            <h2>Phone Number Verification</h2>
-            <input type="text" id="phone-number" placeholder="Enter phone number">
-            <div id="recaptcha-container"></div>
-            <div class="verification-container">
-                <button onclick="sendVerificationCode()">Send Verification Code</button>
-                <input type="text" id="verification-code" placeholder="Enter verification code">
-                <button onclick="verifyCode()">Verify Code</button>
-            </div>
-        </div>
     </div>
     <footer>
-        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.7. Last updated: October 26, 2024 7:28 P.M.</p>
+        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.8. Last updated: October 26, 2024 7:43 P.M.</p>
     </footer>
     <script>
         async function initializeFirebase() {
@@ -87,27 +77,6 @@
 
             // Show the user-signed-in button
             document.getElementById('user-signed-in').classList.remove('hidden');
-        }
-
-        function sendVerificationCode() {
-            const phoneNumber = document.getElementById('phone-number').value;
-            const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
-            firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
-                .then((confirmationResult) => {
-                    window.confirmationResult = confirmationResult;
-                    alert('Verification code sent.');
-                }).catch((error) => {
-                    console.error('Error during signInWithPhoneNumber', error);
-                });
-        }
-
-        function verifyCode() {
-            const code = document.getElementById('verification-code').value;
-            window.confirmationResult.confirm(code).then((result) => {
-                alert('Phone number verified.');
-            }).catch((error) => {
-                console.error('Error during confirmationResult.confirm', error);
-            });
         }
 
         function showUsername() {

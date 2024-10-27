@@ -4,7 +4,7 @@ admin.initializeApp();
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCRCdBMRCKlpbr4KJyLdsHavdKZhNDByNU",
+    apiKey: "AIzaSyDvqF52YW7rHS1_NRoVqS82gpbLFmthONA",
     authDomain: "talk-89b49.firebaseapp.com",
     projectId: "talk-89b49",
     storageBucket: "talk-89b49.appspot.com",
