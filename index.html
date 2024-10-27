@@ -41,14 +41,15 @@
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                document.body.innerHTML += `<div style="color: red;">An error occurred: ${error.message}. Please try again later.</div>`;
+                alert(`An error occurred: ${error.message}. Please try again later.`);
             });
         });
     </script>
 
     <footer>
         <p>&copy; 2023 MAGICPOINT, INC. All rights reserved.</p>
-        <p>Version 1.0.17  Updated: 10/26/2024 9:51pm</p>
+        <p>Version 1.0.18  Updated: 10/26/2024 9:56pm</p>
     </footer>
 </body>
 </html>
