@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MagicPoint</title>
+    <title>Talk</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -41,75 +41,43 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <!-- Add Firebase products that you want to use -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://js.stripe.com/v3/"></script> <!-- Stripe.js library -->
-    <meta name="google-signin-client_id" content="370153813454-lkjg1u7gurqj3vfp3adqbsoe9p2ss9ht.apps.googleusercontent.com">
 </head>
 <body>
+    <button id="user-status" style="position: absolute; top: 10px; left: 10px;">Not logged in</button>
     <div id="app">
         <h1>Talk</h1>
         <div class="options">
-            <button class="purchase-button" data-minutes="1">1 Minutes - $1</button>
-            <button class="purchase-button" data-minutes="100">5 Minutes - $5</button>
-            <button class="purchase-button" data-minutes="90">20 Minutes - $20</button>
-            <button class="purchase-button" data-minutes="90">110 Minutes - $100</button>
+            <input type="checkbox" class="selection-toggle" data-minutes="1"> 1 Minutes - $1<br>
+            <input type="checkbox" class="selection-toggle" data-minutes="5"> 5 Minutes - $5<br>
+            <input type="checkbox" class="selection-toggle" data-minutes="20"> 20 Minutes - $20<br>
+            <input type="checkbox" class="selection-toggle" data-minutes="100"> 110 Minutes - $100<br>
         </div>
         <button id="username" style="display:none;" onclick="showUsername()"></button>
         <div class="g-signin2 sign-in-button" data-onsuccess="onSignIn"></div>
         <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button>
     </div>
+    <button class="purchase-button" style="display: block; margin: 20px auto;">Purchase</button>
     <footer>
-        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.12. Last updated: October 26, 2024 9:06 P.M.</p>
+        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.13. Last updated: 10/26/2024 9:21 P.M.</p>
     </footer>
+    <script src="index.js"></script>
     <script>
-        async function initializeFirebase() {
-            const response = await fetch('/getFirebaseConfig');
-            const firebaseConfig = await response.json();
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        initializeFirebase();
-
-        function onSignIn(googleUser) {
-            const profile = googleUser.getBasicProfile();
-            console.log('ID: ' + profile.getId());
-            console.log('Name: ' + profile.getName());
-            console.log('Image URL: ' + profile.getImageUrl());
-            console.log('Email: ' + profile.getEmail());
-
-            // Show the user-signed-in button
-            document.getElementById('user-signed-in').classList.remove('hidden');
-        }
-
-        // Stripe initialization
-        const stripe = Stripe('pk_test_51QEMwJQuGWNDNoDwtiLLlXCTDKvHD3cjfAZ8aZO13kky0hWo5nteaOam9Va0ccXl2trfC0i6wqxtPsUj44bAMEls00md6kF4Fc');
-
-        document.querySelectorAll('.purchase-button').forEach(button => {
-            button.addEventListener('click', async (event) => {
-                const minutes = event.target.getAttribute('data-minutes');
-                try {
-                    const response = await fetch('https://talk-89b49.cloudfunctions.net/createCheckoutSession', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ minutes })
-                    });
-
-                    if (response.ok) {
-                        const session = await response.json();
-                        // Redirect to Stripe Checkout
-                        const { error } = await stripe.redirectToCheckout({ sessionId: session.id });
-                        if (error) {
-                            console.error('Error redirecting to checkout:', error);
-                        }
-                    } else {
-                        console.error('Failed to create checkout session:', response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
+        document.addEventListener("DOMContentLoaded", function() {
+            // Replace all purchase buttons with selection toggles
+            const purchaseButtons = document.querySelectorAll('.purchase-button');
+            purchaseButtons.forEach(button => {
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'selection-toggle';
+                button.parentNode.replaceChild(checkbox, button);
             });
+
+            // Add a single purchase button at the bottom
+            const purchaseButton = document.createElement('button');
+            purchaseButton.textContent = 'Purchase';
+            purchaseButton.className = 'purchase-button';
+            document.body.appendChild(purchaseButton);
         });
     </script>
 </body>
