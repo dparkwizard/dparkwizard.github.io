@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talk</title>
+    <title>Stripe Purchase</title>
     <style>
         body {
             display: flex;
@@ -57,18 +57,11 @@
     <script src="https://js.stripe.com/v3/"></script> <!-- Stripe.js library -->
 </head>
 <body>
-    <button id="user-status" style="position: absolute; top: 10px; left: 10px;">Not logged in</button>
-    <div id="app">
-        <h1>Talk</h1>
-        <div class="options">
-            <input type="checkbox" class="selection-toggle" data-minutes="1"> 1 Minutes - $1<br>
-            <input type="checkbox" class="selection-toggle" data-minutes="5"> 5 Minutes - $5<br>
-            <input type="checkbox" class="selection-toggle" data-minutes="20"> 20 Minutes - $20<br>
-            <input type="checkbox" class="selection-toggle" data-minutes="100"> 110 Minutes - $100<br>
-        </div>
-        <button id="username" style="display:none;" onclick="showUsername()"></button>
-        <div class="g-signin2 sign-in-button" data-onsuccess="onSignIn"></div>
-        <button id="user-signed-in" class="hidden" onclick="showUsername()">User Signed In</button>
+    <h1>Purchase Item</h1>
+    <div class="options">
+        <input type="checkbox" class="selection-toggle" data-minutes="5"> 5 Minutes - $5<br>
+        <input type="checkbox" class="selection-toggle" data-minutes="20"> 20 Minutes - $20<br>
+        <input type="checkbox" class="selection-toggle" data-minutes="100"> 110 Minutes - $100<br>
     </div>
     <footer>
         <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.14. Last updated: 10/26/2024 9:37 P.M.</p>
