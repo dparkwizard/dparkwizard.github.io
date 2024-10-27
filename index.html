@@ -1,31 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>1024</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1117</title>
 </head>
 <body>
-  <button id="checkout-button">Buy Now for $10</button>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    const stripe = Stripe('pk_test_51QEMc8JqQJ6ImKtfLmm5FL7PxICaocuM3zlsPCN0sJfm9qBRbbxlFf0KYmdOQHYQEsBvs6fx156ArEFePT15ZEaR00DUtaGKCY');
+  <script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
 
-    const checkoutButton = document.getElementById('checkout-button');
-    checkoutButton.addEventListener('click', async () => {
-      const result = await stripe.redirectToCheckout({
-        mode: 'payment',
-        lineItems: [{
-          price: 'prod_R6c3d9Z3qXwmX2', // Replace with your actual Price ID
-          quantity: 1,
-        }],
-        successUrl: 'http://localhost:5000/success',
-        cancelUrl: 'http://localhost:5000/cancel',
-      });
-
-      if (result.error) {
-        // Handle error
-        console.error(result.error.message);
-      }
-    });
-  </script>
+<stripe-buy-button
+  buy-button-id="buy_btn_1QEPlVJqQJ6ImKtfhxeQaUiD"
+  publishable-key="pk_test_51QEMc8JqQJ6ImKtfLmm5FL7PxICaocuM3zlsPCN0sJfm9qBRbbxlFf0KYmdOQHYQEsBvs6fx156ArEFePT15ZEaR00DUtaGKCY"
+>
+</stripe-buy-button>
+  
 </body>
 </html>
