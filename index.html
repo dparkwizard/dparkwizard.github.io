@@ -1,55 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Purchase</title>
-    <script src="https://js.stripe.com/v3/"></script>
+  <title>10:02</title>
 </head>
 <body>
-    <h1>Purchase Item</h1>
-    <p>Price: $10</p>
-    <button id="checkout-button">Buy Now</button>
+  <button id="checkout-button">Buy Now for $10</button>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    const stripe = Stripe('pk_test_51QEMwJQuGWNDNoDwtiLLlXCTDKvHD3cjfAZ8aZO13kky0hWo5nteaOam9Va0ccXl2trfC0i6wqxtPsUj44bAMEls00md6kF4Fc');
 
-    <script>
-        const stripe = Stripe('pk_test_51QEMwJQuGWNDNoDwtiLLlXCTDKvHD3cjfAZ8aZO13kky0hWo5nteaOam9Va0ccXl2trfC0i6wqxtPsUj44bAMEls00md6kF4Fc');
+    const checkoutButton = document.getElementById('checkout-button');
+    checkoutButton.addEventListener('click', async () => {
+      const result = await stripe.redirectToCheckout({
+        mode: 'payment',
+        lineItems: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Item Name',
+              description: 'Item Description',
+            },
+            unit_amount: 1000, // Amount in cents
+          },
+          quantity: 1,
+        }],
+        successUrl: 'http://localhost:5000/success',
+        cancelUrl: 'http://localhost:5000/cancel',
+      });
 
-        // Function to update the timestamp
-        function updateTimestamp() {
-            const timestampElement = document.getElementById('timestamp');
-            const now = new Date();
-            timestampElement.textContent = `Last updated: ${now.toLocaleString()}`;
-        }
-
-        // Update the timestamp on page load
-        window.onload = updateTimestamp;
-
-        document.getElementById('checkout-button').addEventListener('click', () => {
-            fetch('/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(session => {
-                return stripe.redirectToCheckout({ sessionId: session.id });
-            })
-            .then(result => {
-                if (result.error) {
-                    alert(result.error.message);
-                }
-            })
-            .catch(error => {
-                document.body.innerHTML += `<div style="color: red;">An error occurred: ${error.message}. Please try again later.</div>`;
-                alert(`An error occurred: ${error.message}. Please try again later.`);
-            });
-        });
-    </script>
-
-    <footer>
-        <p>&copy; 2023 MAGICPOINT, INC. All rights reserved.</p>
-        <p>Version 1.0.18  Updated: 10/26/2024 9:56pm</p>
-    </footer>
+      if (result.error) {
+        // Handle error
+      }
+    });
+  </script>
 </body>
 </html>
