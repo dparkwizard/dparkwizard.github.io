@@ -25,6 +25,10 @@ exports.createCheckoutSession = functions.https.onRequest((req, res) => {
             return res.status(405).send('Method Not Allowed');
         }
 
+        res.set('Access-Control-Allow-Origin', '*');
+        res.set('Access-Control-Allow-Methods', 'GET, POST');
+        res.set('Access-Control-Allow-Headers', 'Content-Type');
+
         const { minutes } = req.body;
 
         try {
