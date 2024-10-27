@@ -46,33 +46,26 @@
             <h2>Phone Number Verification</h2>
             <input type="text" id="phone-number" placeholder="Enter phone number">
             <div id="recaptcha-container"></div>
+            <button onclick="sendVerificationCode()">Send Verification Code</button> <!-- New button added -->
             <input type="text" id="verification-code" placeholder="Enter verification code">
             <button onclick="verifyCode()">Verify Code</button>
         </div>
     </div>
     <footer>
-        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.5. Last updated: October 26, 2024 2:48:00 P.M.</p>
+        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.6. Last updated: October 26, 2024 7:19 P.M.</p>
     </footer>
     <script>
         async function initializeFirebase() {
             const response = await fetch('/getFirebaseConfig');
             const firebaseConfig = await response.json();
             firebase.initializeApp(firebaseConfig);
-
-            // Initialize Recaptcha verifier
-            const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                'size': 'normal',
-                'callback': (response) => {
-                    // reCAPTCHA solved, allow sendVerificationCode function to run
-                }
-            });
         }
 
         initializeFirebase();
 
         function sendVerificationCode() {
             const phoneNumber = document.getElementById('phone-number').value;
-            const appVerifier = recaptchaVerifier;
+            const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
             firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
                 .then((confirmationResult) => {
                     window.confirmationResult = confirmationResult;
@@ -84,12 +77,8 @@
 
         function verifyCode() {
             const code = document.getElementById('verification-code').value;
-            confirmationResult.confirm(code).then((result) => {
-                const user = result.user;
-                document.getElementById('sign-in').style.display = 'none';
-                const usernameButton = document.getElementById('username');
-                usernameButton.style.display = 'block';
-                usernameButton.textContent = user.phoneNumber; // Assuming phone number as username
+            window.confirmationResult.confirm(code).then((result) => {
+                alert('Phone number verified.');
             }).catch((error) => {
                 console.error('Error during confirmationResult.confirm', error);
             });
