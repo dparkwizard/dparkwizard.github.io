@@ -6,15 +6,137 @@
   <title>1117</title>
 </head>
 <body>
-  <script async
-  src="https://js.stripe.com/v3/buy-button.js">
-</script>
-
-<stripe-buy-button
-  buy-button-id="buy_btn_1QEPlVJqQJ6ImKtfhxeQaUiD"
-  publishable-key="pk_test_51QEMc8JqQJ6ImKtfLmm5FL7PxICaocuM3zlsPCN0sJfm9qBRbbxlFf0KYmdOQHYQEsBvs6fx156ArEFePT15ZEaR00DUtaGKCY"
->
-</stripe-buy-button>
   
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Talk</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #app {
+            flex: 1;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f1f1f1;
+        }
+    </style>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+</head>
+<body>
+    <div id="app">
+        <h1>Talk</h1>
+        <div class="options">
+            <button class="purchase-button" data-minutes="1">1 Minutes - $1</button>
+            <button class="purchase-button" data-minutes="100">100 Minutes - $20</button>
+            <button class="purchase-button" data-minutes="90">200 Minutes - $35</button>
+        </div>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <div>
+            <h2>Phone Number Verification</h2>
+            <input type="text" id="phone-number" placeholder="Enter phone number">
+            <button onclick="sendVerificationCode()">Send Verification Code</button>
+            <div id="recaptcha-container"></div>
+            <input type="text" id="verification-code" placeholder="Enter verification code">
+            <button onclick="verifyCode()">Verify Code</button>
+        </div>
+    </div>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="script.js"></script>
+    <script>
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRCdBMRCKlpbr4KJyLdsHavdKZhNDByNU",
+            authDomain: "talk-89b49.firebaseapp.com",
+            projectId: "talk-89b49",
+            storageBucket: "talk-89b49.appspot.com",
+            messagingSenderId: "370153813454",
+            appId: "1:370153813454:web:6b28541f81ebecaf74a79f",
+            measurementId: "G-9LEJ028XLR"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.getAnalytics(app);
+
+        // Initialize Recaptcha verifier
+        const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'normal',
+            'callback': (response) => {
+                // reCAPTCHA solved, allow sendVerificationCode function to run
+            }
+        });
+
+        function sendVerificationCode() {
+            const phoneNumber = document.getElementById('phone-number').value;
+            const appVerifier = recaptchaVerifier;
+            firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+                .then((confirmationResult) => {
+                    // SMS sent. Prompt user to type the code from the message, then sign the user in with confirmationResult.confirm(code).
+                    window.confirmationResult = confirmationResult;
+                    alert('Verification code sent.');
+                }).catch((error) => {
+                    // Error; SMS not sent
+                    console.error('Error during signInWithPhoneNumber', error);
+                    alert('Error sending verification code.');
+                });
+        }
+
+        function verifyCode() {
+            const code = document.getElementById('verification-code').value;
+            confirmationResult.confirm(code).then((result) => {
+                // User signed in successfully.
+                const user = result.user;
+                console.log('User signed in successfully:', user);
+                alert('Phone number verified successfully.');
+            }).catch((error) => {
+                // User couldn't sign in (bad verification code?)
+                console.error('Error during confirmationResult.confirm', error);
+                alert('Error verifying code.');
+            });
+        }
+
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId());
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail());
+        }
+    </script>
+
+    <script async
+    src="https://js.stripe.com/v3/buy-button.js">
+    </script>
+    
+    <stripe-buy-button
+    buy-button-id="buy_btn_1QEPlVJqQJ6ImKtfhxeQaUiD"
+    publishable-key="pk_test_51QEMc8JqQJ6ImKtfLmm5FL7PxICaocuM3zlsPCN0sJfm9qBRbbxlFf0KYmdOQHYQEsBvs6fx156ArEFePT15ZEaR00DUtaGKCY"
+    >
+    </stripe-buy-button>
+  
+    <footer>
+        <p>&copy; 2024 MAGICPOINT, INC. Version 1.0.5. Last updated: October 26, 2024 2:48:00 P.M.</p>
+    </footer>
 </body>
 </html>
