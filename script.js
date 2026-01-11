@@ -1,24 +1,50 @@
+// MagicPoint.ai - Interaction Logic
+
 document.addEventListener('DOMContentLoaded', () => {
-    const stripe = Stripe('pk_test_51QEMwJQuGWNDNoDwtiLLlXCTDKvHD3cjfAZ8aZO13kky0hWo5nteaOam9Va0ccXl2trfC0i6wqxtPsUj44bAMEls00md6kF4Fc');
-    const purchaseForm = document.getElementById('purchase-form');
-
-    purchaseForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const minutes = document.getElementById('minutes').value;
-
-        const response = await fetch('/.netlify/functions/create-checkout-session', {
-            method: 'POST',
-            headers: {
-                'Content-Type':   'application/json'
-            },
-            body: JSON.stringify({ minutes })
+    // Simple scroll animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
         });
+    }, { threshold: 0.1 });
 
-        const session = await response.json();
-        const result = await stripe.redirectToCheckout({ sessionId: session.id });
-
-        if (result.error) {
-            alert(result.error.message);
-        }
+    // Elements to animate on scroll
+    const animateElements = document.querySelectorAll('.bento-card, .product-card, .security-card, .agentic-item, .ai-orb');
+    
+    animateElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
     });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const target = document.querySelector(targetId);
+            if (target) {
+                target.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        });
+    });
+
+    // Mobile menu toggle (if needed)
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    }
 });
