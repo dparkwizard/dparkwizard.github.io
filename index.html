@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MagicPoint.ai | Your Agentic AI Sentinel</title>
     <meta name="description"
-        content="Proactive AI security that watches over your digital world. Built for researchers, journalists, and high-value targets who can't afford to get hacked.">
+        content="MagicPoint: An Agentic AI Sentinel for autonomous system reliability and security, built with Google Gemini and Python. Open-source monitoring and automated remediation.">
     <meta name="keywords" content="AI security, agentic AI, file monitoring, system security, privacy, local AI">
 
     <!-- Open Graph -->
     <meta property="og:title" content="MagicPoint.ai | Your Agentic AI Sentinel">
-    <meta property="og:description" content="Proactive protection. Autonomous defense. Zero cloud compromise.">
+    <meta property="og:description" content="Proactive protection. Autonomous defense. Hybrid Cloud Intelligence.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://magicpoint.ai">
 
@@ -64,8 +64,9 @@
                     </h1>
 
                     <p class="hero-description">
-                        Proactive protection that never sleeps. Our autonomous AI continuously monitors your system,
-                        detecting and neutralizing threats before they manifest. 100% local. Zero cloud exposure.
+                        Proactive protection that never sleeps. Our autonomous AI agents run locally for maximum
+                        security while leveraging Google Cloud Vertex AI for high-fidelity inference and global threat
+                        intelligence.
                     </p>
 
                     <div class="hero-actions">
@@ -98,9 +99,44 @@
                     </div>
 
                     <div class="status-card zero-cloud">
-                        <div class="label">Cloud Upload</div>
-                        <div class="value">⊘ BLOCKED</div>
+                        <div class="label">Cloud Inference</div>
+                        <div class="value" style="color: var(--cyan-glow);">⚡ ACTIVE</div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enterprise Autonomy Section -->
+    <section id="technology" style="background: var(--bg-deep); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">// Technology</span>
+                <h2>Enterprise-Grade Autonomy</h2>
+                <p>Local control meet global intelligence.</p>
+            </div>
+
+            <div class="capabilities-grid">
+                <div class="capability-card">
+                    <div class="capability-icon">✨</div>
+                    <h3>Gemini-Powered Intelligence</h3>
+                    <p>We use Gemini 3 Pro to analyze system logs and execute self-healing protocols in real-time.</p>
+                </div>
+
+                <div class="capability-card">
+                    <div class="capability-icon">🔓</div>
+                    <h3>Open Source Core</h3>
+                    <p>Verify our agent logic in our <a href="https://github.com/dparksports/SystemMonitor"
+                            target="_blank" style="color: var(--cyan-glow);">SystemMonitor</a> and <a
+                            href="https://github.com/dparksports/SecureFileMonitor" target="_blank"
+                            style="color: var(--cyan-glow);">SecureFileMonitor</a> repositories.</p>
+                </div>
+
+                <div class="capability-card">
+                    <div class="capability-icon">☁️</div>
+                    <h3>Scalable Infrastructure</h3>
+                    <p>MagicPoint is migrating to Google Cloud Platform to utilize BigQuery for telemetry and Cloud Run
+                        for agent orchestration.</p>
                 </div>
             </div>
         </div>
@@ -285,10 +321,10 @@
                 </div>
 
                 <div class="security-item">
-                    <span class="security-icon">⊘</span>
-                    <h3>Zero Cloud</h3>
-                    <p>No servers to compromise. No APIs to intercept. No subscription. Everything runs on your
-                        hardware.</p>
+                    <span class="security-icon">☁️</span>
+                    <h3>Hybrid Cloud Orchestration</h3>
+                    <p>Critical data stays local, while Google Cloud provides the scale for advanced threat detection.
+                    </p>
                 </div>
 
                 <div class="security-item">
@@ -350,6 +386,30 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvH2_06sJJZXX7FHCBLfKjjCIwdsdqwc8",
+            authDomain: "windows-system-monitor.firebaseapp.com",
+            projectId: "windows-system-monitor",
+            storageBucket: "windows-system-monitor.firebasestorage.app",
+            messagingSenderId: "381523720114",
+            appId: "1:381523720114:web:5249c3b49aa559fa8196ab",
+            measurementId: "G-VDNGVHGS7H"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
 </body>
 
 </html>

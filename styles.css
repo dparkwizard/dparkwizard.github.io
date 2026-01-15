@@ -208,20 +208,22 @@ section {
 }
 
 .nav-cta {
-    background: transparent;
+    background: var(--cyan-glow);
     border: 1px solid var(--cyan-glow);
-    color: var(--cyan-glow);
+    color: var(--bg-void);
     padding: 0.5rem 1rem;
     border-radius: var(--radius-sm);
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 600;
     text-decoration: none;
     transition: all 0.2s;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
 }
 
 .nav-cta:hover {
-    background: var(--cyan-glow);
-    color: var(--bg-void);
+    background: var(--cyan-dim);
+    border-color: var(--cyan-dim);
+    color: var(--text-bright);
     box-shadow: var(--glow-cyan);
 }
 
