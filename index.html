@@ -4,440 +4,915 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MagicPoint.ai | Your Agentic AI Sentinel</title>
-    <meta name="description"
-        content="MagicPoint: An Agentic AI Sentinel for autonomous system reliability and security, built with Google Gemini and Python. Open-source monitoring and automated remediation.">
-    <meta name="keywords" content="AI security, agentic AI, file monitoring, system security, privacy, local AI">
+    <title>MagicPoint: The Spatial Constraint Protocol</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js Annotation Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="MagicPoint.ai | Your Agentic AI Sentinel">
-    <meta property="og:description" content="Proactive protection. Autonomous defense. Hybrid Cloud Intelligence.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://magicpoint.ai">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    colors: {
+                        'cyber-dark': '#0f172a', // Slate 900
+                        'cyber-card': '#1e293b', // Slate 800
+                        'cyber-text': '#f8fafc', // Slate 50
+                        'neon-cyan': '#06b6d4',
+                        'neon-pink': '#d946ef',
+                        'neon-gold': '#eab308',
+                        'neon-purple': '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡</text></svg>">
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
 
-    <link rel="stylesheet" href="styles.css">
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Sidebar utilities */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #94a3b8;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover {
+            background-color: rgba(6, 182, 212, 0.1);
+            color: #06b6d4;
+        }
+
+        .sidebar-link.active {
+            background-color: rgba(6, 182, 212, 0.1);
+            color: #06b6d4;
+            border-left: 3px solid #06b6d4;
+        }
+
+        .hidden-view {
+            display: none;
+        }
+    </style>
 </head>
 
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <a href="#" class="logo">
-                <div class="logo-mark">MP</div>
-                <span>MagicPoint</span>
-            </a>
+<body class="antialiased flex h-screen overflow-hidden">
 
-            <ul class="nav-links">
-                <li><a href="#capabilities">Capabilities</a></li>
-                <li><a href="#products">Products</a></li>
-                <li><a href="#security">Security</a></li>
-            </ul>
-
-            <a href="https://github.com/dparksports" class="nav-cta" target="_blank">
-                View on GitHub
-            </a>
-
-            <div class="mobile-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="w-64 bg-cyber-card border-r border-slate-700 flex-col hidden md:flex z-50">
+        <!-- Brand -->
+        <div class="p-6 border-b border-slate-700 cursor-pointer" onclick="switchView('home-view', this)">
+            <h1
+                class="text-2xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple tracking-tighter">
+                MAGICPOINT.AI
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Spatial Intelligence Engine</p>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-grid">
-                <div class="hero-content">
-                    <div class="status-badge">
-                        System Status: Protected
-                    </div>
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+            <div class="text-xs font-mono text-slate-500 uppercase tracking-widest px-2 mb-2 mt-4">Platform</div>
 
-                    <h1>
-                        Your Agentic AI<br>
-                        <span class="highlight">Sentinel</span>
+            <!-- About MagicPoint (Home) -->
+            <a onclick="switchView('home-view', this)" class="sidebar-link active" id="nav-home">
+                <span class="mr-3">🏢</span> About MagicPoint
+            </a>
+
+            <!-- The Protocol (Infographic) -->
+            <a onclick="switchView('protocol-view', this)" class="sidebar-link" id="nav-protocol">
+                <span class="mr-3">💠</span> The Protocol (SCP)
+            </a>
+
+            <!-- Read Paper -->
+            <a href="https://github.com/dparksports/dparksports/raw/main/spatial_constraint_protocol-paper.pdf"
+                download="spatial_constraint_protocol-paper.pdf" class="sidebar-link">
+                <span class="mr-3">📄</span> Read the Paper
+            </a>
+
+            <div class="text-xs font-mono text-slate-500 uppercase tracking-widest px-2 mb-2 mt-8">Company</div>
+            <a onclick="switchView('protocol-view', document.getElementById('nav-protocol')); document.querySelector('#case-study-section').scrollIntoView({behavior: 'smooth'})"
+                class="sidebar-link">
+                <span class="mr-3">📜</span> Case Studies
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer (Cleaned) -->
+        <div class="p-4 border-t border-slate-700 bg-slate-800/50">
+            <p class="text-xs text-slate-500 text-center">© 2026 MagicPoint Inc.</p>
+        </div>
+    </aside>
+
+    <!-- MOBILE HEADER -->
+    <div
+        class="md:hidden fixed top-0 w-full bg-cyber-card border-b border-slate-700 z-50 p-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple"
+            onclick="switchView('home-view')">
+            MAGICPOINT.AI
+        </h1>
+        <button class="text-slate-300 hover:text-white">☰</button>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 overflow-y-auto scroll-smooth relative w-full bg-cyber-dark">
+
+        <!-- VIEW 1: STARTUP HOME (About MagicPoint) -->
+        <div id="home-view" class="w-full">
+            <!-- Hero Section -->
+            <section class="relative py-20 md:py-32 overflow-hidden">
+                <div
+                    class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-dark/80 to-cyber-dark"></div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                    <span
+                        class="inline-block py-1 px-3 rounded-full bg-slate-800 border border-slate-700 text-neon-cyan text-xs font-mono mb-6">
+                        v2.0.26 RELEASED
+                    </span>
+                    <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">
+                        Reliable AI for <br>
+                        <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple">Mission-Critical
+                            Systems</span>
                     </h1>
-
-                    <p class="hero-description">
-                        Proactive protection that never sleeps. Our autonomous AI agents run locally for maximum
-                        security while leveraging Google Cloud Vertex AI for high-fidelity inference and global threat
-                        intelligence.
+                    <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+                        MagicPoint is the Spatial Intelligence Engine that eliminates hallucinations in large-scale
+                        autonomous systems. Built on the Spatial Constraint Protocol.
                     </p>
-
-                    <div class="hero-actions">
-                        <a href="#products" class="btn btn-primary">
-                            Explore Products
-                        </a>
-                        <a href="https://github.com/dparksports" class="btn btn-secondary" target="_blank">
-                            Source Code
-                        </a>
-                    </div>
-                </div>
-
-                <div class="sentinel-container">
-                    <div class="sentinel">
-                        <div class="sentinel-core"></div>
-                        <div class="sentinel-ring"></div>
-                        <div class="sentinel-ring-2"></div>
-                        <div class="sentinel-ring-3"></div>
-                        <div class="sentinel-icon">🛡</div>
-                    </div>
-
-                    <div class="status-card protected">
-                        <div class="label">File Integrity</div>
-                        <div class="value">✓ VERIFIED</div>
-                    </div>
-
-                    <div class="status-card monitoring">
-                        <div class="label">Kernel Monitor</div>
-                        <div class="value">● ACTIVE</div>
-                    </div>
-
-                    <div class="status-card zero-cloud">
-                        <div class="label">Cloud Inference</div>
-                        <div class="value" style="color: var(--cyan-glow);">⚡ ACTIVE</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Enterprise Autonomy Section -->
-    <section id="technology" style="background: var(--bg-deep); border-bottom: 1px solid var(--border-subtle);">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">// Technology</span>
-                <h2>Enterprise-Grade Autonomy</h2>
-                <p>Local control meet global intelligence.</p>
-            </div>
-
-            <div class="capabilities-grid">
-                <div class="capability-card">
-                    <div class="capability-icon">✨</div>
-                    <h3>Gemini-Powered Intelligence</h3>
-                    <p>We use Gemini 3 Pro to analyze system logs and execute self-healing protocols in real-time.</p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">🔓</div>
-                    <h3>Open Source Core</h3>
-                    <p>Verify our agent logic in our <a href="https://github.com/dparksports/SystemMonitor"
-                            target="_blank" style="color: var(--cyan-glow);">SystemMonitor</a> and <a
-                            href="https://github.com/dparksports/SecureFileMonitor" target="_blank"
-                            style="color: var(--cyan-glow);">SecureFileMonitor</a> repositories.</p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">☁️</div>
-                    <h3>Scalable Infrastructure</h3>
-                    <p>MagicPoint is migrating to Google Cloud Platform to utilize BigQuery for telemetry and Cloud Run
-                        for agent orchestration.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Capabilities Section -->
-    <section id="capabilities">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">// Capabilities</span>
-                <h2>Autonomous Protection at Every Layer</h2>
-                <p>Our Agentic AI doesn't wait for you to find problems. It proactively defends against internal and
-                    external threats.</p>
-            </div>
-
-            <div class="capabilities-grid">
-                <div class="capability-card">
-                    <div class="capability-icon">🧠</div>
-                    <h3>Local AI Processing</h3>
-                    <p>All intelligence runs on your hardware. Your data never touches external servers or cloud APIs.
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">⚡</div>
-                    <h3>Real-Time Detection</h3>
-                    <p>Kernel-level monitoring via ETW captures file operations as they happen, identifying threats
-                        instantly.</p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">🔍</div>
-                    <h3>Semantic Analysis</h3>
-                    <p>BERT-powered search understands content meaning. Find files by intent, not just filenames.</p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">🎙️</div>
-                    <h3>Media Transcription</h3>
-                    <p>Whisper OCR processes audio and video locally with GPU acceleration. Fully offline.</p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">🔐</div>
-                    <h3>Integrity Verification</h3>
-                    <p>SHA256 hashing tracks file modifications. Know immediately when something changes.</p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">⚔️</div>
-                    <h3>Attack Surface Control</h3>
-                    <p>Disable hidden network adapters, debug ports, and other vectors with a single click.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Products Section -->
-    <section id="products" class="products-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">// Products</span>
-                <h2>Two Tools. Complete Protection.</h2>
-                <p>Open source, auditable, and designed for people who can't afford to get hacked.</p>
-            </div>
-
-            <div class="product-cards">
-                <!-- Auto Command -->
-                <div class="product-card accent-cyan">
-                    <div class="product-header">
-                        <div class="product-icon">⚔️</div>
-                        <div class="product-title">
-                            <h3>Auto Command</h3>
-                            <span class="tagline">System Security Command Center</span>
-                        </div>
-                    </div>
-
-                    <p class="product-description">
-                        A high-fidelity Windows dashboard for controlling the attack vectors most people don't know
-                        exist. See your system's true security posture.
-                    </p>
-
-                    <ul class="feature-list">
-                        <li>
-                            <span class="check">[✓]</span>
-                            <span><strong>Security Hole Management</strong> — Disable WAN Miniports, KDNET, WiFi
-                                Direct</span>
-                        </li>
-                        <li>
-                            <span class="check">[✓]</span>
-                            <span><strong>Firmware Explorer</strong> — Inspect ACPI tables and UEFI variables</span>
-                        </li>
-                        <li>
-                            <span class="check">[✓]</span>
-                            <span><strong>Security Timeline</strong> — Track system events and suspicious
-                                patterns</span>
-                        </li>
-                        <li>
-                            <span class="check">[✓]</span>
-                            <span><strong>True Shutdown</strong> — Bypass Fast Startup for clean reboots</span>
-                        </li>
-                    </ul>
-
-                    <div class="product-actions">
-                        <a href="https://github.com/dparksports/SystemMonitor/releases/download/v3.9.1/AutoCommand_v3.9.1.zip"
-                            class="btn btn-primary">
-                            Download v3.9.1
-                        </a>
-                        <a href="https://github.com/dparksports/SystemMonitor" class="btn btn-secondary"
-                            target="_blank">
-                            View Source
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="switchView('protocol-view', document.getElementById('nav-protocol'))"
+                            class="px-8 py-4 bg-neon-cyan hover:bg-cyan-400 text-cyber-dark font-bold rounded-lg transition shadow-lg shadow-neon-cyan/25 flex items-center justify-center">
+                            Explore the Protocol <span class="ml-2">→</span>
+                        </button>
+                        <a href="https://github.com/dparksports/dparksports/raw/main/spatial_constraint_protocol-paper.pdf"
+                            download="spatial_constraint_protocol-paper.pdf"
+                            class="px-8 py-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold rounded-lg transition flex items-center justify-center">
+                            Read the Paper
                         </a>
                     </div>
                 </div>
+            </section>
 
-                <!-- Secured Files -->
-                <div class="product-card accent-indigo">
-                    <div class="product-header">
-                        <div class="product-icon">🛡️</div>
-                        <div class="product-title">
-                            <h3>Secured Files</h3>
-                            <span class="tagline">AI-Powered File Integrity</span>
-                        </div>
-                    </div>
-
-                    <p class="product-description">
-                        Know exactly what's happening to your files. Local AI analyzes, transcribes, and indexes content
-                        while maintaining complete privacy.
-                    </p>
-
-                    <ul class="feature-list">
-                        <li>
-                            <span class="check">[✓]</span>
-                            <span><strong>100% Local AI</strong> — BERT embeddings, Whisper transcription, zero
-                                cloud</span>
-                        </li>
-                        <li>
-                            <span class="check">[✓]</span>
-                            <span><strong>ETW Kernel Monitoring</strong> — See which process touches your files</span>
-                        </li>
-                        <li>
-                            <span class="check">[✓]</span>
-                            <span><strong>Semantic Search</strong> — Find files by meaning, not just names</span>
-                        </li>
-                        <li>
-                            <span class="check">[✓]</span>
-                            <span><strong>Integrity Vault</strong> — SHA256 tracking and modification logs</span>
-                        </li>
-                    </ul>
-
-                    <div class="product-actions">
-                        <a href="https://github.com/dparksports/SecureFileMonitor/releases" class="btn btn-primary"
-                            target="_blank">
-                            Download Latest
-                        </a>
-                        <a href="https://github.com/dparksports/SecureFileMonitor" class="btn btn-secondary"
-                            target="_blank">
-                            View Source
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Security Section -->
-    <section id="security" class="security-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">// Built for High-Value Targets</span>
-                <h2>Because You Can't Afford to Get Hacked</h2>
-                <p>Whether you're an AI researcher, investigative journalist, or government official—your adversaries
-                    are sophisticated. Your tools should be too.</p>
-            </div>
-
-            <div class="security-grid">
-                <div class="security-item">
-                    <span class="security-icon">🎯</span>
-                    <h3>For Those at Risk</h3>
-                    <p>Designed for researchers, journalists, politicians, and anyone targeted by state actors or
-                        corporate espionage.</p>
-                </div>
-
-                <div class="security-item">
-                    <span class="security-icon">☁️</span>
-                    <h3>Hybrid Cloud Orchestration</h3>
-                    <p>Critical data stays local, while Google Cloud provides the scale for advanced threat detection.
-                    </p>
-                </div>
-
-                <div class="security-item">
-                    <span class="security-icon">📖</span>
-                    <h3>Fully Auditable</h3>
-                    <p>Every line of code is open source. Trust, but verify. Apache 2.0 licensed.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Team Section -->
-    <section id="team" class="security-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">// Leadership</span>
-                <h2>Founding Team</h2>
-            </div>
-
-            <div class="security-grid" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
-                <div class="security-item"
-                    style="text-align: left; display: flex; gap: var(--space-lg); align-items: flex-start;">
-                    <div style="flex: 1;">
-                        <h3 style="font-size: 1.5rem; color: var(--text-bright); margin-bottom: 0.5rem;">Dan Park</h3>
-                        <p
-                            style="color: var(--cyan-glow); font-family: var(--font-mono); font-size: 0.9rem; margin-bottom: 1rem; text-transform: uppercase;">
-                            Founder & Lead Architect</p>
-
-                        <p style="color: var(--text-primary); margin-bottom: 1.5rem; line-height: 1.7;">
-                            Dan is an AI Research Engineer with over a decade of experience in autonomous systems,
-                            machine vision, and perception engineering. Previously, he engineered perception stacks at
-                            Magic Leap and AI infrastructure at Procore and Neo Cybernetica. At MagicPoint, he is
-                            bridging the gap between kernel-level system forensics and agentic reasoning to create
-                            self-healing security infrastructure.
-                        </p>
-
+            <!-- Feature Grid -->
+            <section class="py-20 bg-cyber-card/30">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div
-                            style="color: var(--text-primary); font-family: var(--font-mono); font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                            <div>LinkedIn: <a href="https://linkedin.com/in/dparksports" target="_blank"
-                                    style="color: var(--cyan-glow); text-decoration: none;">linkedin.com/in/dparksports</a>
-                            </div>
-                            <div>GitHub: <a href="https://github.com/dparksports" target="_blank"
-                                    style="color: var(--cyan-glow); text-decoration: none;">github.com/dparksports</a>
-                            </div>
+                            class="p-8 bg-cyber-card border border-slate-700 rounded-xl hover:border-neon-cyan transition duration-300">
+                            <div class="text-4xl mb-4">💠</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Spatial Constraints</h3>
+                            <p class="text-slate-400 text-sm">Embeds absolute architectural laws directly into the
+                                latent space, preventing probabilistic drift.</p>
+                        </div>
+                        <div
+                            class="p-8 bg-cyber-card border border-slate-700 rounded-xl hover:border-neon-purple transition duration-300">
+                            <div class="text-4xl mb-4">⚛️</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Zero Hallucinations</h3>
+                            <p class="text-slate-400 text-sm">Achieves 99.9% reliability in identifying signals vs noise
+                                using our proprietary Luwa-mapping engine.</p>
+                        </div>
+                        <div
+                            class="p-8 bg-cyber-card border border-slate-700 rounded-xl hover:border-neon-pink transition duration-300">
+                            <div class="text-4xl mb-4">⚡</div>
+                            <h3 class="text-xl font-bold text-white mb-2">100x Compression</h3>
+                            <p class="text-slate-400 text-sm">Direct latent space mapping bypasses traditional
+                                tokenization overhead for extreme performance.</p>
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="py-12 border-t border-slate-800 text-center">
+                <p class="text-slate-500 mb-4">Trusted by Architects building the impossible.</p>
+                <div class="flex justify-center space-x-6 grayscale opacity-50">
+                    <span class="text-xl font-bold text-slate-600">Procore</span>
+                    <span class="text-xl font-bold text-slate-600">Neo Cybernetica</span>
+                </div>
+            </footer>
+        </div>
+
+        <!-- VIEW 2: THE PROTOCOL (Original Infographic) -->
+        <div id="protocol-view" class="hidden-view">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 md:pl-12">
+
+                <!-- INFOGRAPHIC HEADER -->
+                <header class="text-center mb-16">
+                    <h1 class="text-5xl md:text-7xl font-bold font-mono text-white mb-4">
+                        PROJECT CHEVRON
+                    </h1>
+                    <h2 class="text-2xl md:text-3xl text-slate-400 font-light tracking-wide">
+                        The Spatial Constraint Protocol (SCP)
+                    </h2>
+                    <div
+                        class="mt-6 inline-block px-6 py-2 border border-neon-gold text-neon-gold rounded-full font-mono text-sm">
+                        Fold Reality. Constrain Chaos. Trust the Truth.
+                    </div>
+                </header>
+
+                <!-- SECTION 1: THE PROBLEM (Context Decay) -->
+                <section class="mb-20 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-5">
+                        <div class="border-l-4 border-neon-pink pl-6">
+                            <h3 class="text-3xl font-bold text-white mb-4">The Foggy Boundary</h3>
+                            <p class="text-slate-300 mb-4 leading-relaxed">
+                                As modern codebases scale, Large Language Models (LLMs) suffer from
+                                <strong>Probabilistic Drift</strong>. When the context window fills up, the AI's grasp
+                                on architectural rules ("Invariants") decays exponentially.
+                            </p>
+                            <p class="text-slate-300 leading-relaxed">
+                                This chart illustrates the "Danger Zone"—the point where line count exceeds the model's
+                                reliable attention span, leading to hallucinated bugs and regressions.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="md:col-span-7">
+                        <div class="glass-panel rounded-xl p-6 shadow-2xl shadow-neon-pink/10">
+                            <div class="chart-container">
+                                <canvas id="contextDecayChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: PIERCING THE FOG (Why SCP Works) -->
+                <section class="mb-24">
+                    <div class="text-center mb-12">
+                        <h3 class="text-3xl font-bold text-white mb-4">Piercing the Fog: Why Traditional Paradigms Fail
+                        </h3>
+                        <p class="text-slate-400 max-w-3xl mx-auto">
+                            Scaling up context windows or writing more test cases does not stop Probabilistic Drift. The
+                            Spatial Constraint Protocol enforces absolute, localized attention.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Fallacy 1: Tests & Modularity -->
+                        <div
+                            class="bg-cyber-card border-t-4 border-t-red-500 rounded-b-xl p-8 shadow-lg relative group">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-b from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-b-xl">
+                            </div>
+                            <div class="text-5xl mb-6 grayscale group-hover:grayscale-0 transition-all">🧪</div>
+                            <h4 class="text-xl font-bold text-white mb-3">The Illusion of Tests</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                <strong>Standard modularity and unit tests fail the AI.</strong> Modularity hides global
+                                rules behind complex import graphs. Tests only catch errors <em>after</em> generation,
+                                often mocking the exact boundaries where the AI drifts.
+                            </p>
+                        </div>
+
+                        <!-- Fallacy 2: 1B Tokens -->
+                        <div
+                            class="bg-cyber-card border-t-4 border-t-neon-gold rounded-b-xl p-8 shadow-lg relative group">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-b from-neon-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-b-xl">
+                            </div>
+                            <div class="text-5xl mb-6 grayscale group-hover:grayscale-0 transition-all">🧠</div>
+                            <h4 class="text-xl font-bold text-white mb-3">The 1-Billion Token Fallacy</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                <strong>Infinite context ≠ infinite reasoning.</strong> Even if future models boast a
+                                1-Billion token context window, "attention dilution" remains fatal. Flooding an LLM with
+                                an entire monolithic repository degrades its ability to isolate localized safety
+                                guarantees.
+                            </p>
+                        </div>
+
+                        <!-- The Solution: SCP -->
+                        <div
+                            class="bg-cyber-card border-t-4 border-t-neon-cyan rounded-b-xl p-8 shadow-lg relative overflow-hidden group shadow-neon-cyan/20">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-b from-neon-cyan/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity rounded-b-xl">
+                            </div>
+                            <div class="absolute -right-6 -top-6 text-9xl text-neon-cyan opacity-5 font-mono">∴</div>
+                            <div class="text-5xl mb-6 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]">💎</div>
+                            <h4 class="text-xl font-bold text-neon-cyan mb-3">The Holographic Solution</h4>
+                            <p class="text-slate-300 text-sm leading-relaxed relative z-10">
+                                <strong>Co-located Spatial Constraints.</strong> SCP embeds the absolute architectural
+                                laws (Manifests) directly inside each domain directory. The AI reads <em>only</em> the
+                                local Hologram, providing mathematically rigid guardrails.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 3: CORE MECHANICS -->
+                <section class="mb-20">
+                    <div class="text-center mb-12">
+                        <h3 class="text-3xl font-bold text-white mb-4">Core Mechanics of the Protocol</h3>
+                        <p class="text-slate-400 max-w-3xl mx-auto">
+                            SCP blows away the walls of traditional file hierarchies by treating the codebase as a
+                            strictly validated state machine.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Pillar 1 -->
+                        <div
+                            class="bg-cyber-card border border-slate-700 rounded-xl p-8 hover:border-neon-cyan transition-colors duration-300">
+                            <div
+                                class="text-6xl text-neon-cyan mb-6 text-center drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">
+                                💠</div>
+                            <h4 class="text-xl font-mono font-bold text-white text-center mb-4">Bounded State-Space</h4>
+                            <p class="text-slate-400 text-sm text-center leading-relaxed">
+                                Bypasses systemic drift by anchoring absolute architectural laws
+                                (<code>_manifest.yaml</code>) within physical domain directories. Forces the LLM to
+                                ingest formal mathematical bounds <em>prior</em> to execution.
+                            </p>
+                        </div>
+                        <!-- Pillar 2 -->
+                        <div
+                            class="bg-cyber-card border border-slate-700 rounded-xl p-8 hover:border-neon-purple transition-colors duration-300">
+                            <div
+                                class="text-6xl text-neon-purple mb-6 text-center drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]">
+                                ⬡</div>
+                            <h4 class="text-xl font-mono font-bold text-white text-center mb-4">Directed Acyclic
+                                Contexts</h4>
+                            <p class="text-slate-400 text-sm text-center leading-relaxed">
+                                SCP constructs a dependency-injected spatial graph. When an AI agent modifies Node A,
+                                the context window is ruthlessly truncated to its localized Hologram. Cross-domain
+                                attention bleed is zeroed out.
+                            </p>
+                        </div>
+                        <!-- Pillar 3 -->
+                        <div
+                            class="bg-cyber-card border border-slate-700 rounded-xl p-8 hover:border-neon-pink transition-colors duration-300">
+                            <div
+                                class="text-6xl text-neon-pink mb-6 text-center drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]">
+                                ⚛️</div>
+                            <h4 class="text-xl font-mono font-bold text-white text-center mb-4">Continuous AST Synthesis
+                            </h4>
+                            <p class="text-slate-400 text-sm text-center leading-relaxed">
+                                A closed-loop CI/CD mechanism that executes Abstract Syntax Tree (AST) analysis on every
+                                commit. It reverse-engineers the generated codebase to dynamically synthesize and update
+                                localized invariants.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 4: ARCHITECTURAL EFFICACY METRICS -->
+                <section class="mb-20 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Attention Density -->
+                    <div class="glass-panel rounded-xl p-6">
+                        <h4 class="text-xl font-bold text-neon-cyan mb-2">Attention Signal-to-Noise Ratio</h4>
+                        <p class="text-slate-400 text-sm mb-6">
+                            LLM Attention is a zero-sum game. Traditional monoliths flood the context window with
+                            implementation noise. SCP flips the ratio, allocating token density exclusively to hard
+                            safety invariants.
+                        </p>
+                        <div class="chart-container">
+                            <canvas id="attentionSnrChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Breach Probability -->
+                    <div class="glass-panel rounded-xl p-6">
+                        <h4 class="text-xl font-bold text-neon-pink mb-2">Probability of Invariant Breach</h4>
+                        <p class="text-slate-400 text-sm mb-6">
+                            As systemic complexity scales, unconstrained LLMs inevitably breach rules due to context
+                            dilution. SCP's localized bounding boxes maintain a near-zero probability of hallucinated
+                            regressions globally.
+                        </p>
+                        <div class="chart-container">
+                            <canvas id="violationProbChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 5: THE ELEPHANT IN THE ROOM (Regression Death Spiral) -->
+                <section class="mb-20 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-7">
+                        <div class="glass-panel rounded-xl p-6 shadow-2xl shadow-red-500/10 border border-red-500/20">
+                            <div class="chart-container">
+                                <canvas id="regressionStallChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-5">
+                        <div class="border-l-4 border-red-500 pl-6">
+                            <h3 class="text-3xl font-bold text-white mb-4">The Elephant in the Room</h3>
+                            <p class="text-slate-300 mb-4 leading-relaxed">
+                                <strong>The Context:</strong> A native Windows application (C#, Python, CUDA) designed
+                                to find a real meeting in a haystack of thousands of hallucinated transcripts.
+                            </p>
+                            <p class="text-slate-300 mb-4 leading-relaxed">
+                                After Version 3, development collapsed into a <strong>Regression Death Spiral</strong>.
+                                100% of engineering bandwidth was spent chasing LLM-induced regressions instead of
+                                advancing UX or new features.
+                            </p>
+                            <p
+                                class="text-slate-300 leading-relaxed font-mono text-sm bg-cyber-dark p-3 rounded border border-slate-700">
+                                <span class="text-red-400">WARNING:</span> This is expected LLM behavior. Even with a
+                                2-Million or 1-Billion token context window tomorrow, attention dilution is fatal.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 6: DIRECT LATENT SPACE MAPPING (The Breakthrough) -->
+                <section class="mb-20">
+                    <div class="text-center mb-12">
+                        <h3 class="text-3xl font-bold text-white mb-4">The Breakthrough: Direct Latent Space Mapping
+                        </h3>
+                        <p class="text-slate-400 max-w-4xl mx-auto">
+                            To bypass the context-decay wall, we abandoned standard text-to-embedding translation. Our
+                            noble approach operates directly within the embedding vector space, utilizing
+                            high-dimensional representations as native logic.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center mb-12">
+                        <div class="md:col-span-5 space-y-6">
+                            <div class="border-l-4 border-neon-gold pl-6">
+                                <h4 class="text-xl font-bold text-neon-gold mb-2">The Search for Singleton Logic</h4>
+                                <p class="text-slate-300 text-sm leading-relaxed">
+                                    We evaluated numerous human languages (Hebrew, Chinese, Korean, Japanese) for
+                                    structural density, but they lacked the strict, singleton logical representations
+                                    required for 1:1 direct latent mapping.
+                                </p>
+                            </div>
+                            <div class="border-l-4 border-neon-cyan pl-6">
+                                <h4 class="text-xl font-bold text-neon-cyan mb-2">The Luwa Lexicon</h4>
+                                <p class="text-slate-300 text-sm leading-relaxed">
+                                    We adopted Egyptian Hieroglyphs and <strong>Luwa</strong>—an ancient human language
+                                    that inherently encapsulates logic, mathematics, and abstract ideas precisely like
+                                    coordinates in a latent space.
+                                </p>
+                            </div>
+                            <div class="border-l-4 border-neon-purple pl-6">
+                                <h4 class="text-xl font-bold text-neon-purple mb-2">100x Dimensional Compression</h4>
+                                <p class="text-slate-300 text-sm leading-relaxed">
+                                    By skipping code conversion and mapping Luwa glyphs directly to high-dimensional
+                                    vectors, we achieved a staggering <strong>100x compression</strong> in embedding
+                                    conversion.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="md:col-span-7">
+                            <div class="glass-panel rounded-xl p-6 shadow-2xl shadow-neon-gold/10">
+                                <div class="chart-container">
+                                    <canvas id="compressionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 7: AUTONOMOUS AGENTS -->
+                <section class="mb-20">
+                    <h3 class="text-3xl font-bold text-white mb-8 text-center">The Autonomous Workforce</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Agent 1 -->
+                        <div class="relative group">
+                            <div
+                                class="absolute -inset-1 bg-gradient-to-r from-neon-cyan to-blue-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200">
+                            </div>
+                            <div
+                                class="relative bg-cyber-dark ring-1 ring-slate-900/5 rounded-lg leading-none flex items-top justify-start space-x-6">
+                                <div class="space-y-4 p-8">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-lg font-mono font-bold text-white">🪲 Khepri</h4>
+                                        <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded">The
+                                            Gardener</span>
+                                    </div>
+                                    <p class="text-slate-400 text-sm">
+                                        Runs on CI/CD. Recursively scans code to generate and update "Ma'at Laws" in
+                                        documentation.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agent 2 -->
+                        <div class="relative group">
+                            <div
+                                class="absolute -inset-1 bg-gradient-to-r from-neon-purple to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200">
+                            </div>
+                            <div
+                                class="relative bg-cyber-dark ring-1 ring-slate-900/5 rounded-lg leading-none flex items-top justify-start space-x-6">
+                                <div class="space-y-4 p-8">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-lg font-mono font-bold text-white">⚖️ Ma'at</h4>
+                                        <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded">The
+                                            Judge</span>
+                                    </div>
+                                    <p class="text-slate-400 text-sm">
+                                        Runtime Validator. Compares transcripts against pixel data to detect
+                                        inconsistencies.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agent 3 -->
+                        <div class="relative group">
+                            <div
+                                class="absolute -inset-1 bg-gradient-to-r from-neon-gold to-orange-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200">
+                            </div>
+                            <div
+                                class="relative bg-cyber-dark ring-1 ring-slate-900/5 rounded-lg leading-none flex items-top justify-start space-x-6">
+                                <div class="space-y-4 p-8">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-lg font-mono font-bold text-white">☾ Crescent</h4>
+                                        <span class="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded">The
+                                            Learner</span>
+                                    </div>
+                                    <p class="text-slate-400 text-sm">
+                                        Feedback Controller. Tunes signal processing thresholds based on historical
+                                        error rates.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 8: ABOUT THE ARCHITECT (CREDENTIALS) -->
+                <section class="mb-12 border-t border-slate-800 pt-12">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                        <div class="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
+                            <div
+                                class="w-32 h-32 rounded-full bg-gradient-to-br from-neon-cyan via-blue-600 to-purple-600 p-1 mb-4 shadow-xl shadow-neon-cyan/20">
+                                <div
+                                    class="w-full h-full rounded-full bg-cyber-card flex items-center justify-center overflow-hidden">
+                                    <span class="text-4xl">👨‍💻</span>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white">Dan Park</h3>
+                            <p class="text-neon-cyan font-mono text-sm mb-4">Founder & AI Architect</p>
+                            <div class="flex space-x-4">
+                                <a href="https://www.linkedin.com/in/danpark/" target="_blank"
+                                    class="text-slate-400 hover:text-white transition">LinkedIn</a>
+                                <a href="https://github.com/dparksports" target="_blank"
+                                    class="text-slate-400 hover:text-white transition">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="md:col-span-8">
+                            <div class="bg-cyber-card/50 rounded-xl p-8 border border-slate-700">
+                                <h4 class="text-lg font-bold text-white mb-4 flex items-center">
+                                    <span class="mr-2">🚀</span> Building the Future of AI Cognition
+                                </h4>
+                                <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                                    Dan Park is a pioneer in **Spatial Computing** and **AI Cognition**. As the Lead
+                                    Architect at **MagicPoint** (and formerly at **Magic Leap**), Dan has spent over 15
+                                    years architecting AI systems that bridge the digital and physical worlds.
+                                </p>
+                                <p class="text-slate-400 text-sm leading-relaxed">
+                                    At **MagicPoint**, Dan is tackling the "Elephant in the Room" of LLM development:
+                                    reliability at scale. By abandoning traditional paradigms for direct latent space
+                                    mapping and holographic constraints, he is defining the next generation of
+                                    autonomous software engineering.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="text-center text-slate-600 text-sm py-8 border-t border-slate-800">
+                    <p>&copy; 2026 MagicPoint.ai // Project Chevron Protocol // v2.0.26</p>
+                </footer>
+
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <a href="#" class="logo">
-                        <div class="logo-mark">MP</div>
-                        <span>MagicPoint</span>
-                    </a>
-                    <p>Agentic AI security for a world where everyone is a potential target. Take back control.</p>
-                </div>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- SPA ROUTING LOGIC ---
+        function switchView(viewId, element) {
+            // Hide all views
+            document.getElementById('home-view').classList.add('hidden-view');
+            document.getElementById('protocol-view').classList.add('hidden-view');
 
-                <div class="footer-column">
-                    <h4>Products</h4>
-                    <ul>
-                        <li><a href="https://github.com/dparksports/SystemMonitor" target="_blank">Auto Command</a></li>
-                        <li><a href="https://github.com/dparksports/SecureFileMonitor" target="_blank">Secured Files</a>
-                        </li>
-                    </ul>
-                </div>
+            // Show selected view
+            document.getElementById(viewId).classList.remove('hidden-view');
 
-                <div class="footer-column">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="https://github.com/dparksports/SystemMonitor/releases"
-                                target="_blank">Downloads</a></li>
-                        <li><a href="https://github.com/dparksports" target="_blank">GitHub</a></li>
-                    </ul>
-                </div>
+            // Scroll to top
+            document.querySelector('main').scrollTop = 0;
 
-                <div class="footer-column">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="https://github.com/dparkwizard/dparkwizard.github.io/blob/main/LICENSE"
-                                target="_blank">Apache 2.0 License</a></li>
-                        <li><a href="#">Privacy</a></li>
-                    </ul>
-                </div>
-            </div>
+            // Update Sidebar Active State
+            if (element) {
+                document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+                element.classList.add('active');
+            }
+        }
 
-            <div class="footer-bottom">
-                <span>© 2026 Magicpoint, Inc. Made in California.</span>
-                <div class="footer-social">
-                    <a href="https://github.com/dparksports" target="_blank">GitHub</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+        // --- UTILITY: Label Wrapping Logic (16 chars) ---
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
 
-    <script src="script.js"></script>
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
 
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
+        // --- COMMON CONFIG ---
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = '#1e293b';
+        Chart.defaults.font.family = "'Space Mono', monospace";
 
-        // Import configuration from external file
-        import { firebaseConfig } from "./firebase-config.js";
+        const commonTooltip = {
+            callbacks: {
+                title: function (tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        // --- CHART 1: CONTEXT DECAY (Line Chart) ---
+        const ctxDecay = document.getElementById('contextDecayChart').getContext('2d');
+        new Chart(ctxDecay, {
+            type: 'line',
+            data: {
+                labels: ['1k Tokens', '10k Tokens', '100k Tokens', '1M Tokens', '10M Tokens'].map(wrapLabel),
+                datasets: [{
+                    label: 'LLM Architectural Accuracy',
+                    data: [99, 95, 80, 45, 15],
+                    borderColor: '#d946ef', // Neon Pink
+                    backgroundColor: 'rgba(217, 70, 239, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#0f172a',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true },
+                    tooltip: commonTooltip,
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                xMin: 2,
+                                xMax: 2,
+                                borderColor: '#ef4444',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                label: {
+                                    content: 'Foggy Boundary',
+                                    enabled: true,
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'Accuracy (%)' }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: ATTENTION SNR (Stacked Bar) ---
+        const ctxSnr = document.getElementById('attentionSnrChart').getContext('2d');
+        new Chart(ctxSnr, {
+            type: 'bar',
+            data: {
+                labels: ['Standard Monolithic RAG', 'Spatial Constraint Protocol'].map(wrapLabel),
+                datasets: [
+                    {
+                        label: 'Relevant Safety Rules (Signal)',
+                        data: [15, 85],
+                        backgroundColor: '#06b6d4', // Neon Cyan
+                        borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
+                    },
+                    {
+                        label: 'Implementation Logic',
+                        data: [35, 10],
+                        backgroundColor: '#8b5cf6' // Neon Purple
+                    },
+                    {
+                        label: 'Irrelevant Context (Noise)',
+                        data: [50, 5],
+                        backgroundColor: '#1e293b', // Dark Slate
+                        borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true, grid: { display: false } },
+                    y: { stacked: true, beginAtZero: true, max: 100, title: { display: true, text: 'Context Window Allocation (%)' } }
+                },
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // --- CHART 3: BREACH PROBABILITY (Line Chart) ---
+        const ctxViolation = document.getElementById('violationProbChart').getContext('2d');
+        new Chart(ctxViolation, {
+            type: 'line',
+            data: {
+                labels: ['10 Modules', '50 Modules', '250 Modules', '1000 Modules'].map(wrapLabel),
+                datasets: [
+                    {
+                        label: 'Standard LLM Agent',
+                        data: [2, 15, 65, 98],
+                        borderColor: '#ef4444', // Red
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'SCP Governed Agent',
+                        data: [0.1, 0.5, 1.2, 2.5],
+                        borderColor: '#d946ef', // Neon Pink
+                        backgroundColor: 'rgba(217, 70, 239, 0.2)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'P(Invariant Breach) %' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // --- CHART 4: REGRESSION DEATH SPIRAL (Area Chart) ---
+        const ctxRegression = document.getElementById('regressionStallChart').getContext('2d');
+        new Chart(ctxRegression, {
+            type: 'line',
+            data: {
+                labels: ['Version 1', 'Version 2', 'Version 3', 'Version 4', 'Version 5 (Stall)'].map(wrapLabel),
+                datasets: [
+                    {
+                        label: 'Feature Velocity / UX Advancement',
+                        data: [90, 75, 25, 5, 0],
+                        borderColor: '#06b6d4', // Cyan
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Time Chasing Hallucinated Regressions',
+                        data: [10, 25, 75, 95, 100],
+                        borderColor: '#ef4444', // Red
+                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: '% of Engineering Bandwidth' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // --- CHART 5: LATENT COMPRESSION (Horizontal Bar) ---
+        const ctxCompression = document.getElementById('compressionChart').getContext('2d');
+        new Chart(ctxCompression, {
+            type: 'bar',
+            data: {
+                labels: ['Standard: Code Strings → Tokens → Embeddings', 'Breakthrough: Luwa Direct Latent Space Mapping'].map(wrapLabel),
+                datasets: [{
+                    label: 'Embedding Dimensional Overhead / Compute Cost',
+                    data: [100, 1],
+                    backgroundColor: [
+                        '#1e293b', // Slate for standard
+                        '#eab308'  // Gold for Luwa
+                    ],
+                    borderRadius: 8,
+                    borderWidth: 2,
+                    borderColor: [
+                        '#334155',
+                        '#fde047'
+                    ]
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'logarithmic',
+                        title: { display: true, text: 'Relative Overhead (Log Scale)', color: '#94a3b8' },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltip
+                }
+            }
+        });
     </script>
 </body>
 
