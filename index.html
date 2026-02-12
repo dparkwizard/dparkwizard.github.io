@@ -636,236 +636,245 @@
 
             </div>
         </div>
-    </main>
 
-    <!-- VIEW 3: INFOGRAPHICS (Research Brief) -->
-    <div id="infographics-view" class="hidden-view w-full">
-        <!-- Header Section from Infographics -->
-        <header
-            class="w-full bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-lg backdrop-blur-sm bg-opacity-90">
-            <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                <div>
-                    <h1
-                        class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-                        SCP: RESEARCH BRIEF
-                    </h1>
-                    <p class="text-xs text-slate-400">Spatial Constraint Protocol • 2026 Findings</p>
-                </div>
-                <div class="text-right hidden sm:block">
-                    <span class="text-xs font-bold bg-cyan-900 text-cyan-300 px-2 py-1 rounded">PEER REVIEWED</span>
-                </div>
-            </div>
-        </header>
-
-        <div class="max-w-7xl mx-auto px-4 py-8 space-y-16">
-
-            <!-- Intro / Hero -->
-            <section class="text-center space-y-6">
-                <h2 class="text-4xl md:text-6xl font-black tracking-tight leading-tight text-white">
-                    Escaping the <br>
-                    <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">Foggy
-                        Boundary</span>
-                </h2>
-                <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto">
-                    Why "infinite context" is a trap. The Spatial Constraint Protocol (SCP) abandons raw tokens for
-                    <span class="text-cyan-400 font-bold">Direct Latent Space Mapping</span>, solving the
-                    Signal-to-Noise decay in complex AI Software Engineering.
-                </p>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
-                        <p class="text-3xl font-bold text-cyan-400">106x</p>
-                        <p class="text-xs text-slate-400 uppercase tracking-wider">Compression Ratio</p>
+        <!-- VIEW 3: INFOGRAPHICS (Research Brief) -->
+        <div id="infographics-view" class="hidden-view w-full">
+            <!-- Header Section from Infographics -->
+            <header
+                class="w-full bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-lg backdrop-blur-sm bg-opacity-90">
+                <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+                    <div>
+                        <h1
+                            class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
+                            SCP: RESEARCH BRIEF
+                        </h1>
+                        <p class="text-xs text-slate-400">Spatial Constraint Protocol • 2026 Findings</p>
                     </div>
-                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
-                        <p class="text-3xl font-bold text-green-400">&lt;0.1%</p>
-                        <p class="text-xs text-slate-400 uppercase tracking-wider">Regression Rate</p>
-                    </div>
-                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
-                        <p class="text-3xl font-bold text-purple-400">Luwa</p>
-                        <p class="text-xs text-slate-400 uppercase tracking-wider">Semantic Anchors</p>
+                    <div class="text-right hidden sm:block">
+                        <span class="text-xs font-bold bg-cyan-900 text-cyan-300 px-2 py-1 rounded">PEER REVIEWED</span>
                     </div>
                 </div>
-            </section>
+            </header>
 
-            <!-- Section 1: The Problem (SNR Decay) -->
-            <section
-                class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
-                <div class="space-y-4">
-                    <h3 class="text-2xl font-bold text-purple-400 border-l-4 border-purple-500 pl-4">The Billion Token
-                        Fallacy</h3>
-                    <p class="text-slate-300 leading-relaxed">
-                        Current AI development focuses on expanding the Context Window ($N$). However, the <span
-                            class="text-white font-semibold">Signal-to-Noise Ratio (SNR)</span> of the attention
-                        mechanism
-                        decays as entropy increases.
+            <div class="max-w-7xl mx-auto px-4 py-8 space-y-16">
+
+                <!-- Intro / Hero -->
+                <section class="text-center space-y-6">
+                    <h2 class="text-4xl md:text-6xl font-black tracking-tight leading-tight text-white">
+                        Escaping the <br>
+                        <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">Foggy
+                            Boundary</span>
+                    </h2>
+                    <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto">
+                        Why "infinite context" is a trap. The Spatial Constraint Protocol (SCP) abandons raw tokens for
+                        <span class="text-cyan-400 font-bold">Direct Latent Space Mapping</span>, solving the
+                        Signal-to-Noise decay in complex AI Software Engineering.
                     </p>
-                    <p class="text-slate-300 leading-relaxed">
-                        This creates a "Foggy Boundary" where the model can *retrieve* data (find the needle) but fails
-                        to
-                        *reason* about it (thread the needle). As context grows, semantic precision plummets, leading to
-                        hallucination creep in codebases.
-                    </p>
-                </div>
-                <div class="w-full">
-                    <!-- Plotly Chart Container -->
-                    <div id="info-snrPlot"
-                        class="w-full h-80 rounded-lg overflow-hidden bg-slate-900 border border-slate-600 shadow-inner relative">
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
+                            <p class="text-3xl font-bold text-cyan-400">106x</p>
+                            <p class="text-xs text-slate-400 uppercase tracking-wider">Compression Ratio</p>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
+                            <p class="text-3xl font-bold text-green-400">&lt;0.1%</p>
+                            <p class="text-xs text-slate-400 uppercase tracking-wider">Regression Rate</p>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
+                            <p class="text-3xl font-bold text-purple-400">Luwa</p>
+                            <p class="text-xs text-slate-400 uppercase tracking-wider">Semantic Anchors</p>
+                        </div>
                     </div>
-                    <p class="text-center text-xs text-slate-500 mt-2">Fig 1. Semantic Precision vs. Context Window Size
-                        (Log Scale)</p>
-                </div>
-            </section>
+                </section>
 
-            <!-- Section 2: The Solution (SCP & Luwa) -->
-            <section class="space-y-8">
-                <div class="text-center max-w-3xl mx-auto">
-                    <h3 class="text-3xl font-bold text-white">The Solution: Spatial Constraint Protocol</h3>
-                    <p class="text-slate-400 mt-2">
-                        Instead of flooding the context window with verbose code, SCP uses <span
-                            class="text-yellow-400 font-bold">"Luwa"</span> (Egyptian Hieroglyphs) as high-density
-                        semantic
-                        anchors. This maps natural language directly to immutable logic blocks in Latent Space.
-                    </p>
-                </div>
+                <!-- Section 1: The Problem (SNR Decay) -->
+                <section
+                    class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-bold text-purple-400 border-l-4 border-purple-500 pl-4">The Billion
+                            Token
+                            Fallacy</h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Current AI development focuses on expanding the Context Window ($N$). However, the <span
+                                class="text-white font-semibold">Signal-to-Noise Ratio (SNR)</span> of the attention
+                            mechanism
+                            decays as entropy increases.
+                        </p>
+                        <p class="text-slate-300 leading-relaxed">
+                            This creates a "Foggy Boundary" where the model can *retrieve* data (find the needle) but
+                            fails
+                            to
+                            *reason* about it (thread the needle). As context grows, semantic precision plummets,
+                            leading to
+                            hallucination creep in codebases.
+                        </p>
+                    </div>
+                    <div class="w-full">
+                        <!-- Plotly Chart Container -->
+                        <div id="info-snrPlot"
+                            class="w-full h-80 rounded-lg overflow-hidden bg-slate-900 border border-slate-600 shadow-inner relative">
+                        </div>
+                        <p class="text-center text-xs text-slate-500 mt-2">Fig 1. Semantic Precision vs. Context Window
+                            Size
+                            (Log Scale)</p>
+                    </div>
+                </section>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Traditional Flow -->
-                    <div class="bg-slate-800 p-6 rounded-xl border border-red-900/50 relative overflow-hidden">
-                        <div
-                            class="absolute top-0 right-0 bg-red-900 text-red-200 text-xs font-bold px-3 py-1 rounded-bl">
-                            TRADITIONAL RAG</div>
-                        <h4 class="text-xl font-bold text-red-400 mb-6">The "Noise" Pipeline</h4>
+                <!-- Section 2: The Solution (SCP & Luwa) -->
+                <section class="space-y-8">
+                    <div class="text-center max-w-3xl mx-auto">
+                        <h3 class="text-3xl font-bold text-white">The Solution: Spatial Constraint Protocol</h3>
+                        <p class="text-slate-400 mt-2">
+                            Instead of flooding the context window with verbose code, SCP uses <span
+                                class="text-yellow-400 font-bold">"Luwa"</span> (Egyptian Hieroglyphs) as high-density
+                            semantic
+                            anchors. This maps natural language directly to immutable logic blocks in Latent Space.
+                        </p>
+                    </div>
 
-                        <div class="flex flex-col items-center space-y-4">
-                            <div class="bg-slate-700 p-3 rounded w-64 text-center border border-slate-600">
-                                <span class="text-sm text-slate-300">Prompt: "Fix Auth Bug"</span>
-                            </div>
-                            <div class="arrow-down border-t-[15px] border-t-slate-500"></div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Traditional Flow -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-red-900/50 relative overflow-hidden">
                             <div
-                                class="bg-slate-700 p-4 rounded w-64 text-center border border-slate-600 border-dashed">
-                                <span class="text-xs text-slate-500 block mb-1">Retrieval (128k Tokens)</span>
+                                class="absolute top-0 right-0 bg-red-900 text-red-200 text-xs font-bold px-3 py-1 rounded-bl">
+                                TRADITIONAL RAG</div>
+                            <h4 class="text-xl font-bold text-red-400 mb-6">The "Noise" Pipeline</h4>
+
+                            <div class="flex flex-col items-center space-y-4">
+                                <div class="bg-slate-700 p-3 rounded w-64 text-center border border-slate-600">
+                                    <span class="text-sm text-slate-300">Prompt: "Fix Auth Bug"</span>
+                                </div>
+                                <div class="arrow-down border-t-[15px] border-t-slate-500"></div>
                                 <div
-                                    class="text-[10px] text-slate-600 leading-tight font-mono overflow-hidden h-16 opacity-50">
-                                    ...void Auth() { if(x)... user.login... // extensive verbose context noise...
+                                    class="bg-slate-700 p-4 rounded w-64 text-center border border-slate-600 border-dashed">
+                                    <span class="text-xs text-slate-500 block mb-1">Retrieval (128k Tokens)</span>
+                                    <div
+                                        class="text-[10px] text-slate-600 leading-tight font-mono overflow-hidden h-16 opacity-50">
+                                        ...void Auth() { if(x)... user.login... // extensive verbose context noise...
+                                    </div>
+                                </div>
+                                <div class="arrow-down border-t-[15px] border-t-red-500"></div>
+                                <div class="bg-red-900/20 p-3 rounded w-64 text-center border border-red-500">
+                                    <span class="text-sm text-red-400 font-bold">Hallucination / Drift</span>
+                                    <p class="text-xs text-red-300/70">"Regression Hell"</p>
                                 </div>
                             </div>
-                            <div class="arrow-down border-t-[15px] border-t-red-500"></div>
-                            <div class="bg-red-900/20 p-3 rounded w-64 text-center border border-red-500">
-                                <span class="text-sm text-red-400 font-bold">Hallucination / Drift</span>
-                                <p class="text-xs text-red-300/70">"Regression Hell"</p>
-                            </div>
                         </div>
-                    </div>
 
-                    <!-- SCP Flow -->
-                    <div class="bg-slate-800 p-6 rounded-xl border border-cyan-900/50 relative overflow-hidden">
-                        <div
-                            class="absolute top-0 right-0 bg-cyan-900 text-cyan-200 text-xs font-bold px-3 py-1 rounded-bl">
-                            SCP (OUR APPROACH)</div>
-                        <h4 class="text-xl font-bold text-cyan-400 mb-6">Direct Latent Mapping</h4>
+                        <!-- SCP Flow -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-cyan-900/50 relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 bg-cyan-900 text-cyan-200 text-xs font-bold px-3 py-1 rounded-bl">
+                                SCP (OUR APPROACH)</div>
+                            <h4 class="text-xl font-bold text-cyan-400 mb-6">Direct Latent Mapping</h4>
 
-                        <div class="flex flex-col items-center space-y-4">
-                            <div class="bg-slate-700 p-3 rounded w-64 text-center border border-slate-600">
-                                <span class="text-sm text-slate-300">Prompt: "Fix Auth Bug"</span>
-                            </div>
-                            <div class="arrow-down border-t-[15px] border-t-cyan-500"></div>
-                            <div class="flex items-center justify-center space-x-2">
-                                <div
-                                    class="bg-slate-900 p-4 rounded-full border-2 border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)] w-16 h-16 flex items-center justify-center">
-                                    <span class="text-3xl">𓀀</span>
+                            <div class="flex flex-col items-center space-y-4">
+                                <div class="bg-slate-700 p-3 rounded w-64 text-center border border-slate-600">
+                                    <span class="text-sm text-slate-300">Prompt: "Fix Auth Bug"</span>
                                 </div>
-                                <span class="text-xs text-cyan-400 font-mono">&lt;-- Luwa Anchor</span>
+                                <div class="arrow-down border-t-[15px] border-t-cyan-500"></div>
+                                <div class="flex items-center justify-center space-x-2">
+                                    <div
+                                        class="bg-slate-900 p-4 rounded-full border-2 border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)] w-16 h-16 flex items-center justify-center">
+                                        <span class="text-3xl">𓀀</span>
+                                    </div>
+                                    <span class="text-xs text-cyan-400 font-mono">&lt;-- Luwa Anchor</span>
+                                </div>
+                                <div class="arrow-down border-t-[15px] border-t-cyan-500"></div>
+                                <div class="bg-cyan-900/20 p-3 rounded w-64 text-center border border-cyan-500">
+                                    <span class="text-sm text-cyan-400 font-bold">Deterministic Output</span>
+                                    <p class="text-xs text-cyan-300/70">Zero-Shot Accuracy</p>
+                                </div>
                             </div>
-                            <div class="arrow-down border-t-[15px] border-t-cyan-500"></div>
-                            <div class="bg-cyan-900/20 p-3 rounded w-64 text-center border border-cyan-500">
-                                <span class="text-sm text-cyan-400 font-bold">Deterministic Output</span>
-                                <p class="text-xs text-cyan-300/70">Zero-Shot Accuracy</p>
-                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Section 3: Key Metrics (Comparison) -->
-            <section class="bg-slate-100/5 rounded-2xl p-8 border border-slate-700">
-                <h3 class="text-2xl font-bold text-white mb-6 border-b border-slate-700 pb-2">Benchmarking Performance
-                </h3>
-                <p class="text-slate-300 mb-8">
-                    Comparison against standard RAG (GPT-4 Turbo) and Agentic Frameworks (like Devin/Swe-agent). SCP
-                    demonstrates orders of magnitude improvement in stability and efficiency.
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <!-- Regression Rate Chart -->
-                    <div class="flex flex-col items-center">
-                        <h4 class="text-lg font-semibold text-slate-200 mb-4">Regression Rate per Commit (%)</h4>
-                        <div class="chart-container">
-                            <canvas id="info-regressionChart"></canvas>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-2 text-center max-w-xs">
-                            Lower is better. SCP effectively eliminates regression loops by enforcing "Fractal
-                            Independence."
-                        </p>
-                    </div>
-
-                    <!-- Compression Ratio Chart -->
-                    <div class="flex flex-col items-center">
-                        <h4 class="text-lg font-semibold text-slate-200 mb-4">Context Load (Tokens)</h4>
-                        <div class="chart-container">
-                            <canvas id="info-compressionChart"></canvas>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-2 text-center max-w-xs">
-                            Lower is better. SCP operates on ~1.2k vectors vs RAG's 128k lossy tokens.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 4: The Regression-Verification Inequality -->
-            <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div
-                    class="md:col-span-1 bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col justify-center">
-                    <h3 class="text-xl font-bold text-pink-400 mb-4">The Mathematical Proof</h3>
-                    <p class="text-sm text-slate-300 mb-4">
-                        In standard workflows, the energy required to verify code ($E_{verify}$) grows exponentially
-                        relative to feature velocity ($E_{feature}$), leading to project stagnation.
+                <!-- Section 3: Key Metrics (Comparison) -->
+                <section class="bg-slate-100/5 rounded-2xl p-8 border border-slate-700">
+                    <h3 class="text-2xl font-bold text-white mb-6 border-b border-slate-700 pb-2">Benchmarking
+                        Performance
+                    </h3>
+                    <p class="text-slate-300 mb-8">
+                        Comparison against standard RAG (GPT-4 Turbo) and Agentic Frameworks (like Devin/Swe-agent). SCP
+                        demonstrates orders of magnitude improvement in stability and efficiency.
                     </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <!-- Regression Rate Chart -->
+                        <div class="flex flex-col items-center">
+                            <h4 class="text-lg font-semibold text-slate-200 mb-4">Regression Rate per Commit (%)</h4>
+                            <div class="chart-container">
+                                <canvas id="info-regressionChart"></canvas>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 text-center max-w-xs">
+                                Lower is better. SCP effectively eliminates regression loops by enforcing "Fractal
+                                Independence."
+                            </p>
+                        </div>
+
+                        <!-- Compression Ratio Chart -->
+                        <div class="flex flex-col items-center">
+                            <h4 class="text-lg font-semibold text-slate-200 mb-4">Context Load (Tokens)</h4>
+                            <div class="chart-container">
+                                <canvas id="info-compressionChart"></canvas>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 text-center max-w-xs">
+                                Lower is better. SCP operates on ~1.2k vectors vs RAG's 128k lossy tokens.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 4: The Regression-Verification Inequality -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div
-                        class="bg-slate-900 p-4 rounded border border-slate-600 font-mono text-center text-xs md:text-sm text-cyan-300 mb-4">
-                        lim<sub>t→∞</sub> (E<sub>verify</sub> / E<sub>feature</sub>) → 0
+                        class="md:col-span-1 bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col justify-center">
+                        <h3 class="text-xl font-bold text-pink-400 mb-4">The Mathematical Proof</h3>
+                        <p class="text-sm text-slate-300 mb-4">
+                            In standard workflows, the energy required to verify code ($E_{verify}$) grows exponentially
+                            relative to feature velocity ($E_{feature}$), leading to project stagnation.
+                        </p>
+                        <div
+                            class="bg-slate-900 p-4 rounded border border-slate-600 font-mono text-center text-xs md:text-sm text-cyan-300 mb-4">
+                            lim<sub>t→∞</sub> (E<sub>verify</sub> / E<sub>feature</sub>) → 0
+                        </div>
+                        <p class="text-sm text-slate-300">
+                            SCP restores this ratio to &gt; 1 by ensuring verification costs remain constant regardless
+                            of
+                            codebase size.
+                        </p>
                     </div>
-                    <p class="text-sm text-slate-300">
-                        SCP restores this ratio to &gt; 1 by ensuring verification costs remain constant regardless of
-                        codebase size.
-                    </p>
-                </div>
-                <div class="md:col-span-2">
-                    <div class="bg-white/5 p-4 rounded-xl border border-slate-700">
-                        <h4 class="text-sm font-semibold text-slate-400 mb-2 ml-2">Energy Divergence: Standard vs. SCP
-                        </h4>
-                        <div class="chart-container">
-                            <canvas id="info-energyChart"></canvas>
+                    <div class="md:col-span-2">
+                        <div class="bg-white/5 p-4 rounded-xl border border-slate-700">
+                            <h4 class="text-sm font-semibold text-slate-400 mb-2 ml-2">Energy Divergence: Standard vs.
+                                SCP
+                            </h4>
+                            <div class="chart-container">
+                                <canvas id="info-energyChart"></canvas>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Conclusion -->
-            <footer class="text-center py-12 border-t border-slate-800 mt-12 mb-20">
-                <h3 class="text-2xl font-bold text-white mb-4">The Future is Constrained</h3>
-                <p class="max-w-2xl mx-auto text-slate-400 mb-8">
-                    The "Billion Token" future offers diminishing returns. SCP proves that rigorously structured,
-                    compressed
-                    context—anchored by semantic symbols—is more powerful than infinite, noisy context.
-                </p>
-                <div class="text-xs text-slate-600 font-mono">
-                    <p>Based on: "Spatial Constraint Protocol" by Dan Park (2026)</p>
-                </div>
-            </footer>
+                <!-- Conclusion -->
+                <footer class="text-center py-12 border-t border-slate-800 mt-12 mb-20">
+                    <h3 class="text-2xl font-bold text-white mb-4">The Future is Constrained</h3>
+                    <p class="max-w-2xl mx-auto text-slate-400 mb-8">
+                        The "Billion Token" future offers diminishing returns. SCP proves that rigorously structured,
+                        compressed
+                        context—anchored by semantic symbols—is more powerful than infinite, noisy context.
+                    </p>
+                    <div class="text-xs text-slate-600 font-mono">
+                        <p>Based on: "Spatial Constraint Protocol" by Dan Park (2026)</p>
+                    </div>
+                </footer>
 
+
+            </div>
         </div>
-    </div>
+
+    </main>
 
     </main>
 
