@@ -4,1350 +4,1526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MagicPoint: The Spatial Constraint Protocol</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chart.js Annotation Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
-    <!-- Google Fonts -->
+    <title>Spatial Constraint Protocol — Escaping the Foggy Boundary</title>
+    <meta name="description"
+        content="SCP: A neuro-symbolic architecture using Uiua bijective primitives to bypass probabilistic tokenization and resolve AI code regression.">
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
-    <!-- Plotly.js -->
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Space Mono', 'monospace'],
-                    },
-                    colors: {
-                        'cyber-dark': '#0f172a', // Slate 900
-                        'cyber-card': '#1e293b', // Slate 800
-                        'cyber-text': '#f8fafc', // Slate 50
-                        'neon-cyan': '#06b6d4',
-                        'neon-pink': '#d946ef',
-                        'neon-gold': '#eab308',
-                        'neon-purple': '#8b5cf6',
-                    }
-                }
-            }
-        }
-    </script>
     <style>
+        :root {
+            --bg-primary: #0a0a12;
+            --bg-secondary: #12121f;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #22223a;
+            --violet: #8b5cf6;
+            --violet-glow: #a78bfa;
+            --violet-deep: #6d28d9;
+            --cyan: #06b6d4;
+            --cyan-glow: #22d3ee;
+            --gold: #f59e0b;
+            --gold-glow: #fbbf24;
+            --rose: #f43f5e;
+            --emerald: #10b981;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: rgba(139, 92, 246, 0.15);
+            --gradient-violet: linear-gradient(135deg, #6d28d9, #8b5cf6, #a78bfa);
+            --gradient-dark: linear-gradient(180deg, #0a0a12 0%, #12121f 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
         }
 
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
+        /* ───── ANIMATIONS ───── */
+        @keyframes float {
 
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
             }
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
 
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
+        @keyframes rotate-slow {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+        @keyframes dash-flow {
+            to {
+                stroke-dashoffset: -20;
+            }
         }
 
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        @keyframes expand-bar {
+            from {
+                width: 0;
+            }
         }
 
-        /* Sidebar utilities */
-        .sidebar-link {
+        @keyframes count-up {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ───── NAV ───── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 18, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0 2rem;
+            height: 64px;
             display: flex;
             align-items: center;
-            padding: 0.75rem 1rem;
-            color: #94a3b8;
-            border-radius: 0.5rem;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
+            justify-content: space-between;
+        }
+
+        nav .logo {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 0.08em;
+        }
+
+        nav .logo span {
+            color: var(--violet);
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
             font-weight: 500;
-            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: color 0.3s;
         }
 
-        .sidebar-link:hover {
-            background-color: rgba(6, 182, 212, 0.1);
-            color: #06b6d4;
+        nav .nav-links a:hover {
+            color: var(--violet-glow);
         }
 
-        .sidebar-link.active {
-            background-color: rgba(6, 182, 212, 0.1);
-            color: #06b6d4;
-            border-left: 3px solid #06b6d4;
+        /* ───── HERO ───── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            padding: 120px 2rem 80px;
         }
 
-        .hidden-view {
-            display: none;
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(109, 40, 217, 0.12), transparent 70%);
+        }
+
+        /* Portal ring */
+        .portal-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            opacity: 0.15;
+            border: 2px solid var(--violet);
+            animation: rotate-slow 60s linear infinite;
+        }
+
+        .portal-ring::before {
+            content: '';
+            position: absolute;
+            inset: -30px;
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            animation: rotate-slow 90s linear infinite reverse;
+        }
+
+        .portal-ring::after {
+            content: '';
+            position: absolute;
+            inset: 30px;
+            border-radius: 50%;
+            border: 1px dashed rgba(6, 182, 212, 0.2);
+            animation: rotate-slow 45s linear infinite;
+        }
+
+        /* Chevron shapes on portal */
+        .chevron-mark {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: var(--violet);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .chevron-mark:nth-child(1) {
+            top: -8px;
+            left: 50%;
+        }
+
+        .chevron-mark:nth-child(2) {
+            top: 50%;
+            right: -8px;
+            animation-delay: 0.5s;
+        }
+
+        .chevron-mark:nth-child(3) {
+            bottom: -8px;
+            left: 50%;
+            animation-delay: 1s;
+        }
+
+        .chevron-mark:nth-child(4) {
+            top: 50%;
+            left: -8px;
+            animation-delay: 1.5s;
+        }
+
+        .chevron-mark:nth-child(5) {
+            top: 15%;
+            right: 10%;
+            animation-delay: 0.75s;
+        }
+
+        .chevron-mark:nth-child(6) {
+            bottom: 15%;
+            left: 10%;
+            animation-delay: 1.25s;
+        }
+
+        .chevron-mark:nth-child(7) {
+            top: 15%;
+            left: 10%;
+            animation-delay: 1.75s;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 50px;
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--violet-glow);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #e2e8f0 30%, #a78bfa 70%, #22d3ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+        }
+
+        .hero-author {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        .hero-author strong {
+            color: var(--text-secondary);
+        }
+
+        /* ───── SECTIONS ───── */
+        section {
+            padding: 100px 2rem;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        /* ───── PROBLEM SECTION ───── */
+        .problem-section {
+            background: var(--gradient-dark);
+        }
+
+        .problem-section .section-badge {
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--rose);
+        }
+
+        .equation-display {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 40px;
+            border: 1px solid var(--border-subtle);
+            text-align: center;
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--violet-glow);
+        }
+
+        .equation-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 12px;
+        }
+
+        /* ───── FOGGY BOUNDARY INFOGRAPHIC ───── */
+        .foggy-boundary-viz {
+            position: relative;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(90deg, #0f172a 0%, #0f172a 45%, #1e1b3a 55%, #2d1f4e 70%, #1a1030 100%);
+            border: 1px solid var(--border-subtle);
+            margin: 2.5rem 0;
+        }
+
+        .foggy-clear-zone {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 45%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .foggy-clear-zone .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--emerald);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .foggy-noise-zone {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 45%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .foggy-noise-zone .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--rose);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: rgba(244, 63, 94, 0.1);
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .foggy-boundary-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, transparent, var(--violet), var(--violet-glow), var(--violet), transparent);
+            transform: translateX(-50%);
+            box-shadow: 0 0 30px var(--violet), 0 0 60px rgba(139, 92, 246, 0.3);
+        }
+
+        .foggy-boundary-label {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--violet-deep);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Clarity dots (left side) */
+        .clarity-dots {
+            position: absolute;
+            left: 5%;
+            top: 15%;
+            width: 35%;
+            height: 70%;
+        }
+
+        .clarity-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--cyan);
+            opacity: 0.6;
+        }
+
+        /* Noise dots (right side) */
+        .noise-dots {
+            position: absolute;
+            right: 5%;
+            top: 10%;
+            width: 35%;
+            height: 80%;
+        }
+
+        .noise-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--rose);
+            opacity: 0.2;
+        }
+
+        /* ───── STATS ROW ───── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--border-subtle);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--violet);
+            box-shadow: 0 8px 40px rgba(139, 92, 246, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-number.violet {
+            color: var(--violet-glow);
+        }
+
+        .stat-number.cyan {
+            color: var(--cyan-glow);
+        }
+
+        .stat-number.gold {
+            color: var(--gold-glow);
+        }
+
+        .stat-number.rose {
+            color: var(--rose);
+        }
+
+        .stat-number.emerald {
+            color: var(--emerald);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        /* ───── SOLUTION / SCP SECTION ───── */
+        .solution-section {
+            background: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+        }
+
+        .solution-section .section-badge {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--violet-glow);
+        }
+
+        /* ───── COMPRESSION VIZ ───── */
+        .compression-viz {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            padding: 40px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .compression-side {
+            text-align: center;
+        }
+
+        .compression-side .count {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .compression-side .desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        .compression-dots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+            max-width: 280px;
+            margin: 16px auto 0;
+        }
+
+        .compression-dots .dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+
+        .compression-dots.chaotic .dot {
+            background: var(--text-muted);
+            opacity: 0.3;
+        }
+
+        .compression-dots.crystal .dot {
+            background: var(--violet-glow);
+            opacity: 0.8;
+        }
+
+        .compression-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compression-arrow .ratio {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .compression-arrow svg {
+            color: var(--violet);
+        }
+
+        /* ───── GLYPH TABLE ───── */
+        .glyph-section {
+            background: var(--bg-primary);
+        }
+
+        .glyph-section .section-badge {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold);
+        }
+
+        .glyph-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .glyph-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glyph-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--violet);
+            box-shadow: 0 8px 40px rgba(139, 92, 246, 0.15);
+        }
+
+        .glyph-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-violet);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .glyph-card:hover::before {
+            opacity: 1;
+        }
+
+        .glyph-symbol {
+            font-size: 3rem;
+            line-height: 1;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.4));
+        }
+
+        .glyph-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .glyph-origin {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .glyph-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .glyph-code {
+            margin-top: 14px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--cyan-glow);
+        }
+
+        /* ───── RESULTS SECTION ───── */
+        .results-section {
+            background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
+        }
+
+        .results-section .section-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--emerald);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .comparison-table thead th {
+            background: var(--bg-card);
+            padding: 16px 24px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-align: left;
+            border-bottom: 2px solid var(--border-subtle);
+        }
+
+        .comparison-table thead th:first-child {
+            width: 30%;
+        }
+
+        .comparison-table tbody td {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.95rem;
+        }
+
+        .comparison-table tbody tr {
+            background: var(--bg-card);
+            transition: background 0.3s;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .comparison-table .metric-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .comparison-table .baseline {
+            color: var(--rose);
+        }
+
+        .comparison-table .scp-result {
+            color: var(--emerald);
+            font-weight: 600;
+        }
+
+        .comparison-table .improvement {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* Bar chart */
+        .bar-chart {
+            margin: 2.5rem 0;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 160px 1fr 80px;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .bar-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .bar-track {
+            height: 36px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding-left: 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bar-fill.baseline-bar {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.6));
+            color: var(--rose);
+        }
+
+        .bar-fill.scp-bar {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.6));
+            color: var(--emerald);
+        }
+
+        .bar-value {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* ───── HELLO WORLD SECTION ───── */
+        .hello-section {
+            background: var(--bg-primary);
+        }
+
+        .hello-section .section-badge {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--cyan);
+        }
+
+        .code-block {
+            background: #0d1117;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .code-block .dots {
+            position: absolute;
+            top: 13px;
+            left: 16px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .code-block .dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-block .dots span:nth-child(1) {
+            background: #ff5f57;
+        }
+
+        .code-block .dots span:nth-child(2) {
+            background: #febc2e;
+        }
+
+        .code-block .dots span:nth-child(3) {
+            background: #28c840;
+        }
+
+        .code-block .file-name {
+            position: absolute;
+            top: 11px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .code-content {
+            margin-top: 28px;
+            font-size: 1rem;
+            line-height: 2;
+        }
+
+        .code-content .comment {
+            color: #6a737d;
+        }
+
+        .code-content .glyph {
+            color: var(--violet-glow);
+            font-size: 1.1rem;
+        }
+
+        .code-content .string {
+            color: #a5d6ff;
+        }
+
+        .code-content .operator {
+            color: var(--cyan);
+        }
+
+        .code-content .output {
+            color: var(--emerald);
+        }
+
+        .code-content .output-label {
+            color: var(--gold);
+        }
+
+        /* ───── PIPELINE VIZ ───── */
+        .pipeline-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .pipeline-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            min-width: 100px;
+            transition: all 0.3s;
+        }
+
+        .pipeline-node:hover {
+            border-color: var(--violet);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.2);
+        }
+
+        .pipeline-node .p-glyph {
+            font-size: 2rem;
+        }
+
+        .pipeline-node .p-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+        }
+
+        .pipeline-arrow {
+            font-size: 1.5rem;
+            color: var(--violet);
+            padding: 0 8px;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        /* ───── FOOTER ───── */
+        footer {
+            padding: 60px 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        footer .footer-glyph {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--violet-glow);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ───── RESPONSIVE ───── */
+        @media (max-width: 768px) {
+            nav .nav-links {
+                display: none;
+            }
+
+            .portal-ring {
+                width: 350px;
+                height: 350px;
+            }
+
+            .compression-viz {
+                grid-template-columns: 1fr;
+            }
+
+            .glyph-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bar-row {
+                grid-template-columns: 100px 1fr 60px;
+            }
+
+            section {
+                padding: 60px 1rem;
+            }
         }
     </style>
 </head>
 
-<body class="antialiased flex h-screen overflow-hidden">
+<body>
 
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="w-64 bg-cyber-card border-r border-slate-700 flex-col hidden md:flex z-50">
-        <!-- Brand -->
-        <div class="p-6 border-b border-slate-700 cursor-pointer" onclick="switchView('home-view', this)">
-            <h1
-                class="text-2xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple tracking-tighter">
-                MAGICPOINT.AI
-            </h1>
-            <p class="text-xs text-slate-400 mt-1">Spatial Intelligence Engine</p>
+    <!-- ───── NAV ───── -->
+    <nav>
+        <div class="logo"><span>◬</span> SCP</div>
+        <div class="nav-links">
+            <a href="#problem">The Problem</a>
+            <a href="#boundary">Foggy Boundary</a>
+            <a href="#solution">SCP Solution</a>
+            <a href="#glyphs">Uiua Glyphs</a>
+            <a href="#results">Results</a>
+            <a href="#code">Try It</a>
         </div>
+    </nav>
 
-        <!-- Navigation Links -->
-        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-            <div class="text-xs font-mono text-slate-500 uppercase tracking-widest px-2 mb-2 mt-4">Platform</div>
-
-            <!-- About MagicPoint (Home) -->
-            <a onclick="switchView('home-view', this)" class="sidebar-link active" id="nav-home">
-                <span class="mr-3">🏢</span> About MagicPoint
-            </a>
-
-            <!-- The Protocol (Infographic) -->
-            <a onclick="switchView('protocol-view', this)" class="sidebar-link" id="nav-protocol">
-                <span class="mr-3">💠</span> The Protocol (SCP)
-            </a>
-
-            <!-- Infographics -->
-            <a onclick="switchView('infographics-view', this)" class="sidebar-link" id="nav-infographics">
-                <span class="mr-3">📊</span> Research Brief
-            </a>
-
-            <!-- Read Paper -->
-            <a href="https://github.com/dparksports/dparksports/blob/main/spatial_constraint_protocol-draft.pdf"
-                class="sidebar-link">
-                <span class="mr-3">📄</span> Read the Paper
-            </a>
-
-            <div class="text-xs font-mono text-slate-500 uppercase tracking-widest px-2 mb-2 mt-8">Company</div>
-            <a onclick="switchView('protocol-view', document.getElementById('nav-protocol')); document.querySelector('#case-study-section').scrollIntoView({behavior: 'smooth'})"
-                class="sidebar-link">
-                <span class="mr-3">📜</span> Case Studies
-            </a>
-        </nav>
-
-        <!-- Sidebar Footer (Cleaned) -->
-        <div class="p-4 border-t border-slate-700 bg-slate-800/50">
-            <p class="text-xs text-slate-500 text-center">© 2026 MagicPoint Inc.</p>
+    <!-- ───── HERO ───── -->
+    <section class="hero">
+        <div class="portal-ring">
+            <div class="chevron-mark"></div>
+            <div class="chevron-mark"></div>
+            <div class="chevron-mark"></div>
+            <div class="chevron-mark"></div>
+            <div class="chevron-mark"></div>
+            <div class="chevron-mark"></div>
+            <div class="chevron-mark"></div>
         </div>
-    </aside>
-
-    <!-- MOBILE HEADER -->
-    <div
-        class="md:hidden fixed top-0 w-full bg-cyber-card border-b border-slate-700 z-50 p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple"
-            onclick="switchView('home-view')">
-            MAGICPOINT.AI
-        </h1>
-        <button class="text-slate-300 hover:text-white">☰</button>
-    </div>
-
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 overflow-y-auto scroll-smooth relative w-full bg-cyber-dark">
-
-        <!-- VIEW 1: STARTUP HOME (About MagicPoint) -->
-        <div id="home-view" class="w-full">
-            <!-- Hero Section -->
-            <section class="relative py-20 md:py-32 overflow-hidden">
-                <div
-                    class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5">
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-dark/80 to-cyber-dark"></div>
-
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <span
-                        class="inline-block py-1 px-3 rounded-full bg-slate-800 border border-slate-700 text-neon-cyan text-xs font-mono mb-6">
-                        v2.0.26 RELEASED
-                    </span>
-                    <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">
-                        Reliable AI for <br>
-                        <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple">Mission-Critical
-                            Systems</span>
-                    </h1>
-                    <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-                        MagicPoint is the Spatial Intelligence Engine that eliminates hallucinations in large-scale
-                        autonomous systems. Built on the Spatial Constraint Protocol.
-                    </p>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <button onclick="switchView('protocol-view', document.getElementById('nav-protocol'))"
-                            class="px-8 py-4 bg-neon-cyan hover:bg-cyan-400 text-cyber-dark font-bold rounded-lg transition shadow-lg shadow-neon-cyan/25 flex items-center justify-center">
-                            Explore the Protocol <span class="ml-2">→</span>
-                        </button>
-                        <a href="https://github.com/dparksports/dparksports/blob/main/spatial_constraint_protocol-draft.pdf"
-                            class="px-8 py-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold rounded-lg transition flex items-center justify-center">
-                            Read the Paper
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Feature Grid -->
-            <section class="py-20 bg-cyber-card/30">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div
-                            class="p-8 bg-cyber-card border border-slate-700 rounded-xl hover:border-neon-cyan transition duration-300">
-                            <div class="text-4xl mb-4">💠</div>
-                            <h3 class="text-xl font-bold text-white mb-2">Spatial Constraints</h3>
-                            <p class="text-slate-400 text-sm">Embeds absolute architectural laws directly into the
-                                latent space, preventing probabilistic drift.</p>
-                        </div>
-                        <div
-                            class="p-8 bg-cyber-card border border-slate-700 rounded-xl hover:border-neon-purple transition duration-300">
-                            <div class="text-4xl mb-4">⚛️</div>
-                            <h3 class="text-xl font-bold text-white mb-2">Zero Hallucinations</h3>
-                            <p class="text-slate-400 text-sm">Achieves 99.9% reliability in identifying signals vs noise
-                                using our proprietary Luwa-mapping engine.</p>
-                        </div>
-                        <div
-                            class="p-8 bg-cyber-card border border-slate-700 rounded-xl hover:border-neon-pink transition duration-300">
-                            <div class="text-4xl mb-4">⚡</div>
-                            <h3 class="text-xl font-bold text-white mb-2">100x Compression</h3>
-                            <p class="text-slate-400 text-sm">Direct latent space mapping bypasses traditional
-                                tokenization overhead for extreme performance.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Footer -->
-            <footer class="py-12 border-t border-slate-800 text-center">
-                <p class="text-slate-500 mb-4">Trusted by Architects building the impossible.</p>
-                <div class="flex justify-center space-x-6 grayscale opacity-50">
-                    <span class="text-xl font-bold text-slate-600">Procore</span>
-                    <span class="text-xl font-bold text-slate-600">Neo Cybernetica</span>
-                </div>
-            </footer>
-        </div>
-
-        <!-- VIEW 2: THE PROTOCOL (Original Infographic) -->
-        <div id="protocol-view" class="hidden-view">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 md:pl-12">
-
-                <!-- INFOGRAPHIC HEADER -->
-                <header class="text-center mb-16">
-                    <h1 class="text-5xl md:text-7xl font-bold font-mono text-white mb-4">
-                        PROJECT CHEVRON
-                    </h1>
-                    <h2 class="text-2xl md:text-3xl text-slate-400 font-light tracking-wide">
-                        The Spatial Constraint Protocol (SCP)
-                    </h2>
-                    <div
-                        class="mt-6 inline-block px-6 py-2 border border-neon-gold text-neon-gold rounded-full font-mono text-sm">
-                        Fold Reality. Constrain Chaos. Trust the Truth.
-                    </div>
-                </header>
-
-                <!-- SECTION 1: THE PROBLEM (Context Decay) -->
-                <section class="mb-20 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-                    <div class="md:col-span-5">
-                        <div class="border-l-4 border-neon-pink pl-6">
-                            <h3 class="text-3xl font-bold text-white mb-4">The Foggy Boundary</h3>
-                            <p class="text-slate-300 mb-4 leading-relaxed">
-                                As modern codebases scale, Large Language Models (LLMs) suffer from
-                                <strong>Probabilistic Drift</strong>. When the context window fills up, the AI's grasp
-                                on architectural rules ("Invariants") decays exponentially.
-                            </p>
-                            <p class="text-slate-300 leading-relaxed">
-                                This chart illustrates the "Danger Zone"—the point where line count exceeds the model's
-                                reliable attention span, leading to hallucinated bugs and regressions.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="md:col-span-7">
-                        <div class="glass-panel rounded-xl p-6 shadow-2xl shadow-neon-pink/10">
-                            <div class="chart-container">
-                                <canvas id="contextDecayChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 2: PIERCING THE FOG (Why SCP Works) -->
-                <section class="mb-24">
-                    <div class="text-center mb-12">
-                        <h3 class="text-3xl font-bold text-white mb-4">Piercing the Fog: Why Traditional Paradigms Fail
-                        </h3>
-                        <p class="text-slate-400 max-w-3xl mx-auto">
-                            Scaling up context windows or writing more test cases does not stop Probabilistic Drift. The
-                            Spatial Constraint Protocol enforces absolute, localized attention.
-                        </p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <!-- Fallacy 1: Tests & Modularity -->
-                        <div
-                            class="bg-cyber-card border-t-4 border-t-red-500 rounded-b-xl p-8 shadow-lg relative group">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-b from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-b-xl">
-                            </div>
-                            <div class="text-5xl mb-6 grayscale group-hover:grayscale-0 transition-all">🧪</div>
-                            <h4 class="text-xl font-bold text-white mb-3">The Illusion of Tests</h4>
-                            <p class="text-slate-400 text-sm leading-relaxed">
-                                <strong>Standard modularity and unit tests fail the AI.</strong> Modularity hides global
-                                rules behind complex import graphs. Tests only catch errors <em>after</em> generation,
-                                often mocking the exact boundaries where the AI drifts.
-                            </p>
-                        </div>
-
-                        <!-- Fallacy 2: 1B Tokens -->
-                        <div
-                            class="bg-cyber-card border-t-4 border-t-neon-gold rounded-b-xl p-8 shadow-lg relative group">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-b from-neon-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-b-xl">
-                            </div>
-                            <div class="text-5xl mb-6 grayscale group-hover:grayscale-0 transition-all">🧠</div>
-                            <h4 class="text-xl font-bold text-white mb-3">The 1-Billion Token Fallacy</h4>
-                            <p class="text-slate-400 text-sm leading-relaxed">
-                                <strong>Infinite context ≠ infinite reasoning.</strong> Even if future models boast a
-                                1-Billion token context window, "attention dilution" remains fatal. Flooding an LLM with
-                                an entire monolithic repository degrades its ability to isolate localized safety
-                                guarantees.
-                            </p>
-                        </div>
-
-                        <!-- The Solution: SCP -->
-                        <div
-                            class="bg-cyber-card border-t-4 border-t-neon-cyan rounded-b-xl p-8 shadow-lg relative overflow-hidden group shadow-neon-cyan/20">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-b from-neon-cyan/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity rounded-b-xl">
-                            </div>
-                            <div class="absolute -right-6 -top-6 text-9xl text-neon-cyan opacity-5 font-mono">∴</div>
-                            <div class="text-5xl mb-6 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]">💎</div>
-                            <h4 class="text-xl font-bold text-neon-cyan mb-3">The Holographic Solution</h4>
-                            <p class="text-slate-300 text-sm leading-relaxed relative z-10">
-                                <strong>Co-located Spatial Constraints.</strong> SCP embeds the absolute architectural
-                                laws (Manifests) directly inside each domain directory. The AI reads <em>only</em> the
-                                local Hologram, providing mathematically rigid guardrails.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 3: CORE MECHANICS -->
-                <section class="mb-20">
-                    <div class="text-center mb-12">
-                        <h3 class="text-3xl font-bold text-white mb-4">Core Mechanics of the Protocol</h3>
-                        <p class="text-slate-400 max-w-3xl mx-auto">
-                            SCP blows away the walls of traditional file hierarchies by treating the codebase as a
-                            strictly validated state machine.
-                        </p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Pillar 1 -->
-                        <div
-                            class="bg-cyber-card border border-slate-700 rounded-xl p-8 hover:border-neon-cyan transition-colors duration-300">
-                            <div
-                                class="text-6xl text-neon-cyan mb-6 text-center drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">
-                                💠</div>
-                            <h4 class="text-xl font-mono font-bold text-white text-center mb-4">Bounded State-Space</h4>
-                            <p class="text-slate-400 text-sm text-center leading-relaxed">
-                                Bypasses systemic drift by anchoring absolute architectural laws
-                                (<code>_manifest.yaml</code>) within physical domain directories. Forces the LLM to
-                                ingest formal mathematical bounds <em>prior</em> to execution.
-                            </p>
-                        </div>
-                        <!-- Pillar 2 -->
-                        <div
-                            class="bg-cyber-card border border-slate-700 rounded-xl p-8 hover:border-neon-purple transition-colors duration-300">
-                            <div
-                                class="text-6xl text-neon-purple mb-6 text-center drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]">
-                                ⬡</div>
-                            <h4 class="text-xl font-mono font-bold text-white text-center mb-4">Directed Acyclic
-                                Contexts</h4>
-                            <p class="text-slate-400 text-sm text-center leading-relaxed">
-                                SCP constructs a dependency-injected spatial graph. When an AI agent modifies Node A,
-                                the context window is ruthlessly truncated to its localized Hologram. Cross-domain
-                                attention bleed is zeroed out.
-                            </p>
-                        </div>
-                        <!-- Pillar 3 -->
-                        <div
-                            class="bg-cyber-card border border-slate-700 rounded-xl p-8 hover:border-neon-pink transition-colors duration-300">
-                            <div
-                                class="text-6xl text-neon-pink mb-6 text-center drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]">
-                                ⚛️</div>
-                            <h4 class="text-xl font-mono font-bold text-white text-center mb-4">Continuous AST Synthesis
-                            </h4>
-                            <p class="text-slate-400 text-sm text-center leading-relaxed">
-                                A closed-loop CI/CD mechanism that executes Abstract Syntax Tree (AST) analysis on every
-                                commit. It reverse-engineers the generated codebase to dynamically synthesize and update
-                                localized invariants.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 4: ARCHITECTURAL EFFICACY METRICS -->
-                <section class="mb-20 grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Attention Density -->
-                    <div class="glass-panel rounded-xl p-6">
-                        <h4 class="text-xl font-bold text-neon-cyan mb-2">Attention Signal-to-Noise Ratio</h4>
-                        <p class="text-slate-400 text-sm mb-6">
-                            LLM Attention is a zero-sum game. Traditional monoliths flood the context window with
-                            implementation noise. SCP flips the ratio, allocating token density exclusively to hard
-                            safety invariants.
-                        </p>
-                        <div class="chart-container">
-                            <canvas id="attentionSnrChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Breach Probability -->
-                    <div class="glass-panel rounded-xl p-6">
-                        <h4 class="text-xl font-bold text-neon-pink mb-2">Probability of Invariant Breach</h4>
-                        <p class="text-slate-400 text-sm mb-6">
-                            As systemic complexity scales, unconstrained LLMs inevitably breach rules due to context
-                            dilution. SCP's localized bounding boxes maintain a near-zero probability of hallucinated
-                            regressions globally.
-                        </p>
-                        <div class="chart-container">
-                            <canvas id="violationProbChart"></canvas>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 5: THE ELEPHANT IN THE ROOM (Regression Death Spiral) -->
-                <section class="mb-20 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-                    <div class="md:col-span-7">
-                        <div class="glass-panel rounded-xl p-6 shadow-2xl shadow-red-500/10 border border-red-500/20">
-                            <div class="chart-container">
-                                <canvas id="regressionStallChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md:col-span-5">
-                        <div class="border-l-4 border-red-500 pl-6">
-                            <h3 class="text-3xl font-bold text-white mb-4">The Elephant in the Room</h3>
-                            <p class="text-slate-300 mb-4 leading-relaxed">
-                                <strong>The Context:</strong> A native Windows application (C#, Python, CUDA) designed
-                                to find a real meeting in a haystack of thousands of hallucinated transcripts.
-                            </p>
-                            <p class="text-slate-300 mb-4 leading-relaxed">
-                                After Version 3, development collapsed into a <strong>Regression Death Spiral</strong>.
-                                100% of engineering bandwidth was spent chasing LLM-induced regressions instead of
-                                advancing UX or new features.
-                            </p>
-                            <p
-                                class="text-slate-300 leading-relaxed font-mono text-sm bg-cyber-dark p-3 rounded border border-slate-700">
-                                <span class="text-red-400">WARNING:</span> This is expected LLM behavior. Even with a
-                                2-Million or 1-Billion token context window tomorrow, attention dilution is fatal.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 6: DIRECT LATENT SPACE MAPPING (The Breakthrough) -->
-                <section class="mb-20">
-                    <div class="text-center mb-12">
-                        <h3 class="text-3xl font-bold text-white mb-4">The Breakthrough: Direct Latent Space Mapping
-                        </h3>
-                        <p class="text-slate-400 max-w-4xl mx-auto">
-                            To bypass the context-decay wall, we abandoned standard text-to-embedding translation. Our
-                            noble approach operates directly within the embedding vector space, utilizing
-                            high-dimensional representations as native logic.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center mb-12">
-                        <div class="md:col-span-5 space-y-6">
-                            <div class="border-l-4 border-neon-gold pl-6">
-                                <h4 class="text-xl font-bold text-neon-gold mb-2">The Search for Singleton Logic</h4>
-                                <p class="text-slate-300 text-sm leading-relaxed">
-                                    We evaluated numerous human languages (Hebrew, Chinese, Korean, Japanese) for
-                                    structural density, but they lacked the strict, singleton logical representations
-                                    required for 1:1 direct latent mapping.
-                                </p>
-                            </div>
-                            <div class="border-l-4 border-neon-cyan pl-6">
-                                <h4 class="text-xl font-bold text-neon-cyan mb-2">The Luwa Lexicon</h4>
-                                <p class="text-slate-300 text-sm leading-relaxed">
-                                    We adopted Egyptian Hieroglyphs and <strong>Luwa</strong>—an ancient human language
-                                    that inherently encapsulates logic, mathematics, and abstract ideas precisely like
-                                    coordinates in a latent space.
-                                </p>
-                            </div>
-                            <div class="border-l-4 border-neon-purple pl-6">
-                                <h4 class="text-xl font-bold text-neon-purple mb-2">100x Dimensional Compression</h4>
-                                <p class="text-slate-300 text-sm leading-relaxed">
-                                    By skipping code conversion and mapping Luwa glyphs directly to high-dimensional
-                                    vectors, we achieved a staggering <strong>100x compression</strong> in embedding
-                                    conversion.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="md:col-span-7">
-                            <div class="glass-panel rounded-xl p-6 shadow-2xl shadow-neon-gold/10">
-                                <div class="chart-container">
-                                    <canvas id="compressionChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 7: AUTONOMOUS AGENTS -->
-                <section class="mb-20">
-                    <h3 class="text-3xl font-bold text-white mb-8 text-center">The Autonomous Workforce</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <!-- Agent 1 -->
-                        <div class="relative group">
-                            <div
-                                class="absolute -inset-1 bg-gradient-to-r from-neon-cyan to-blue-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200">
-                            </div>
-                            <div
-                                class="relative bg-cyber-dark ring-1 ring-slate-900/5 rounded-lg leading-none flex items-top justify-start space-x-6">
-                                <div class="space-y-4 p-8">
-                                    <div class="flex items-center justify-between">
-                                        <h4 class="text-lg font-mono font-bold text-white">🪲 Khepri</h4>
-                                        <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded">The
-                                            Gardener</span>
-                                    </div>
-                                    <p class="text-slate-400 text-sm">
-                                        Runs on CI/CD. Recursively scans code to generate and update "Ma'at Laws" in
-                                        documentation.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Agent 2 -->
-                        <div class="relative group">
-                            <div
-                                class="absolute -inset-1 bg-gradient-to-r from-neon-purple to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200">
-                            </div>
-                            <div
-                                class="relative bg-cyber-dark ring-1 ring-slate-900/5 rounded-lg leading-none flex items-top justify-start space-x-6">
-                                <div class="space-y-4 p-8">
-                                    <div class="flex items-center justify-between">
-                                        <h4 class="text-lg font-mono font-bold text-white">⚖️ Ma'at</h4>
-                                        <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded">The
-                                            Judge</span>
-                                    </div>
-                                    <p class="text-slate-400 text-sm">
-                                        Runtime Validator. Compares transcripts against pixel data to detect
-                                        inconsistencies.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Agent 3 -->
-                        <div class="relative group">
-                            <div
-                                class="absolute -inset-1 bg-gradient-to-r from-neon-gold to-orange-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200">
-                            </div>
-                            <div
-                                class="relative bg-cyber-dark ring-1 ring-slate-900/5 rounded-lg leading-none flex items-top justify-start space-x-6">
-                                <div class="space-y-4 p-8">
-                                    <div class="flex items-center justify-between">
-                                        <h4 class="text-lg font-mono font-bold text-white">☾ Crescent</h4>
-                                        <span class="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded">The
-                                            Learner</span>
-                                    </div>
-                                    <p class="text-slate-400 text-sm">
-                                        Feedback Controller. Tunes signal processing thresholds based on historical
-                                        error rates.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 8: ABOUT THE ARCHITECT (CREDENTIALS) -->
-                <section class="mb-12 border-t border-slate-800 pt-12">
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-                        <div class="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
-                            <div
-                                class="w-32 h-32 rounded-full bg-gradient-to-br from-neon-cyan via-blue-600 to-purple-600 p-1 mb-4 shadow-xl shadow-neon-cyan/20">
-                                <div
-                                    class="w-full h-full rounded-full bg-cyber-card flex items-center justify-center overflow-hidden">
-                                    <span class="text-4xl">👨‍💻</span>
-                                </div>
-                            </div>
-                            <h3 class="text-2xl font-bold text-white">Dan Park</h3>
-                            <p class="text-neon-cyan font-mono text-sm mb-4">Founder & AI Architect</p>
-                            <div class="flex space-x-4">
-                                <a href="https://www.linkedin.com/in/dparksports/" target="_blank"
-                                    class="text-slate-400 hover:text-white transition">LinkedIn</a>
-                                <a href="https://github.com/dparksports" target="_blank"
-                                    class="text-slate-400 hover:text-white transition">GitHub</a>
-                            </div>
-                        </div>
-                        <div class="md:col-span-8">
-                            <div class="bg-cyber-card/50 rounded-xl p-8 border border-slate-700">
-                                <h4 class="text-lg font-bold text-white mb-4 flex items-center">
-                                    <span class="mr-2">🚀</span> Building the Future of AI Cognition
-                                </h4>
-                                <p class="text-slate-400 text-sm leading-relaxed mb-4">
-                                    Dan Park is a pioneer in **Spatial Computing** and **AI Cognition**. As the Lead
-                                    Architect at **MagicPoint** (and formerly at **Magic Leap**), Dan has spent over 15
-                                    years architecting AI systems that bridge the digital and physical worlds.
-                                </p>
-                                <p class="text-slate-400 text-sm leading-relaxed">
-                                    At **MagicPoint**, Dan is tackling the "Elephant in the Room" of LLM development:
-                                    reliability at scale. By abandoning traditional paradigms for direct latent space
-                                    mapping and holographic constraints, he is defining the next generation of
-                                    autonomous software engineering.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <footer class="text-center text-slate-600 text-sm py-8 border-t border-slate-800">
-                    <p>&copy; 2026 MagicPoint.ai // Project Chevron Protocol // v2.0.26</p>
-                </footer>
-
+        <div class="hero-content">
+            <div class="hero-badge">Research Paper — February 2026</div>
+            <h1>Spatial Constraint Protocol</h1>
+            <p>Escaping the Foggy Boundary via Direct Latent Space Mapping. A neuro-symbolic architecture that reduces
+                AI code regression from 14.3% to &lt;0.1%.</p>
+            <div class="hero-author">
+                <strong>Dan Park</strong> · MagicPoint.ai
             </div>
         </div>
+    </section>
 
-        <!-- VIEW 3: INFOGRAPHICS (Research Brief) -->
-        <div id="infographics-view" class="hidden-view w-full">
-            <!-- Header Section from Infographics -->
-            <header
-                class="w-full bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-lg backdrop-blur-sm bg-opacity-90">
-                <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                    <div>
-                        <h1
-                            class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-                            SCP: RESEARCH BRIEF
-                        </h1>
-                        <p class="text-xs text-slate-400">Spatial Constraint Protocol • 2026 Findings</p>
-                    </div>
-                    <div class="text-right hidden sm:block">
-                        <span class="text-xs font-bold bg-cyan-900 text-cyan-300 px-2 py-1 rounded">PEER REVIEWED</span>
-                    </div>
+    <!-- ───── PROBLEM ───── -->
+    <section class="problem-section" id="problem">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <div class="section-badge">The Problem</div>
+                <h2 class="section-title">The Billion Token Fallacy</h2>
+                <p class="section-subtitle">
+                    The AI industry assumes that larger context windows produce better reasoning.
+                    This assumption is mathematically false. As context grows, attention entropy increases
+                    and the signal drowns in noise.
+                </p>
+            </div>
+
+            <div class="equation-display animate-on-scroll">
+                Attention(Q,K,V) = softmax( QKᵀ / √d<sub>k</sub> ) · V
+                <div class="equation-label">The softmax normalizes to 1 — more keys = thinner probability mass</div>
+            </div>
+
+            <div class="stats-row animate-on-scroll">
+                <div class="stat-card">
+                    <div class="stat-number rose">14.3%</div>
+                    <div class="stat-label">Regression Rate Per Commit</div>
                 </div>
-            </header>
+                <div class="stat-card">
+                    <div class="stat-number gold">0%</div>
+                    <div class="stat-label">Feature Velocity in "Regression Hell"</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number violet">∞</div>
+                    <div class="stat-label">Verify / Feature Energy Ratio</div>
+                </div>
+            </div>
 
-            <div class="max-w-7xl mx-auto px-4 py-8 space-y-16">
+            <div class="equation-display animate-on-scroll">
+                lim<sub>t→∞</sub> E<sub>verify</sub>(t) / E<sub>feature</sub>(t) → ∞
+                <div class="equation-label">Regression Hell: 100% of energy goes to verification, zero to building</div>
+            </div>
 
-                <!-- Intro / Hero -->
-                <section class="text-center space-y-6">
-                    <h2 class="text-4xl md:text-6xl font-black tracking-tight leading-tight text-white">
-                        Escaping the <br>
-                        <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">Foggy
-                            Boundary</span>
-                    </h2>
-                    <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto">
-                        Why "infinite context" is a trap. The Spatial Constraint Protocol (SCP) abandons raw tokens for
-                        <span class="text-cyan-400 font-bold">Direct Latent Space Mapping</span>, solving the
-                        Signal-to-Noise decay in complex AI Software Engineering.
-                    </p>
-                    <div class="flex flex-wrap justify-center gap-4">
-                        <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
-                            <p class="text-3xl font-bold text-cyan-400">106x</p>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">Compression Ratio</p>
-                        </div>
-                        <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
-                            <p class="text-3xl font-bold text-green-400">&lt;0.1%</p>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">Regression Rate</p>
-                        </div>
-                        <div class="bg-slate-800 border border-slate-700 p-4 rounded-lg shadow-lg">
-                            <p class="text-3xl font-bold text-purple-400">Luwa</p>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">Semantic Anchors</p>
-                        </div>
-                    </div>
-                </section>
+        </div>
+    </section>
 
-                <!-- Section 1: The Problem (SNR Decay) -->
-                <section
-                    class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
-                    <div class="space-y-4">
-                        <h3 class="text-2xl font-bold text-purple-400 border-l-4 border-purple-500 pl-4">The Billion
-                            Token
-                            Fallacy</h3>
-                        <p class="text-slate-300 leading-relaxed">
-                            Current AI development focuses on expanding the Context Window ($N$). However, the <span
-                                class="text-white font-semibold">Signal-to-Noise Ratio (SNR)</span> of the attention
-                            mechanism
-                            decays as entropy increases.
-                        </p>
-                        <p class="text-slate-300 leading-relaxed">
-                            This creates a "Foggy Boundary" where the model can *retrieve* data (find the needle) but
-                            fails
-                            to
-                            *reason* about it (thread the needle). As context grows, semantic precision plummets,
-                            leading to
-                            hallucination creep in codebases.
-                        </p>
-                    </div>
-                    <div class="w-full">
-                        <!-- Plotly Chart Container -->
-                        <div id="info-snrPlot"
-                            class="w-full h-80 rounded-lg overflow-hidden bg-slate-900 border border-slate-600 shadow-inner relative">
-                        </div>
-                        <p class="text-center text-xs text-slate-500 mt-2">Fig 1. Semantic Precision vs. Context Window
-                            Size
-                            (Log Scale)</p>
-                    </div>
-                </section>
+    <!-- ───── FOGGY BOUNDARY ───── -->
+    <section id="boundary" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <div class="section-badge" style="background: rgba(139,92,246,0.15); color: var(--violet-glow);">
+                    Infographic</div>
+                <h2 class="section-title">The Foggy Boundary</h2>
+                <p class="section-subtitle">
+                    A thermodynamic threshold where semantic entropy H(S) exceeds the model's constraint resolution
+                    capacity C<sub>a</sub>. Beyond this line, AI hallucinates.
+                </p>
+            </div>
 
-                <!-- Section 2: The Solution (SCP & Luwa) -->
-                <section class="space-y-8">
-                    <div class="text-center max-w-3xl mx-auto">
-                        <h3 class="text-3xl font-bold text-white">The Solution: Spatial Constraint Protocol</h3>
-                        <p class="text-slate-400 mt-2">
-                            Instead of flooding the context window with verbose code, SCP uses <span
-                                class="text-yellow-400 font-bold">"Luwa"</span> (Egyptian Hieroglyphs) as high-density
-                            semantic
-                            anchors. This maps natural language directly to immutable logic blocks in Latent Space.
-                        </p>
-                    </div>
+            <div class="foggy-boundary-viz animate-on-scroll">
+                <!-- Clear side dots -->
+                <div class="clarity-dots" id="clarity-dots"></div>
+                <!-- Noise side dots -->
+                <div class="noise-dots" id="noise-dots"></div>
+                <!-- Labels -->
+                <div class="foggy-clear-zone">
+                    <div class="label">✦ High SNR · Clear Signal</div>
+                </div>
+                <div class="foggy-noise-zone">
+                    <div class="label">⚠ Low SNR · Entropy Fog</div>
+                </div>
+                <!-- Boundary line -->
+                <div class="foggy-boundary-line"></div>
+                <div class="foggy-boundary-label">H(S) &gt; C<sub>a</sub></div>
+            </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Traditional Flow -->
-                        <div class="bg-slate-800 p-6 rounded-xl border border-red-900/50 relative overflow-hidden">
-                            <div
-                                class="absolute top-0 right-0 bg-red-900 text-red-200 text-xs font-bold px-3 py-1 rounded-bl">
-                                TRADITIONAL RAG</div>
-                            <h4 class="text-xl font-bold text-red-400 mb-6">The "Noise" Pipeline</h4>
-
-                            <div class="flex flex-col items-center space-y-4">
-                                <div class="bg-slate-700 p-3 rounded w-64 text-center border border-slate-600">
-                                    <span class="text-sm text-slate-300">Prompt: "Fix Auth Bug"</span>
-                                </div>
-                                <div class="arrow-down border-t-[15px] border-t-slate-500"></div>
-                                <div
-                                    class="bg-slate-700 p-4 rounded w-64 text-center border border-slate-600 border-dashed">
-                                    <span class="text-xs text-slate-500 block mb-1">Retrieval (128k Tokens)</span>
-                                    <div
-                                        class="text-[10px] text-slate-600 leading-tight font-mono overflow-hidden h-16 opacity-50">
-                                        ...void Auth() { if(x)... user.login... // extensive verbose context noise...
-                                    </div>
-                                </div>
-                                <div class="arrow-down border-t-[15px] border-t-red-500"></div>
-                                <div class="bg-red-900/20 p-3 rounded w-64 text-center border border-red-500">
-                                    <span class="text-sm text-red-400 font-bold">Hallucination / Drift</span>
-                                    <p class="text-xs text-red-300/70">"Regression Hell"</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SCP Flow -->
-                        <div class="bg-slate-800 p-6 rounded-xl border border-cyan-900/50 relative overflow-hidden">
-                            <div
-                                class="absolute top-0 right-0 bg-cyan-900 text-cyan-200 text-xs font-bold px-3 py-1 rounded-bl">
-                                SCP (OUR APPROACH)</div>
-                            <h4 class="text-xl font-bold text-cyan-400 mb-6">Direct Latent Mapping</h4>
-
-                            <div class="flex flex-col items-center space-y-4">
-                                <div class="bg-slate-700 p-3 rounded w-64 text-center border border-slate-600">
-                                    <span class="text-sm text-slate-300">Prompt: "Fix Auth Bug"</span>
-                                </div>
-                                <div class="arrow-down border-t-[15px] border-t-cyan-500"></div>
-                                <div class="flex items-center justify-center space-x-2">
-                                    <div
-                                        class="bg-slate-900 p-4 rounded-full border-2 border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)] w-16 h-16 flex items-center justify-center">
-                                        <span class="text-3xl">𓀀</span>
-                                    </div>
-                                    <span class="text-xs text-cyan-400 font-mono">&lt;-- Luwa Anchor</span>
-                                </div>
-                                <div class="arrow-down border-t-[15px] border-t-cyan-500"></div>
-                                <div class="bg-cyan-900/20 p-3 rounded w-64 text-center border border-cyan-500">
-                                    <span class="text-sm text-cyan-400 font-bold">Deterministic Output</span>
-                                    <p class="text-xs text-cyan-300/70">Zero-Shot Accuracy</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Section 3: Key Metrics (Comparison) -->
-                <section class="bg-slate-100/5 rounded-2xl p-8 border border-slate-700">
-                    <h3 class="text-2xl font-bold text-white mb-6 border-b border-slate-700 pb-2">Benchmarking
-                        Performance
-                    </h3>
-                    <p class="text-slate-300 mb-8">
-                        Comparison against standard RAG (GPT-4 Turbo) and Agentic Frameworks (like Devin/Swe-agent). SCP
-                        demonstrates orders of magnitude improvement in stability and efficiency.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                        <!-- Regression Rate Chart -->
-                        <div class="flex flex-col items-center">
-                            <h4 class="text-lg font-semibold text-slate-200 mb-4">Regression Rate per Commit (%)</h4>
-                            <div class="chart-container">
-                                <canvas id="info-regressionChart"></canvas>
-                            </div>
-                            <p class="text-xs text-slate-500 mt-2 text-center max-w-xs">
-                                Lower is better. SCP effectively eliminates regression loops by enforcing "Fractal
-                                Independence."
-                            </p>
-                        </div>
-
-                        <!-- Compression Ratio Chart -->
-                        <div class="flex flex-col items-center">
-                            <h4 class="text-lg font-semibold text-slate-200 mb-4">Context Load (Tokens)</h4>
-                            <div class="chart-container">
-                                <canvas id="info-compressionChart"></canvas>
-                            </div>
-                            <p class="text-xs text-slate-500 mt-2 text-center max-w-xs">
-                                Lower is better. SCP operates on ~1.2k vectors vs RAG's 128k lossy tokens.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Section 4: The Regression-Verification Inequality -->
-                <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div
-                        class="md:col-span-1 bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col justify-center">
-                        <h3 class="text-xl font-bold text-pink-400 mb-4">The Mathematical Proof</h3>
-                        <p class="text-sm text-slate-300 mb-4">
-                            In standard workflows, the energy required to verify code ($E_{verify}$) grows exponentially
-                            relative to feature velocity ($E_{feature}$), leading to project stagnation.
-                        </p>
-                        <div
-                            class="bg-slate-900 p-4 rounded border border-slate-600 font-mono text-center text-xs md:text-sm text-cyan-300 mb-4">
-                            lim<sub>t→∞</sub> (E<sub>verify</sub> / E<sub>feature</sub>) → 0
-                        </div>
-                        <p class="text-sm text-slate-300">
-                            SCP restores this ratio to &gt; 1 by ensuring verification costs remain constant regardless
-                            of
-                            codebase size.
-                        </p>
-                    </div>
-                    <div class="md:col-span-2">
-                        <div class="bg-white/5 p-4 rounded-xl border border-slate-700">
-                            <h4 class="text-sm font-semibold text-slate-400 mb-2 ml-2">Energy Divergence: Standard vs.
-                                SCP
-                            </h4>
-                            <div class="chart-container">
-                                <canvas id="info-energyChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Conclusion -->
-                <footer class="text-center py-12 border-t border-slate-800 mt-12 mb-20">
-                    <h3 class="text-2xl font-bold text-white mb-4">The Future is Constrained</h3>
-                    <p class="max-w-2xl mx-auto text-slate-400 mb-8">
-                        The "Billion Token" future offers diminishing returns. SCP proves that rigorously structured,
-                        compressed
-                        context—anchored by semantic symbols—is more powerful than infinite, noisy context.
-                    </p>
-                    <div class="text-xs text-slate-600 font-mono">
-                        <p>Based on: "Spatial Constraint Protocol" by Dan Park (2026)</p>
-                    </div>
-                </footer>
-
-
+            <div class="stats-row animate-on-scroll">
+                <div class="stat-card">
+                    <div class="stat-number cyan">P(Recall)</div>
+                    <div class="stat-label" style="margin-top: 8px">∝ 1 / Context</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number violet">RAG</div>
+                    <div class="stat-label" style="margin-top: 8px">Pushes closer to the boundary</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number rose">σ²<sub>noise</sub></div>
+                    <div class="stat-label" style="margin-top: 8px">∝ N<sub>context</sub> / N<sub>params</sub></div>
+                </div>
             </div>
         </div>
+    </section>
 
-    </main>
+    <!-- ───── SOLUTION ───── -->
+    <section class="solution-section" id="solution">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <div class="section-badge">The Solution</div>
+                <h2 class="section-title">Spatial Constraint Protocol</h2>
+                <p class="section-subtitle">
+                    SCP bypasses the noisy tokenization pipeline entirely. Instead of predicting the next token,
+                    it <em>locates</em> the precise architectural state in vector geometry using Uiua bijective
+                    primitives.
+                </p>
+            </div>
 
-    </main>
+            <!-- Compression visualization -->
+            <div class="compression-viz animate-on-scroll">
+                <div class="compression-side">
+                    <div class="count" style="color: var(--text-muted);">128,000</div>
+                    <div class="desc">Noisy Tokens</div>
+                    <div class="compression-dots chaotic" id="chaotic-dots"></div>
+                </div>
+                <div class="compression-arrow">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                    <div class="ratio">106×</div>
+                    <div class="desc" style="font-size: 0.7rem; color: var(--text-muted);">COMPRESSION</div>
+                </div>
+                <div class="compression-side">
+                    <div class="count" style="color: var(--violet-glow);">1,200</div>
+                    <div class="desc">Uiua Vectors</div>
+                    <div class="compression-dots crystal" id="crystal-dots"></div>
+                </div>
+            </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+            <div class="equation-display animate-on-scroll">
+                f : ℒ → V<sub>L</sub><br>
+                <span style="font-size: 0.9em;">∀ l ∈ ℒ, ∃! v ∈ V<sub>L</sub> : f(l) = v</span>
+                <div class="equation-label">Bijective Singleton Map — each Uiua symbol maps to exactly one latent vector
+                </div>
+            </div>
+
+            <!-- Pipeline flow -->
+            <h3
+                style="text-align: center; color: var(--text-secondary); margin-top: 3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em;">
+                The SCP Pipeline</h3>
+            <div class="pipeline-flow animate-on-scroll">
+                <div class="pipeline-node">
+                    <span class="p-glyph">𓁹</span>
+                    <span class="p-label">Perceive</span>
+                </div>
+                <span class="pipeline-arrow">→</span>
+                <div class="pipeline-node">
+                    <span class="p-glyph" style="filter: drop-shadow(0 0 8px rgba(244,63,94,0.5));">Ө</span>
+                    <span class="p-label">Filter</span>
+                </div>
+                <span class="pipeline-arrow">→</span>
+                <div class="pipeline-node">
+                    <span class="p-glyph" style="filter: drop-shadow(0 0 8px rgba(245,158,11,0.5));">☾</span>
+                    <span class="p-label">Fold</span>
+                </div>
+                <span class="pipeline-arrow">→</span>
+                <div class="pipeline-node">
+                    <span class="p-glyph" style="filter: drop-shadow(0 0 8px rgba(6,182,212,0.5));">𓂀</span>
+                    <span class="p-label">Witness</span>
+                </div>
+                <span class="pipeline-arrow">→</span>
+                <div class="pipeline-node">
+                    <span class="p-glyph" style="filter: drop-shadow(0 0 8px rgba(16,185,129,0.5));">☤</span>
+                    <span class="p-label">Weave</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ───── GLYPHS ───── -->
+    <section class="glyph-section" id="glyphs">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <div class="section-badge">The Primitives</div>
+                <h2 class="section-title">Uiua Glyphs: The Alien Language</h2>
+                <p class="section-subtitle">
+                    Five bijective singleton primitives. Each glyph maps to exactly one latent vector.
+                    No ambiguity. No noise. Pure semantic intent.
+                </p>
+            </div>
+
+            <div class="glyph-grid">
+                <div class="glyph-card animate-on-scroll">
+                    <div class="glyph-symbol">◬</div>
+                    <div class="glyph-name">The Origin</div>
+                    <div class="glyph-origin">Rendlesham Forest · Triangle with 3 Dots</div>
+                    <div class="glyph-desc">Program entry point. All threads spawn from here. The root from which all
+                        computation flows.</div>
+                    <div class="glyph-code">◬ [1, 2, 3, 4, 5]</div>
+                </div>
+                <div class="glyph-card animate-on-scroll">
+                    <div class="glyph-symbol">☾</div>
+                    <div class="glyph-name">Fold Time</div>
+                    <div class="glyph-origin">Roswell · Violet Crescent</div>
+                    <div class="glyph-desc">Recursion — output feeds back into input until the base case is reached.
+                        Folds time into a loop.</div>
+                    <div class="glyph-code">☾ {> 0} {- 1} 10 → 0</div>
+                </div>
+                <div class="glyph-card animate-on-scroll">
+                    <div class="glyph-symbol">Ө</div>
+                    <div class="glyph-name">The Filter</div>
+                    <div class="glyph-origin">Roswell · Circle with Bar</div>
+                    <div class="glyph-desc">Conditional gate. Only data matching the "shape" passes through. Rejects
+                        without transforming.</div>
+                    <div class="glyph-code">Ө {> 3} [1, 2, 3, 4, 5] → [4, 5]</div>
+                </div>
+                <div class="glyph-card animate-on-scroll">
+                    <div class="glyph-symbol">𓂀</div>
+                    <div class="glyph-name">The Witness</div>
+                    <div class="glyph-origin">Egyptian · Eye of Horus</div>
+                    <div class="glyph-desc">Observes the data stream without altering it. Pure perception. The
+                        see-without-touching principle.</div>
+                    <div class="glyph-code">𓂀 "Hello" → logs, passes through</div>
+                </div>
+                <div class="glyph-card animate-on-scroll">
+                    <div class="glyph-symbol">☤</div>
+                    <div class="glyph-name">The Weaver</div>
+                    <div class="glyph-origin">Generic · Double Helix</div>
+                    <div class="glyph-desc">Merges two independent realities (threads/streams) into one braided result.
+                        Nothing is lost.</div>
+                    <div class="glyph-code">☤ ["Hello", "World"] → "Hello World"</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ───── RESULTS ───── -->
+    <section class="results-section" id="results">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <div class="section-badge">Empirical Results</div>
+                <h2 class="section-title">Regression Hell → Eliminated</h2>
+                <p class="section-subtitle">
+                    Validated on a &lt;50,000 LOC native Windows application with C#, Python, and CUDA.
+                    SCP reduced regression rates by 143× and restored full feature velocity.
+                </p>
+            </div>
+
+            <table class="comparison-table animate-on-scroll">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Baseline (GPT-4)</th>
+                        <th>SCP Implementation</th>
+                        <th>Improvement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">Context Required</td>
+                        <td class="baseline">128,000 tokens (saturated)</td>
+                        <td class="scp-result">1,200 atomic vectors</td>
+                        <td class="improvement">106×</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Regression Rate</td>
+                        <td class="baseline">14.3% per commit</td>
+                        <td class="scp-result">&lt; 0.1% per commit</td>
+                        <td class="improvement">143×</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Feature Velocity</td>
+                        <td class="baseline">0% (Regression Hell)</td>
+                        <td class="scp-result">100% (Restored)</td>
+                        <td class="improvement">∞</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Semantic Entropy</td>
+                        <td class="baseline">Above C<sub>a</sub> (Foggy)</td>
+                        <td class="scp-result">Below C<sub>a</sub> (Clear)</td>
+                        <td class="improvement">Escaped</td>
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Coupling Terms (Γ)</td>
+                        <td class="baseline">Unmeasured (implicit)</td>
+                        <td class="scp-result">0 by construction</td>
+                        <td class="improvement">Eliminated</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Visual bar chart -->
+            <h3
+                style="color: var(--text-secondary); margin: 2.5rem 0 1.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em;">
+                Regression Rate Comparison</h3>
+            <div class="bar-chart animate-on-scroll">
+                <div class="bar-row">
+                    <div class="bar-label" style="color: var(--rose);">Baseline</div>
+                    <div class="bar-track">
+                        <div class="bar-fill baseline-bar" id="bar-baseline" style="width: 0%;">14.3%</div>
+                    </div>
+                    <div class="bar-value" style="color: var(--rose);">14.3%</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label" style="color: var(--emerald);">SCP</div>
+                    <div class="bar-track">
+                        <div class="bar-fill scp-bar" id="bar-scp" style="width: 0%;">&lt;0.1%</div>
+                    </div>
+                    <div class="bar-value" style="color: var(--emerald);">&lt;0.1%</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ───── CODE EXAMPLE ───── -->
+    <section class="hello-section" id="code">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <div class="section-badge">Try It</div>
+                <h2 class="section-title">Hello World in Chevron</h2>
+                <p class="section-subtitle">
+                    The reference implementation of SCP. A working glyph-based language
+                    where code is written with symbolic primitives.
+                </p>
+            </div>
+
+            <div class="code-block animate-on-scroll">
+                <div class="dots"><span></span><span></span><span></span></div>
+                <div class="file-name">hello.chevron</div>
+                <div class="code-content">
+                    <div><span class="comment"># Hello World in Chevron</span></div>
+                    <div><span class="glyph">𓂀</span> <span class="operator">(</span><span class="glyph">☤</span> <span
+                            class="operator">[</span><span class="string">"Hello"</span><span class="operator">,</span>
+                        <span class="string">"World"</span><span class="operator">]</span><span
+                            class="operator">)</span></div>
+                    <br>
+                    <div><span class="comment"># Pipeline: Origin → Filter → Witness</span></div>
+                    <div><span class="glyph">◬</span> <span class="operator">[</span><span class="string">10, 25, 3, 47,
+                            8, 92</span><span class="operator">]</span> <span class="operator">→</span> <span
+                            class="glyph">Ө</span> <span class="operator">{</span><span class="string">> 10</span><span
+                            class="operator">}</span> <span class="operator">→</span> <span class="glyph">𓂀</span>
+                    </div>
+                    <br>
+                    <div><span class="comment"># Output:</span></div>
+                    <div><span class="output-label">𓂀 ⟫</span> <span class="output">Hello World</span></div>
+                    <div><span class="output-label">𓂀 ⟫</span> <span class="output">[25, 47, 92]</span></div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;" class="animate-on-scroll">
+                <a href="https://github.com/dparksports/chevron" target="_blank" style="display: inline-block; padding: 14px 36px; border-radius: 50px;
+                      background: var(--gradient-violet); color: white; text-decoration: none;
+                      font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em;
+                      transition: all 0.3s; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);">
+                    View on GitHub →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ───── FOOTER ───── -->
+    <footer>
+        <div class="footer-glyph">◬ ☾ Ө 𓂀 ☤</div>
+        <p>
+            <strong>Spatial Constraint Protocol</strong> · Dan Park · <a href="https://magicpoint.ai">MagicPoint.ai</a>
+            · 2026<br>
+            <span style="margin-top: 8px; display: inline-block;">Project Chevron — Reference Implementation · <a
+                    href="https://github.com/dparksports/chevron">GitHub</a></span>
+        </p>
+    </footer>
+
+    <!-- ───── SCRIPTS ───── -->
     <script>
-        // --- SPA ROUTING LOGIC ---
-        function switchView(viewId, element) {
-            // Hide all views
-            document.getElementById('home-view').classList.add('hidden-view');
-            document.getElementById('protocol-view').classList.add('hidden-view');
-            document.getElementById('infographics-view').classList.add('hidden-view');
-
-            // Show selected view
-            document.getElementById(viewId).classList.remove('hidden-view');
-
-            // Scroll to top
-            document.querySelector('main').scrollTop = 0;
-
-            // Update Sidebar Active State
-            if (element) {
-                document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-                element.classList.add('active');
-            }
+        // Generate clarity dots (organized pattern)
+        const clarityDotsEl = document.getElementById('clarity-dots');
+        for (let i = 0; i < 60; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'clarity-dot';
+            const row = Math.floor(i / 8);
+            const col = i % 8;
+            dot.style.left = (col * 12 + 5) + '%';
+            dot.style.top = (row * 12 + 5) + '%';
+            dot.style.animationDelay = (i * 0.05) + 's';
+            clarityDotsEl.appendChild(dot);
         }
 
-        // --- UTILITY: Label Wrapping Logic (16 chars) ---
-        function wrapLabel(label) {
-            if (label.length <= 16) return label;
-            const words = label.split(' ');
-            const lines = [];
-            let currentLine = words[0];
-
-            for (let i = 1; i < words.length; i++) {
-                if ((currentLine + " " + words[i]).length <= 16) {
-                    currentLine += " " + words[i];
-                } else {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                }
-            }
-            lines.push(currentLine);
-            return lines;
+        // Generate noise dots (random scatter)
+        const noiseDotsEl = document.getElementById('noise-dots');
+        for (let i = 0; i < 100; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'noise-dot';
+            dot.style.left = (Math.random() * 90) + '%';
+            dot.style.top = (Math.random() * 90) + '%';
+            dot.style.opacity = Math.random() * 0.35 + 0.05;
+            dot.style.width = dot.style.height = (Math.random() * 4 + 2) + 'px';
+            noiseDotsEl.appendChild(dot);
         }
 
-        // --- COMMON CONFIG ---
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.borderColor = '#1e293b';
-        Chart.defaults.font.family = "'Space Mono', monospace";
-
-        const commonTooltip = {
-            callbacks: {
-                title: function (tooltipItems) {
-                    const item = tooltipItems[0];
-                    let label = item.chart.data.labels[item.dataIndex];
-                    if (Array.isArray(label)) {
-                        return label.join(' ');
-                    } else {
-                        return label;
-                    }
-                }
-            }
-        };
-
-        // --- CHART 1: CONTEXT DECAY (Line Chart) ---
-        const ctxDecay = document.getElementById('contextDecayChart').getContext('2d');
-        new Chart(ctxDecay, {
-            type: 'line',
-            data: {
-                labels: ['1k Tokens', '10k Tokens', '100k Tokens', '1M Tokens', '10M Tokens'].map(wrapLabel),
-                datasets: [{
-                    label: 'LLM Architectural Accuracy',
-                    data: [99, 95, 80, 45, 15],
-                    borderColor: '#d946ef', // Neon Pink
-                    backgroundColor: 'rgba(217, 70, 239, 0.1)',
-                    borderWidth: 3,
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#0f172a',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: true },
-                    tooltip: commonTooltip,
-                    annotation: {
-                        annotations: {
-                            line1: {
-                                type: 'line',
-                                xMin: 2,
-                                xMax: 2,
-                                borderColor: '#ef4444',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: {
-                                    content: 'Foggy Boundary',
-                                    enabled: true,
-                                    position: 'top'
-                                }
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        title: { display: true, text: 'Accuracy (%)' }
-                    }
-                }
-            }
-        });
-
-        // --- CHART 2: ATTENTION SNR (Stacked Bar) ---
-        const ctxSnr = document.getElementById('attentionSnrChart').getContext('2d');
-        new Chart(ctxSnr, {
-            type: 'bar',
-            data: {
-                labels: ['Standard Monolithic RAG', 'Spatial Constraint Protocol'].map(wrapLabel),
-                datasets: [
-                    {
-                        label: 'Relevant Safety Rules (Signal)',
-                        data: [15, 85],
-                        backgroundColor: '#06b6d4', // Neon Cyan
-                        borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
-                    },
-                    {
-                        label: 'Implementation Logic',
-                        data: [35, 10],
-                        backgroundColor: '#8b5cf6' // Neon Purple
-                    },
-                    {
-                        label: 'Irrelevant Context (Noise)',
-                        data: [50, 5],
-                        backgroundColor: '#1e293b', // Dark Slate
-                        borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { stacked: true, grid: { display: false } },
-                    y: { stacked: true, beginAtZero: true, max: 100, title: { display: true, text: 'Context Window Allocation (%)' } }
-                },
-                plugins: {
-                    legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } },
-                    tooltip: commonTooltip
-                }
-            }
-        });
-
-        // --- CHART 3: BREACH PROBABILITY (Line Chart) ---
-        const ctxViolation = document.getElementById('violationProbChart').getContext('2d');
-        new Chart(ctxViolation, {
-            type: 'line',
-            data: {
-                labels: ['10 Modules', '50 Modules', '250 Modules', '1000 Modules'].map(wrapLabel),
-                datasets: [
-                    {
-                        label: 'Standard LLM Agent',
-                        data: [2, 15, 65, 98],
-                        borderColor: '#ef4444', // Red
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'SCP Governed Agent',
-                        data: [0.1, 0.5, 1.2, 2.5],
-                        borderColor: '#d946ef', // Neon Pink
-                        backgroundColor: 'rgba(217, 70, 239, 0.2)',
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        title: { display: true, text: 'P(Invariant Breach) %' }
-                    }
-                },
-                plugins: {
-                    legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } },
-                    tooltip: commonTooltip
-                }
-            }
-        });
-
-        // --- CHART 4: REGRESSION DEATH SPIRAL (Area Chart) ---
-        const ctxRegression = document.getElementById('regressionStallChart').getContext('2d');
-        new Chart(ctxRegression, {
-            type: 'line',
-            data: {
-                labels: ['Version 1', 'Version 2', 'Version 3', 'Version 4', 'Version 5 (Stall)'].map(wrapLabel),
-                datasets: [
-                    {
-                        label: 'Feature Velocity / UX Advancement',
-                        data: [90, 75, 25, 5, 0],
-                        borderColor: '#06b6d4', // Cyan
-                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                        borderWidth: 3,
-                        tension: 0.3,
-                        fill: true
-                    },
-                    {
-                        label: 'Time Chasing Hallucinated Regressions',
-                        data: [10, 25, 75, 95, 100],
-                        borderColor: '#ef4444', // Red
-                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                        borderWidth: 3,
-                        tension: 0.3,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        title: { display: true, text: '% of Engineering Bandwidth' }
-                    }
-                },
-                plugins: {
-                    legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } },
-                    tooltip: commonTooltip
-                }
-            }
-        });
-
-        // --- CHART 5: LATENT COMPRESSION (Horizontal Bar) ---
-        const ctxCompression = document.getElementById('compressionChart').getContext('2d');
-        new Chart(ctxCompression, {
-            type: 'bar',
-            data: {
-                labels: ['Standard: Code Strings → Tokens → Embeddings', 'Breakthrough: Luwa Direct Latent Space Mapping'].map(wrapLabel),
-                datasets: [{
-                    label: 'Embedding Dimensional Overhead / Compute Cost',
-                    data: [100, 1],
-                    backgroundColor: [
-                        '#1e293b', // Slate for standard
-                        '#eab308'  // Gold for Luwa
-                    ],
-                    borderRadius: 8,
-                    borderWidth: 2,
-                    borderColor: [
-                        '#334155',
-                        '#fde047'
-                    ]
-                }]
-            },
-            options: {
-                indexAxis: 'y', // Horizontal
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'logarithmic',
-                        title: { display: true, text: 'Relative Overhead (Log Scale)', color: '#94a3b8' },
-                        grid: { color: 'rgba(255,255,255,0.05)' }
-                    },
-                    y: {
-                        grid: { display: false }
-                    }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: commonTooltip
-                }
-            }
-        });
-
-
-        // --- INFOGRAPHICS CHARTS (With Renamed IDs) ---
-
-        // --- CHART 1: PLOTLY SNR DECAY ---
-        // Visualizing the drop in semantic precision as context increases
-        const snrX = [1000, 10000, 32000, 128000, 1000000];
-        const snrY_Standard = [0.95, 0.75, 0.45, 0.15, 0.05]; // Decays fast
-        const snrY_SCP = [0.95, 0.94, 0.94, 0.93, 0.93];       // Stays high (Fractal Independence)
-
-        const traceStandard = {
-            x: snrX,
-            y: snrY_Standard,
-            mode: 'lines+markers',
-            name: 'Standard Attention',
-            line: { color: '#ef4444', width: 3 }, // Red
-            marker: { size: 6 }
-        };
-
-        const traceSCP = {
-            x: snrX,
-            y: snrY_SCP,
-            mode: 'lines+markers',
-            name: 'SCP (Latent Mapping)',
-            line: { color: '#06b6d4', width: 4 }, // Cyan
-            marker: { size: 8 }
-        };
-
-        const layoutPlotly = {
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
-            margin: { t: 20, r: 20, b: 40, l: 40 },
-            xaxis: {
-                type: 'log',
-                title: 'Context Size (Tokens)',
-                titlefont: { color: '#94a3b8' },
-                tickfont: { color: '#94a3b8' },
-                gridcolor: '#334155'
-            },
-            yaxis: {
-                title: 'Semantic Precision (0-1)',
-                titlefont: { color: '#94a3b8' },
-                tickfont: { color: '#94a3b8' },
-                gridcolor: '#334155',
-                range: [0, 1.05]
-            },
-            legend: {
-                x: 0.05, y: 0.1,
-                font: { color: '#f8fafc' },
-                bgcolor: 'rgba(15, 23, 42, 0.8)'
-            }
-        };
-
-        // Use Plotly if loaded
-        if (typeof Plotly !== 'undefined') {
-            Plotly.newPlot('info-snrPlot', [traceStandard, traceSCP], layoutPlotly, { responsive: true, displayModeBar: false });
+        // Generate compression dots
+        const chaoticEl = document.getElementById('chaotic-dots');
+        for (let i = 0; i < 120; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.style.opacity = Math.random() * 0.4 + 0.1;
+            chaoticEl.appendChild(dot);
         }
 
+        const crystalEl = document.getElementById('crystal-dots');
+        for (let i = 0; i < 24; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.style.width = dot.style.height = '8px';
+            crystalEl.appendChild(dot);
+        }
 
-        // --- CHART 2: REGRESSION RATES (BAR) ---
-        // Comparing failure rates
-        const ctxInfoRegression = document.getElementById('info-regressionChart').getContext('2d');
-        new Chart(ctxInfoRegression, {
-            type: 'bar',
-            data: {
-                labels: ['Standard RAG', 'Agentic (Devin-style)', 'SCP (Ours)'],
-                datasets: [{
-                    label: 'Regression Rate (%)',
-                    data: [14.3, 8.1, 0.1],
-                    backgroundColor: [
-                        'rgba(239, 68, 68, 0.7)',  // Red for high failure
-                        'rgba(234, 179, 8, 0.7)',  // Yellow for medium
-                        'rgba(6, 182, 212, 0.9)'   // Cyan for success
-                    ],
-                    borderColor: [
-                        '#ef4444',
-                        '#eab308',
-                        '#06b6d4'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: commonTooltip // reusing commonTooltip
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Regressions per Commit' },
-                        grid: { color: '#334155' }
-                    },
-                    x: {
-                        grid: { display: false }
+        // Scroll-triggered animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+
+                    // Animate bars when visible
+                    const baseline = document.getElementById('bar-baseline');
+                    const scp = document.getElementById('bar-scp');
+                    if (entry.target.contains(baseline)) {
+                        setTimeout(() => { baseline.style.width = '100%'; }, 200);
+                        setTimeout(() => { scp.style.width = '0.7%'; }, 600);
                     }
                 }
-            }
-        });
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
 
-        // --- CHART 3: COMPRESSION RATIO (PIE/DONUT) ---
-        // Visualizing the massive difference in token load
-        const ctxInfoCompression = document.getElementById('info-compressionChart').getContext('2d');
-        new Chart(ctxInfoCompression, {
-            type: 'doughnut',
-            data: {
-                labels: ['SCP Context (1.2k)', 'RAG Context (128k)'],
-                datasets: [{
-                    data: [1200, 128000],
-                    backgroundColor: [
-                        '#06b6d4', // Cyan (SCP)
-                        '#334155'  // Slate (Noise/RAG)
-                    ],
-                    borderColor: '#0f172a',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: '#cbd5e1' }
-                    },
-                    tooltip: commonTooltip
-                }
-            }
-        });
-
-        // --- CHART 4: ENERGY DIVERGENCE (LINE) ---
-        // The "Elephant on the Wall" metric
-        const ctxInfoEnergy = document.getElementById('info-energyChart').getContext('2d');
-
-        // Generate mock data for t=0 to t=10
-        const timeSteps = Array.from({ length: 10 }, (_, i) => `Month ${i + 1}`);
-        // Standard: Verification cost explodes (Exponential)
-        const energyVerifyStd = Array.from({ length: 10 }, (_, i) => 5 + Math.pow(i, 2.5));
-
-        // SCP: Verification cost stays flat/linear (Fractal Independence)
-        const energyVerifySCP = Array.from({ length: 10 }, (_, i) => 5 + i * 0.5);
-
-        new Chart(ctxInfoEnergy, {
-            type: 'line',
-            data: {
-                labels: timeSteps,
-                datasets: [
-                    {
-                        label: 'Standard Verification Cost',
-                        data: energyVerifyStd,
-                        borderColor: '#ef4444', // Red
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'SCP Verification Cost',
-                        data: energyVerifySCP,
-                        borderColor: '#06b6d4', // Cyan
-                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderDash: [5, 5]
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    tooltip: commonTooltip
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Energy / Effort (Arbitrary Units)' },
-                        grid: { color: '#334155' }
-                    },
-                    x: {
-                        grid: { color: '#334155' }
-                    }
-                }
-            }
-        });
-
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
     </script>
+
 </body>
 
 </html>
