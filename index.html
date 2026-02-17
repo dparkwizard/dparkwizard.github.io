@@ -4,1528 +4,756 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spatial Constraint Protocol — Escaping the Foggy Boundary</title>
-    <meta name="description"
-        content="SCP: A neuro-symbolic architecture using Uiua bijective primitives to bypass probabilistic tokenization and resolve AI code regression.">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
-        rel="stylesheet">
+    <title>Spatial Constraint Protocol: Revised Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-primary: #0a0a12;
-            --bg-secondary: #12121f;
-            --bg-card: #1a1a2e;
-            --bg-card-hover: #22223a;
-            --violet: #8b5cf6;
-            --violet-glow: #a78bfa;
-            --violet-deep: #6d28d9;
-            --cyan: #06b6d4;
-            --cyan-glow: #22d3ee;
-            --gold: #f59e0b;
-            --gold-glow: #fbbf24;
-            --rose: #f43f5e;
-            --emerald: #10b981;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border-subtle: rgba(139, 92, 246, 0.15);
-            --gradient-violet: linear-gradient(135deg, #6d28d9, #8b5cf6, #a78bfa);
-            --gradient-dark: linear-gradient(180deg, #0a0a12 0%, #12121f 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
-
-        /* ───── ANIMATIONS ───── */
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-12px);
-            }
-        }
-
-        @keyframes pulse-glow {
-
-            0%,
-            100% {
-                opacity: 0.4;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slide-up {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes rotate-slow {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes dash-flow {
-            to {
-                stroke-dashoffset: -20;
-            }
-        }
-
-        @keyframes expand-bar {
-            from {
-                width: 0;
-            }
-        }
-
-        @keyframes count-up {
-            from {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .animate-on-scroll.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ───── NAV ───── */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: rgba(10, 10, 18, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 0 2rem;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        nav .logo {
-            font-weight: 800;
-            font-size: 1.1rem;
-            letter-spacing: 0.08em;
-        }
-
-        nav .logo span {
-            color: var(--violet);
-        }
-
-        nav .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        nav .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            transition: color 0.3s;
-        }
-
-        nav .nav-links a:hover {
-            color: var(--violet-glow);
-        }
-
-        /* ───── HERO ───── */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-            padding: 120px 2rem 80px;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(109, 40, 217, 0.12), transparent 70%);
-        }
-
-        /* Portal ring */
-        .portal-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            opacity: 0.15;
-            border: 2px solid var(--violet);
-            animation: rotate-slow 60s linear infinite;
-        }
-
-        .portal-ring::before {
-            content: '';
-            position: absolute;
-            inset: -30px;
-            border-radius: 50%;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            animation: rotate-slow 90s linear infinite reverse;
-        }
-
-        .portal-ring::after {
-            content: '';
-            position: absolute;
-            inset: 30px;
-            border-radius: 50%;
-            border: 1px dashed rgba(6, 182, 212, 0.2);
-            animation: rotate-slow 45s linear infinite;
-        }
-
-        /* Chevron shapes on portal */
-        .chevron-mark {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: var(--violet);
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-            animation: pulse-glow 3s ease-in-out infinite;
-        }
-
-        .chevron-mark:nth-child(1) {
-            top: -8px;
-            left: 50%;
-        }
-
-        .chevron-mark:nth-child(2) {
-            top: 50%;
-            right: -8px;
-            animation-delay: 0.5s;
-        }
-
-        .chevron-mark:nth-child(3) {
-            bottom: -8px;
-            left: 50%;
-            animation-delay: 1s;
-        }
-
-        .chevron-mark:nth-child(4) {
-            top: 50%;
-            left: -8px;
-            animation-delay: 1.5s;
-        }
-
-        .chevron-mark:nth-child(5) {
-            top: 15%;
-            right: 10%;
-            animation-delay: 0.75s;
-        }
-
-        .chevron-mark:nth-child(6) {
-            bottom: 15%;
-            left: 10%;
-            animation-delay: 1.25s;
-        }
-
-        .chevron-mark:nth-child(7) {
-            top: 15%;
-            left: 10%;
-            animation-delay: 1.75s;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            padding: 6px 18px;
-            border-radius: 50px;
-            background: rgba(139, 92, 246, 0.12);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--violet-glow);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.2rem, 5vw, 3.8rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #e2e8f0 30%, #a78bfa 70%, #22d3ee 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.15rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 2.5rem;
-            line-height: 1.8;
-        }
-
-        .hero-author {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-top: 1rem;
-        }
-
-        .hero-author strong {
-            color: var(--text-secondary);
-        }
-
-        /* ───── SECTIONS ───── */
-        section {
-            padding: 100px 2rem;
-            position: relative;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .section-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        .section-subtitle {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            max-width: 650px;
-            line-height: 1.8;
-            margin-bottom: 3rem;
-        }
-
-        /* ───── PROBLEM SECTION ───── */
-        .problem-section {
-            background: var(--gradient-dark);
-        }
-
-        .problem-section .section-badge {
-            background: rgba(244, 63, 94, 0.15);
-            color: var(--rose);
-        }
-
-        .equation-display {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 40px;
-            border: 1px solid var(--border-subtle);
-            text-align: center;
-            margin: 2rem 0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.3rem;
-            color: var(--violet-glow);
-        }
-
-        .equation-label {
             font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 12px;
+            background-color: #f8fafc;
+            /* Slate 50 */
+            color: #1e293b;
+            /* Slate 800 */
         }
 
-        /* ───── FOGGY BOUNDARY INFOGRAPHIC ───── */
-        .foggy-boundary-viz {
-            position: relative;
-            height: 300px;
-            border-radius: 20px;
-            overflow: hidden;
-            background: linear-gradient(90deg, #0f172a 0%, #0f172a 45%, #1e1b3a 55%, #2d1f4e 70%, #1a1030 100%);
-            border: 1px solid var(--border-subtle);
-            margin: 2.5rem 0;
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.025em;
         }
 
-        .foggy-clear-zone {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 45%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .foggy-clear-zone .label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--emerald);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            background: rgba(16, 185, 129, 0.1);
-            padding: 6px 16px;
-            border-radius: 50px;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .foggy-noise-zone {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 45%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .foggy-noise-zone .label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--rose);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            background: rgba(244, 63, 94, 0.1);
-            padding: 6px 16px;
-            border-radius: 50px;
-            border: 1px solid rgba(244, 63, 94, 0.3);
-        }
-
-        .foggy-boundary-line {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(180deg, transparent, var(--violet), var(--violet-glow), var(--violet), transparent);
-            transform: translateX(-50%);
-            box-shadow: 0 0 30px var(--violet), 0 0 60px rgba(139, 92, 246, 0.3);
-        }
-
-        .foggy-boundary-label {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--violet-deep);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            white-space: nowrap;
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
-        }
-
-        /* Clarity dots (left side) */
-        .clarity-dots {
-            position: absolute;
-            left: 5%;
-            top: 15%;
-            width: 35%;
-            height: 70%;
-        }
-
-        .clarity-dot {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--cyan);
-            opacity: 0.6;
-        }
-
-        /* Noise dots (right side) */
-        .noise-dots {
-            position: absolute;
-            right: 5%;
-            top: 10%;
-            width: 35%;
-            height: 80%;
-        }
-
-        .noise-dot {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--rose);
-            opacity: 0.2;
-        }
-
-        /* ───── STATS ROW ───── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 32px;
-            border: 1px solid var(--border-subtle);
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--violet);
-            box-shadow: 0 8px 40px rgba(139, 92, 246, 0.15);
-        }
-
-        .stat-number {
-            font-size: 2.8rem;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .stat-number.violet {
-            color: var(--violet-glow);
-        }
-
-        .stat-number.cyan {
-            color: var(--cyan-glow);
-        }
-
-        .stat-number.gold {
-            color: var(--gold-glow);
-        }
-
-        .stat-number.rose {
-            color: var(--rose);
-        }
-
-        .stat-number.emerald {
-            color: var(--emerald);
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 600;
-        }
-
-        /* ───── SOLUTION / SCP SECTION ───── */
-        .solution-section {
-            background: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
-        }
-
-        .solution-section .section-badge {
-            background: rgba(139, 92, 246, 0.15);
-            color: var(--violet-glow);
-        }
-
-        /* ───── COMPRESSION VIZ ───── */
-        .compression-viz {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            gap: 2rem;
-            margin: 3rem 0;
-            padding: 40px;
-            border-radius: 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-        }
-
-        .compression-side {
-            text-align: center;
-        }
-
-        .compression-side .count {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 4px;
-        }
-
-        .compression-side .desc {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 600;
-        }
-
-        .compression-dots {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2px;
-            justify-content: center;
-            max-width: 280px;
-            margin: 16px auto 0;
-        }
-
-        .compression-dots .dot {
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-        }
-
-        .compression-dots.chaotic .dot {
-            background: var(--text-muted);
-            opacity: 0.3;
-        }
-
-        .compression-dots.crystal .dot {
-            background: var(--violet-glow);
-            opacity: 0.8;
-        }
-
-        .compression-arrow {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .compression-arrow .ratio {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: var(--gold);
-        }
-
-        .compression-arrow svg {
-            color: var(--violet);
-        }
-
-        /* ───── GLYPH TABLE ───── */
-        .glyph-section {
-            background: var(--bg-primary);
-        }
-
-        .glyph-section .section-badge {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--gold);
-        }
-
-        .glyph-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .glyph-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 32px;
-            border: 1px solid var(--border-subtle);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .glyph-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--violet);
-            box-shadow: 0 8px 40px rgba(139, 92, 246, 0.15);
-        }
-
-        .glyph-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--gradient-violet);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .glyph-card:hover::before {
-            opacity: 1;
-        }
-
-        .glyph-symbol {
-            font-size: 3rem;
-            line-height: 1;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.4));
-        }
-
-        .glyph-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .glyph-origin {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .glyph-desc {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .glyph-code {
-            margin-top: 14px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.3);
+        .mono {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--cyan-glow);
         }
 
-        /* ───── RESULTS SECTION ───── */
-        .results-section {
-            background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
 
-        .results-section .section-badge {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--emerald);
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
 
-        .comparison-table {
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Chart Container Utilities */
+        .chart-container {
+            position: relative;
             width: 100%;
-            border-collapse: collapse;
-            margin: 2rem 0;
-            border-radius: 16px;
-            overflow: hidden;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
         }
 
-        .comparison-table thead th {
-            background: var(--bg-card);
-            padding: 16px 24px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 700;
-            color: var(--text-secondary);
-            text-align: left;
-            border-bottom: 2px solid var(--border-subtle);
-        }
-
-        .comparison-table thead th:first-child {
-            width: 30%;
-        }
-
-        .comparison-table tbody td {
-            padding: 18px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            font-size: 0.95rem;
-        }
-
-        .comparison-table tbody tr {
-            background: var(--bg-card);
-            transition: background 0.3s;
-        }
-
-        .comparison-table tbody tr:hover {
-            background: var(--bg-card-hover);
-        }
-
-        .comparison-table .metric-name {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .comparison-table .baseline {
-            color: var(--rose);
-        }
-
-        .comparison-table .scp-result {
-            color: var(--emerald);
-            font-weight: 600;
-        }
-
-        .comparison-table .improvement {
-            color: var(--gold);
-            font-weight: 700;
-        }
-
-        /* Bar chart */
-        .bar-chart {
-            margin: 2.5rem 0;
-        }
-
-        .bar-row {
-            display: grid;
-            grid-template-columns: 160px 1fr 80px;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .bar-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-align: right;
-        }
-
-        .bar-track {
-            height: 36px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .bar-fill {
-            height: 100%;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            padding-left: 14px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .bar-fill.baseline-bar {
-            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.6));
-            color: var(--rose);
-        }
-
-        .bar-fill.scp-bar {
-            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.6));
-            color: var(--emerald);
-        }
-
-        .bar-value {
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        /* ───── HELLO WORLD SECTION ───── */
-        .hello-section {
-            background: var(--bg-primary);
-        }
-
-        .hello-section .section-badge {
-            background: rgba(6, 182, 212, 0.15);
-            color: var(--cyan);
-        }
-
-        .code-block {
-            background: #0d1117;
-            border-radius: 16px;
-            padding: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            margin: 2rem 0;
-            font-family: 'JetBrains Mono', monospace;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .code-block::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .code-block .dots {
-            position: absolute;
-            top: 13px;
-            left: 16px;
-            display: flex;
-            gap: 6px;
-        }
-
-        .code-block .dots span {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .code-block .dots span:nth-child(1) {
-            background: #ff5f57;
-        }
-
-        .code-block .dots span:nth-child(2) {
-            background: #febc2e;
-        }
-
-        .code-block .dots span:nth-child(3) {
-            background: #28c840;
-        }
-
-        .code-block .file-name {
-            position: absolute;
-            top: 11px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .code-content {
-            margin-top: 28px;
-            font-size: 1rem;
-            line-height: 2;
-        }
-
-        .code-content .comment {
-            color: #6a737d;
-        }
-
-        .code-content .glyph {
-            color: var(--violet-glow);
-            font-size: 1.1rem;
-        }
-
-        .code-content .string {
-            color: #a5d6ff;
-        }
-
-        .code-content .operator {
-            color: var(--cyan);
-        }
-
-        .code-content .output {
-            color: var(--emerald);
-        }
-
-        .code-content .output-label {
-            color: var(--gold);
-        }
-
-        /* ───── PIPELINE VIZ ───── */
-        .pipeline-flow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            margin: 3rem 0;
-            flex-wrap: wrap;
-        }
-
-        .pipeline-node {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            padding: 20px 24px;
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 1px solid var(--border-subtle);
-            min-width: 100px;
-            transition: all 0.3s;
-        }
-
-        .pipeline-node:hover {
-            border-color: var(--violet);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.2);
-        }
-
-        .pipeline-node .p-glyph {
-            font-size: 2rem;
-        }
-
-        .pipeline-node .p-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 700;
-        }
-
-        .pipeline-arrow {
-            font-size: 1.5rem;
-            color: var(--violet);
-            padding: 0 8px;
-            animation: pulse-glow 2s ease-in-out infinite;
-        }
-
-        /* ───── FOOTER ───── */
-        footer {
-            padding: 60px 2rem;
-            text-align: center;
-            border-top: 1px solid var(--border-subtle);
-        }
-
-        footer .footer-glyph {
-            font-size: 2rem;
-            margin-bottom: 16px;
-            opacity: 0.4;
-        }
-
-        footer p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        footer a {
-            color: var(--violet-glow);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* ───── RESPONSIVE ───── */
-        @media (max-width: 768px) {
-            nav .nav-links {
-                display: none;
-            }
-
-            .portal-ring {
-                width: 350px;
+        @media (min-width: 768px) {
+            .chart-container {
                 height: 350px;
             }
+        }
 
-            .compression-viz {
-                grid-template-columns: 1fr;
-            }
+        /* Interactive Card Effects */
+        .interactive-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
 
-            .glyph-grid {
-                grid-template-columns: 1fr;
-            }
+        .interactive-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #6366f1;
+            /* Indigo 500 */
+        }
 
-            .bar-row {
-                grid-template-columns: 100px 1fr 60px;
-            }
+        /* Module Box Styling for RAG Denial Demo */
+        .module-box {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-            section {
-                padding: 60px 1rem;
-            }
+        .blur-text {
+            color: transparent;
+            text-shadow: 0 0 5px rgba(148, 163, 184, 0.8);
+            user-select: none;
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #4f46e5, #0ea5e9);
         }
     </style>
+    <!-- Chosen Palette: Slate (Neutral Foundation) + Indigo (Primary Logic) + Emerald (Success/Low Entropy) + Rose (Failure/High Entropy) -->
+
+    <!-- Application Structure Plan:
+         1. Hero: Title, Abstract Summary, and Key Metrics ticker.
+         2. The Foggy Boundary (Problem): Interactive visualization of SNR degrading as context expands (The "Billion Token Fallacy").
+         3. The SCP Solution (Methodology):
+            - RAG Denial Visualizer: Toggle between "Noisy" (Standard) and "Isolated" (SCP) views.
+            - High-Density Prompting: Comparison of English vs. Uiua DSL density.
+            - The Weaver: Card-based flow of the verification process.
+         4. Case Study Results (Evidence): Charts showing Regression Rate reduction and Context Compression.
+         5. Conclusion: Synthesis of the revised findings.
+    -->
+
+    <!-- Visualization & Content Choices:
+         - SNR Chart (Line): Demonstrates the continuous decay of attention signal.
+         - RAG Denial Demo (DOM Manipulation): Visually hides/reveals text to simulate context isolation.
+         - Comparison Bar Charts: Show the stark contrast in results (Regression/Context Size).
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
 </head>
 
-<body>
+<body class="antialiased min-h-screen flex flex-col">
 
-    <!-- ───── NAV ───── -->
-    <nav>
-        <div class="logo"><span>◬</span> SCP</div>
-        <div class="nav-links">
-            <a href="#problem">The Problem</a>
-            <a href="#boundary">Foggy Boundary</a>
-            <a href="#solution">SCP Solution</a>
-            <a href="#glyphs">Uiua Glyphs</a>
-            <a href="#results">Results</a>
-            <a href="#code">Try It</a>
+    <!-- Navigation -->
+    <nav
+        class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="bg-indigo-600 text-white w-8 h-8 rounded flex items-center justify-center font-bold font-mono">
+                        ◬</div>
+                    <span class="text-lg font-bold text-slate-800 tracking-tight">SCP <span
+                            class="text-indigo-600 font-normal">Interactive</span></span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <button onclick="scrollToSection('foggy-boundary')"
+                        class="text-slate-600 hover:text-indigo-600 text-sm font-medium transition">Foggy
+                        Boundary</button>
+                    <button onclick="scrollToSection('solution')"
+                        class="text-slate-600 hover:text-indigo-600 text-sm font-medium transition">The
+                        Solution</button>
+                    <button onclick="scrollToSection('results')"
+                        class="text-slate-600 hover:text-indigo-600 text-sm font-medium transition">Case Study</button>
+                    <a href="#"
+                        class="px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition">Read
+                        Paper</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-600 hover:text-indigo-600"
+                        onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 p-4">
+            <div class="flex flex-col space-y-4">
+                <button onclick="scrollToSection('foggy-boundary')" class="text-left text-slate-600 font-medium">Foggy
+                    Boundary</button>
+                <button onclick="scrollToSection('solution')" class="text-left text-slate-600 font-medium">The
+                    Solution</button>
+                <button onclick="scrollToSection('results')" class="text-left text-slate-600 font-medium">Case
+                    Study</button>
+            </div>
         </div>
     </nav>
 
-    <!-- ───── HERO ───── -->
-    <section class="hero">
-        <div class="portal-ring">
-            <div class="chevron-mark"></div>
-            <div class="chevron-mark"></div>
-            <div class="chevron-mark"></div>
-            <div class="chevron-mark"></div>
-            <div class="chevron-mark"></div>
-            <div class="chevron-mark"></div>
-            <div class="chevron-mark"></div>
+    <!-- Hero Section -->
+    <header class="bg-white pt-12 pb-16 lg:pt-20 lg:pb-24 border-b border-slate-200 relative overflow-hidden">
+        <div
+            class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-indigo-50 rounded-full blur-3xl opacity-50 pointer-events-none">
         </div>
-        <div class="hero-content">
-            <div class="hero-badge">Research Paper — February 2026</div>
-            <h1>Spatial Constraint Protocol</h1>
-            <p>Escaping the Foggy Boundary via Direct Latent Space Mapping. A neuro-symbolic architecture that reduces
-                AI code regression from 14.3% to &lt;0.1%.</p>
-            <div class="hero-author">
-                <strong>Dan Park</strong> · MagicPoint.ai
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div
+                class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold mb-6 uppercase tracking-wider border border-indigo-100">
+                Revised Analysis • Feb 2026
             </div>
-        </div>
-    </section>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-6 leading-tight">
+                Spatial Constraint Protocol
+            </h1>
+            <p class="text-xl sm:text-2xl text-slate-500 font-light mb-8 max-w-3xl mx-auto">
+                Mitigating <span class="text-indigo-600 font-semibold">Attention Entropy</span> via Neuro-Symbolic
+                Context Compression.
+            </p>
+            <p class="mt-4 max-w-2xl mx-auto text-base text-slate-600 leading-relaxed mb-10">
+                The "Billion Token Fallacy" assumes more context equals better reasoning. This interactive report
+                demonstrates how <strong>High-Density Semantic Prompting</strong> and <strong>Context Isolation</strong>
+                resolve the "Foggy Boundary" in high-dimensional engineering.
+            </p>
 
-    <!-- ───── PROBLEM ───── -->
-    <section class="problem-section" id="problem">
-        <div class="container">
-            <div class="animate-on-scroll">
-                <div class="section-badge">The Problem</div>
-                <h2 class="section-title">The Billion Token Fallacy</h2>
-                <p class="section-subtitle">
-                    The AI industry assumes that larger context windows produce better reasoning.
-                    This assumption is mathematically false. As context grows, attention entropy increases
-                    and the signal drowns in noise.
-                </p>
-            </div>
-
-            <div class="equation-display animate-on-scroll">
-                Attention(Q,K,V) = softmax( QKᵀ / √d<sub>k</sub> ) · V
-                <div class="equation-label">The softmax normalizes to 1 — more keys = thinner probability mass</div>
-            </div>
-
-            <div class="stats-row animate-on-scroll">
-                <div class="stat-card">
-                    <div class="stat-number rose">14.3%</div>
-                    <div class="stat-label">Regression Rate Per Commit</div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="text-2xl font-bold text-slate-900">0.1%</div>
+                    <div class="text-xs text-slate-500 uppercase font-semibold">Regression Rate</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number gold">0%</div>
-                    <div class="stat-label">Feature Velocity in "Regression Hell"</div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="text-2xl font-bold text-indigo-600">106x</div>
+                    <div class="text-xs text-slate-500 uppercase font-semibold">Compression</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number violet">∞</div>
-                    <div class="stat-label">Verify / Feature Energy Ratio</div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="text-2xl font-bold text-emerald-600">100%</div>
+                    <div class="text-xs text-slate-500 uppercase font-semibold">Feature Velocity</div>
                 </div>
-            </div>
-
-            <div class="equation-display animate-on-scroll">
-                lim<sub>t→∞</sub> E<sub>verify</sub>(t) / E<sub>feature</sub>(t) → ∞
-                <div class="equation-label">Regression Hell: 100% of energy goes to verification, zero to building</div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ───── FOGGY BOUNDARY ───── -->
-    <section id="boundary" style="background: var(--bg-secondary);">
-        <div class="container">
-            <div class="animate-on-scroll">
-                <div class="section-badge" style="background: rgba(139,92,246,0.15); color: var(--violet-glow);">
-                    Infographic</div>
-                <h2 class="section-title">The Foggy Boundary</h2>
-                <p class="section-subtitle">
-                    A thermodynamic threshold where semantic entropy H(S) exceeds the model's constraint resolution
-                    capacity C<sub>a</sub>. Beyond this line, AI hallucinates.
-                </p>
-            </div>
-
-            <div class="foggy-boundary-viz animate-on-scroll">
-                <!-- Clear side dots -->
-                <div class="clarity-dots" id="clarity-dots"></div>
-                <!-- Noise side dots -->
-                <div class="noise-dots" id="noise-dots"></div>
-                <!-- Labels -->
-                <div class="foggy-clear-zone">
-                    <div class="label">✦ High SNR · Clear Signal</div>
-                </div>
-                <div class="foggy-noise-zone">
-                    <div class="label">⚠ Low SNR · Entropy Fog</div>
-                </div>
-                <!-- Boundary line -->
-                <div class="foggy-boundary-line"></div>
-                <div class="foggy-boundary-label">H(S) &gt; C<sub>a</sub></div>
-            </div>
-
-            <div class="stats-row animate-on-scroll">
-                <div class="stat-card">
-                    <div class="stat-number cyan">P(Recall)</div>
-                    <div class="stat-label" style="margin-top: 8px">∝ 1 / Context</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number violet">RAG</div>
-                    <div class="stat-label" style="margin-top: 8px">Pushes closer to the boundary</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number rose">σ²<sub>noise</sub></div>
-                    <div class="stat-label" style="margin-top: 8px">∝ N<sub>context</sub> / N<sub>params</sub></div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="text-2xl font-bold text-slate-900">~1.1k</div>
+                    <div class="text-xs text-slate-500 uppercase font-semibold">Token Context</div>
                 </div>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- ───── SOLUTION ───── -->
-    <section class="solution-section" id="solution">
-        <div class="container">
-            <div class="animate-on-scroll">
-                <div class="section-badge">The Solution</div>
-                <h2 class="section-title">Spatial Constraint Protocol</h2>
-                <p class="section-subtitle">
-                    SCP bypasses the noisy tokenization pipeline entirely. Instead of predicting the next token,
-                    it <em>locates</em> the precise architectural state in vector geometry using Uiua bijective
-                    primitives.
-                </p>
-            </div>
+    <main class="flex-grow">
 
-            <!-- Compression visualization -->
-            <div class="compression-viz animate-on-scroll">
-                <div class="compression-side">
-                    <div class="count" style="color: var(--text-muted);">128,000</div>
-                    <div class="desc">Noisy Tokens</div>
-                    <div class="compression-dots chaotic" id="chaotic-dots"></div>
-                </div>
-                <div class="compression-arrow">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
-                    <div class="ratio">106×</div>
-                    <div class="desc" style="font-size: 0.7rem; color: var(--text-muted);">COMPRESSION</div>
-                </div>
-                <div class="compression-side">
-                    <div class="count" style="color: var(--violet-glow);">1,200</div>
-                    <div class="desc">Uiua Vectors</div>
-                    <div class="compression-dots crystal" id="crystal-dots"></div>
-                </div>
-            </div>
+        <!-- SECTION 1: THE FOGGY BOUNDARY -->
+        <section id="foggy-boundary" class="py-16 bg-slate-50 border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
+                    <div class="lg:col-span-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600">
+                                <i class="fas fa-smog"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-900">The Foggy Boundary</h2>
+                        </div>
+                        <p class="text-slate-600 mb-6 leading-relaxed">
+                            <strong>Problem:</strong> As the context window ($N$) expands, the <strong>Signal-to-Noise
+                                Ratio (SNR)</strong> of the attention mechanism degrades. We call this the "Foggy
+                            Boundary."
+                        </p>
+                        <p class="text-slate-600 mb-6 leading-relaxed">
+                            Implementation details act as "entropy," drowning out architectural invariants. The result
+                            is <strong>"Lost in the Middle"</strong>—the model retrieves code but fails to reason about
+                            its constraints.
+                        </p>
 
-            <div class="equation-display animate-on-scroll">
-                f : ℒ → V<sub>L</sub><br>
-                <span style="font-size: 0.9em;">∀ l ∈ ℒ, ∃! v ∈ V<sub>L</sub> : f(l) = v</span>
-                <div class="equation-label">Bijective Singleton Map — each Uiua symbol maps to exactly one latent vector
-                </div>
-            </div>
-
-            <!-- Pipeline flow -->
-            <h3
-                style="text-align: center; color: var(--text-secondary); margin-top: 3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em;">
-                The SCP Pipeline</h3>
-            <div class="pipeline-flow animate-on-scroll">
-                <div class="pipeline-node">
-                    <span class="p-glyph">𓁹</span>
-                    <span class="p-label">Perceive</span>
-                </div>
-                <span class="pipeline-arrow">→</span>
-                <div class="pipeline-node">
-                    <span class="p-glyph" style="filter: drop-shadow(0 0 8px rgba(244,63,94,0.5));">Ө</span>
-                    <span class="p-label">Filter</span>
-                </div>
-                <span class="pipeline-arrow">→</span>
-                <div class="pipeline-node">
-                    <span class="p-glyph" style="filter: drop-shadow(0 0 8px rgba(245,158,11,0.5));">☾</span>
-                    <span class="p-label">Fold</span>
-                </div>
-                <span class="pipeline-arrow">→</span>
-                <div class="pipeline-node">
-                    <span class="p-glyph" style="filter: drop-shadow(0 0 8px rgba(6,182,212,0.5));">𓂀</span>
-                    <span class="p-label">Witness</span>
-                </div>
-                <span class="pipeline-arrow">→</span>
-                <div class="pipeline-node">
-                    <span class="p-glyph" style="filter: drop-shadow(0 0 8px rgba(16,185,129,0.5));">☤</span>
-                    <span class="p-label">Weave</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ───── GLYPHS ───── -->
-    <section class="glyph-section" id="glyphs">
-        <div class="container">
-            <div class="animate-on-scroll">
-                <div class="section-badge">The Primitives</div>
-                <h2 class="section-title">Uiua Glyphs: AI Cognitive Programming Language</h2>
-                <p class="section-subtitle">
-                    SCP leverages Uiua as a high-dimensional AI cognitive programming language — five bijective
-                    singleton primitives that map directly to latent vector coordinates.
-                    No ambiguity. No noise. Pure semantic intent operating at the geometry of thought.
-                </p>
-            </div>
-
-            <div class="glyph-grid">
-                <div class="glyph-card animate-on-scroll">
-                    <div class="glyph-symbol">◬</div>
-                    <div class="glyph-name">The Origin</div>
-                    <div class="glyph-origin">Rendlesham Forest · Triangle with 3 Dots</div>
-                    <div class="glyph-desc">Program entry point. All threads spawn from here. The root from which all
-                        computation flows.</div>
-                    <div class="glyph-code">◬ [1, 2, 3, 4, 5]</div>
-                </div>
-                <div class="glyph-card animate-on-scroll">
-                    <div class="glyph-symbol">☾</div>
-                    <div class="glyph-name">Fold Time</div>
-                    <div class="glyph-origin">Roswell · Violet Crescent</div>
-                    <div class="glyph-desc">Recursion — output feeds back into input until the base case is reached.
-                        Folds time into a loop.</div>
-                    <div class="glyph-code">☾ {> 0} {- 1} 10 → 0</div>
-                </div>
-                <div class="glyph-card animate-on-scroll">
-                    <div class="glyph-symbol">Ө</div>
-                    <div class="glyph-name">The Filter</div>
-                    <div class="glyph-origin">Roswell · Circle with Bar</div>
-                    <div class="glyph-desc">Conditional gate. Only data matching the "shape" passes through. Rejects
-                        without transforming.</div>
-                    <div class="glyph-code">Ө {> 3} [1, 2, 3, 4, 5] → [4, 5]</div>
-                </div>
-                <div class="glyph-card animate-on-scroll">
-                    <div class="glyph-symbol">𓂀</div>
-                    <div class="glyph-name">The Witness</div>
-                    <div class="glyph-origin">Egyptian · Eye of Horus</div>
-                    <div class="glyph-desc">Observes the data stream without altering it. Pure perception. The
-                        see-without-touching principle.</div>
-                    <div class="glyph-code">𓂀 "Hello" → logs, passes through</div>
-                </div>
-                <div class="glyph-card animate-on-scroll">
-                    <div class="glyph-symbol">☤</div>
-                    <div class="glyph-name">The Weaver</div>
-                    <div class="glyph-origin">Generic · Double Helix</div>
-                    <div class="glyph-desc">Merges two independent realities (threads/streams) into one braided result.
-                        Nothing is lost.</div>
-                    <div class="glyph-code">☤ ["Hello", "World"] → "Hello World"</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ───── RESULTS ───── -->
-    <section class="results-section" id="results">
-        <div class="container">
-            <div class="animate-on-scroll">
-                <div class="section-badge">Empirical Results</div>
-                <h2 class="section-title">Regression Hell → Eliminated</h2>
-                <p class="section-subtitle">
-                    Validated on a &lt;50,000 LOC native Windows application with C#, Python, and CUDA.
-                    SCP reduced regression rates by 143× and restored full feature velocity.
-                </p>
-            </div>
-
-            <table class="comparison-table animate-on-scroll">
-                <thead>
-                    <tr>
-                        <th>Metric</th>
-                        <th>Baseline (GPT-4)</th>
-                        <th>SCP Implementation</th>
-                        <th>Improvement</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="metric-name">Context Required</td>
-                        <td class="baseline">128,000 tokens (saturated)</td>
-                        <td class="scp-result">1,200 atomic vectors</td>
-                        <td class="improvement">106×</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-name">Regression Rate</td>
-                        <td class="baseline">14.3% per commit</td>
-                        <td class="scp-result">&lt; 0.1% per commit</td>
-                        <td class="improvement">143×</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-name">Feature Velocity</td>
-                        <td class="baseline">0% (Regression Hell)</td>
-                        <td class="scp-result">100% (Restored)</td>
-                        <td class="improvement">∞</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-name">Semantic Entropy</td>
-                        <td class="baseline">Above C<sub>a</sub> (Foggy)</td>
-                        <td class="scp-result">Below C<sub>a</sub> (Clear)</td>
-                        <td class="improvement">Escaped</td>
-                    </tr>
-                    <tr>
-                        <td class="metric-name">Coupling Terms (Γ)</td>
-                        <td class="baseline">Unmeasured (implicit)</td>
-                        <td class="scp-result">0 by construction</td>
-                        <td class="improvement">Eliminated</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Visual bar chart -->
-            <h3
-                style="color: var(--text-secondary); margin: 2.5rem 0 1.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em;">
-                Regression Rate Comparison</h3>
-            <div class="bar-chart animate-on-scroll">
-                <div class="bar-row">
-                    <div class="bar-label" style="color: var(--rose);">Baseline</div>
-                    <div class="bar-track">
-                        <div class="bar-fill baseline-bar" id="bar-baseline" style="width: 0%;">14.3%</div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                            <label class="block text-sm font-semibold text-slate-700 mb-3">Simulate Context
+                                Expansion</label>
+                            <input type="range" id="snrSlider" min="1" max="100" value="20"
+                                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 mb-4">
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase">Context Size</div>
+                                    <div id="snrLabel" class="text-lg font-bold text-slate-900">20k Tokens</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-slate-500 uppercase">Signal Quality</div>
+                                    <div id="snrStatus" class="text-lg font-bold text-emerald-600">High</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bar-value" style="color: var(--rose);">14.3%</div>
-                </div>
-                <div class="bar-row">
-                    <div class="bar-label" style="color: var(--emerald);">SCP</div>
-                    <div class="bar-track">
-                        <div class="bar-fill scp-bar" id="bar-scp" style="width: 0%;">&lt;0.1%</div>
+
+                    <div class="lg:col-span-2">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="text-sm font-semibold text-slate-500 mb-4 uppercase tracking-wide">Attention SNR
+                                Degradation Curve</h3>
+                            <div class="chart-container">
+                                <canvas id="snrChart"></canvas>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bar-value" style="color: var(--emerald);">&lt;0.1%</div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ───── CODE EXAMPLE ───── -->
-    <section class="hello-section" id="code">
-        <div class="container">
-            <div class="animate-on-scroll">
-                <div class="section-badge">Try It</div>
-                <h2 class="section-title">Hello World in Chevron</h2>
-                <p class="section-subtitle">
-                    The reference implementation of SCP. A working glyph-based language
-                    where code is written with symbolic primitives.
+        <!-- SECTION 2: THE SOLUTION (RAG Denial & Prompting) -->
+        <section id="solution" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">The Spatial Constraint Protocol</h2>
+                    <p class="text-lg text-slate-600">
+                        SCP is not a model weight modification. It is a rigorous **Context Management Framework** built
+                        on three pillars: RAG Denial, Semantic Prompting, and Hybrid Verification.
+                    </p>
+                </div>
+
+                <!-- Pillar 1: RAG Denial -->
+                <div class="mb-20">
+                    <div
+                        class="flex flex-col md:flex-row justify-between items-end mb-6 border-b border-slate-100 pb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                <span class="text-indigo-600">01.</span> RAG Denial (Context Isolation)
+                            </h3>
+                            <p class="text-slate-500 mt-2 max-w-xl">
+                                Standard RAG retrieves implementation details, causing contamination. SCP denies access
+                                to implementation, showing only <strong>Interface Contracts</strong>.
+                            </p>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <div class="inline-flex bg-slate-100 p-1 rounded-lg">
+                                <button id="viewStandard"
+                                    class="px-4 py-2 text-sm font-medium rounded-md bg-white text-slate-800 shadow-sm transition-all">Standard
+                                    RAG</button>
+                                <button id="viewSCP"
+                                    class="px-4 py-2 text-sm font-medium rounded-md text-slate-500 hover:text-indigo-600 transition-all">SCP
+                                    Protocol</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualizer -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-8 rounded-2xl border border-slate-200"
+                        id="ragVisualizer">
+                        <!-- Module A -->
+                        <div class="bg-white p-6 rounded-xl border border-slate-300 shadow-sm relative overflow-hidden transition-all duration-500"
+                            id="moduleA">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="font-bold text-slate-800 font-mono">Module_Auth.py</div>
+                                <div class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500">Dependency</div>
+                            </div>
+                            <div class="space-y-2 font-mono text-xs">
+                                <div class="text-indigo-600 font-bold">def validate_user(user):</div>
+                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500"># Connect to DB
+                                </div>
+                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500">conn =
+                                    db.connect(URI)</div>
+                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500">cursor =
+                                    conn.cursor()</div>
+                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500"># Check
+                                    password hash</div>
+                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500">if
+                                    hash(user.pw) == row[0]:</div>
+                                <div class="pl-4 text-indigo-600 font-bold">return True</div>
+                            </div>
+                            <!-- Shield Overlay -->
+                            <div class="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center opacity-0 transition-opacity duration-500"
+                                id="shieldA">
+                                <div class="text-center">
+                                    <div class="text-emerald-500 text-3xl mb-2"><i class="fas fa-shield-alt"></i></div>
+                                    <div class="font-bold text-slate-800 text-sm">Implementation Hidden</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LLM Context View -->
+                        <div class="bg-slate-900 p-6 rounded-xl shadow-lg text-slate-300 font-mono text-sm relative">
+                            <div
+                                class="absolute top-4 right-4 text-xs text-slate-500 uppercase font-bold tracking-wider">
+                                LLM Context Window</div>
+                            <div class="mb-4 text-emerald-400"># Generative Task: Create Login Flow</div>
+                            <div class="mb-2">import Module_Auth</div>
+                            <div class="mb-2 text-slate-500">...</div>
+                            <div id="llmPerception"
+                                class="p-3 bg-slate-800 rounded border border-slate-700 transition-all duration-300">
+                                <span class="text-rose-400">Warning:</span> Full source code of Module_Auth is visible.
+                                <br>
+                                <span class="text-slate-400 text-xs mt-1 block">Risk: Model may hallucinate based on
+                                    'db.connect' logic intended to be private.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 2: High Density Prompting -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-20">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2 mb-4">
+                            <span class="text-indigo-600">02.</span> High-Density Prompting
+                        </h3>
+                        <p class="text-slate-600 mb-6">
+                            We use the <strong>Chevron DSL</strong> (based on Uiua glyphs) to maximize Information Per
+                            Token (IPT). These "High-Density Anchor Tokens" create spikes in attention, locking
+                            architectural constraints with minimal noise.
+                        </p>
+
+                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
+                            <h4 class="font-bold text-indigo-900 mb-3">The "Chevron" Glossary</h4>
+                            <div class="grid grid-cols-3 gap-4 text-center">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <div class="text-2xl text-indigo-600 font-mono mb-1">◬</div>
+                                    <div class="text-xs font-bold text-slate-700">Origin</div>
+                                    <div class="text-[10px] text-slate-500">State Root</div>
+                                </div>
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <div class="text-2xl text-indigo-600 font-mono mb-1">Ө</div>
+                                    <div class="text-xs font-bold text-slate-700">Filter</div>
+                                    <div class="text-[10px] text-slate-500">Pure Func</div>
+                                </div>
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <div class="text-2xl text-indigo-600 font-mono mb-1">☾</div>
+                                    <div class="text-xs font-bold text-slate-700">Fold</div>
+                                    <div class="text-[10px] text-slate-500">Aggregate</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Comparison -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-5">
+                            <div class="flex justify-between text-xs text-slate-500 uppercase font-bold mb-2">
+                                <span>Standard Prompt (Natural Language)</span>
+                                <span>~18 Tokens</span>
+                            </div>
+                            <div class="bg-slate-100 p-3 rounded text-slate-600 text-sm">
+                                "This is the root of the module. It maintains state but should not be modified directly
+                                by children."
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center text-slate-400">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+
+                        <div
+                            class="bg-indigo-900 border border-indigo-700 rounded-xl p-5 shadow-lg relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-4 opacity-10">
+                                <i class="fas fa-compress-arrows-alt text-6xl text-white"></i>
+                            </div>
+                            <div class="flex justify-between text-xs text-indigo-300 uppercase font-bold mb-2">
+                                <span>SCP Prompt (Chevron DSL)</span>
+                                <span class="text-emerald-400">3 Tokens</span>
+                            </div>
+                            <div
+                                class="bg-indigo-950/50 p-3 rounded text-white font-mono text-lg border border-indigo-500/30">
+                                """◬ Origin"""
+                            </div>
+                            <div class="mt-2 text-xs text-indigo-300">
+                                <i class="fas fa-bolt mr-1"></i> High Attention Activation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 3: The Weaver -->
+                <div class="border-t border-slate-100 pt-16">
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2 mb-8 justify-center">
+                        <span class="text-indigo-600">03.</span> The Weaver: Hybrid Verification
+                    </h3>
+
+                    <div class="flex flex-col md:flex-row gap-4 justify-center items-stretch">
+                        <div
+                            class="flex-1 bg-slate-50 p-6 rounded-xl border border-slate-200 text-center interactive-card">
+                            <div
+                                class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-indigo-600 mx-auto mb-4 shadow-sm text-xl border border-slate-100">
+                                <i class="fas fa-code"></i></div>
+                            <h4 class="font-bold text-slate-800 mb-2">1. Static Analysis</h4>
+                            <p class="text-sm text-slate-500">Deterministic AST parsing checks for forbidden imports and
+                                global state mutations.</p>
+                        </div>
+
+                        <div class="flex items-center justify-center text-slate-300">
+                            <i class="fas fa-arrow-right text-xl hidden md:block"></i>
+                            <i class="fas fa-arrow-down text-xl md:hidden"></i>
+                        </div>
+
+                        <div
+                            class="flex-1 bg-slate-50 p-6 rounded-xl border border-slate-200 text-center interactive-card">
+                            <div
+                                class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-indigo-600 mx-auto mb-4 shadow-sm text-xl border border-slate-100">
+                                <i class="fas fa-brain"></i></div>
+                            <h4 class="font-bold text-slate-800 mb-2">2. Neural Verification</h4>
+                            <p class="text-sm text-slate-500">Heuristic LLM pass verifies semantic intent and Chevron
+                                contract adherence.</p>
+                        </div>
+
+                        <div class="flex items-center justify-center text-slate-300">
+                            <i class="fas fa-arrow-right text-xl hidden md:block"></i>
+                            <i class="fas fa-arrow-down text-xl md:hidden"></i>
+                        </div>
+
+                        <div
+                            class="flex-1 bg-emerald-50 p-6 rounded-xl border border-emerald-100 text-center interactive-card">
+                            <div
+                                class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4 shadow-sm text-xl border border-emerald-100">
+                                <i class="fas fa-check-double"></i></div>
+                            <h4 class="font-bold text-emerald-900 mb-2">Verified Code</h4>
+                            <p class="text-sm text-emerald-700">Code is committed only if both checks pass.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: CASE STUDY RESULTS -->
+        <section id="results" class="py-16 bg-slate-50 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 text-center">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Case Study: Resolving "Regression Hell"</h2>
+                    <p class="text-lg text-slate-600">
+                        Applied to a Windows/CUDA engineering project (~50k LOC). Comparison between Standard RAG and
+                        SCP.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Regression Chart -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-slate-800">Regression Rate</h3>
+                            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded">-99.3%
+                                Reduction</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="regressionChart"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-4 text-center">Percentage of new features causing defects in
+                            existing code.</p>
+                    </div>
+
+                    <!-- Compression Chart -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-slate-800">Context Compression</h3>
+                            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">106x
+                                Improvement</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="compressionChart"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-4 text-center">Tokens required to maintain architectural
+                            coherence (Log Scale).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-slate-400 py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="flex justify-center items-center gap-2 mb-4 text-white">
+                    <span class="text-xl font-mono">◬</span>
+                    <span class="font-bold text-lg">Spatial Constraint Protocol</span>
+                </div>
+                <p class="mb-6 max-w-lg mx-auto text-sm">
+                    "The future of AI software engineering lies not in feeding models MORE tokens, but in feeding them
+                    BETTER tokens."
                 </p>
-            </div>
-
-            <div class="code-block animate-on-scroll">
-                <div class="dots"><span></span><span></span><span></span></div>
-                <div class="file-name">hello.chevron</div>
-                <div class="code-content">
-                    <div><span class="comment"># Hello World in Chevron</span></div>
-                    <div><span class="glyph">𓂀</span> <span class="operator">(</span><span class="glyph">☤</span> <span
-                            class="operator">[</span><span class="string">"Hello"</span><span class="operator">,</span>
-                        <span class="string">"World"</span><span class="operator">]</span><span
-                            class="operator">)</span>
-                    </div>
-                    <br>
-                    <div><span class="comment"># Pipeline: Origin → Filter → Witness</span></div>
-                    <div><span class="glyph">◬</span> <span class="operator">[</span><span class="string">10, 25, 3, 47,
-                            8, 92</span><span class="operator">]</span> <span class="operator">→</span> <span
-                            class="glyph">Ө</span> <span class="operator">{</span><span class="string">> 10</span><span
-                            class="operator">}</span> <span class="operator">→</span> <span class="glyph">𓂀</span>
-                    </div>
-                    <br>
-                    <div><span class="comment"># Output:</span></div>
-                    <div><span class="output-label">𓂀 ⟫</span> <span class="output">Hello World</span></div>
-                    <div><span class="output-label">𓂀 ⟫</span> <span class="output">[25, 47, 92]</span></div>
+                <div class="text-xs text-slate-500">
+                    Revised Analysis based on Park (2026). Generated for Interactive Review.
                 </div>
             </div>
+        </footer>
 
-            <div style="text-align: center; margin-top: 2rem;" class="animate-on-scroll">
-                <a href="https://github.com/dparksports/Project-Chevron" target="_blank" style="display: inline-block; padding: 14px 36px; border-radius: 50px;
-                      background: var(--gradient-violet); color: white; text-decoration: none;
-                      font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em;
-                      transition: all 0.3s; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);">
-                    View on GitHub →
-                </a>
-            </div>
-        </div>
-    </section>
+    </main>
 
-    <!-- ───── FOOTER ───── -->
-    <footer>
-        <div class="footer-glyph">◬ ☾ Ө 𓂀 ☤</div>
-        <p>
-            <strong>Spatial Constraint Protocol</strong> · Dan Park · <a href="https://magicpoint.ai">MagicPoint.ai</a>
-            · 2026<br>
-            <span style="margin-top: 8px; display: inline-block;">Project Chevron — Reference Implementation · <a
-                    href="https://github.com/dparksports/Project-Chevron">GitHub</a></span>
-        </p>
-    </footer>
-
-    <!-- ───── SCRIPTS ───── -->
     <script>
-        // Generate clarity dots (organized pattern)
-        const clarityDotsEl = document.getElementById('clarity-dots');
-        for (let i = 0; i < 60; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'clarity-dot';
-            const row = Math.floor(i / 8);
-            const col = i % 8;
-            dot.style.left = (col * 12 + 5) + '%';
-            dot.style.top = (row * 12 + 5) + '%';
-            dot.style.animationDelay = (i * 0.05) + 's';
-            clarityDotsEl.appendChild(dot);
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                const navbarHeight = 64;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
         }
 
-        // Generate noise dots (random scatter)
-        const noiseDotsEl = document.getElementById('noise-dots');
-        for (let i = 0; i < 100; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'noise-dot';
-            dot.style.left = (Math.random() * 90) + '%';
-            dot.style.top = (Math.random() * 90) + '%';
-            dot.style.opacity = Math.random() * 0.35 + 0.05;
-            dot.style.width = dot.style.height = (Math.random() * 4 + 2) + 'px';
-            noiseDotsEl.appendChild(dot);
-        }
+        // --- SECTION 1: SNR CHART LOGIC ---
+        const snrCtx = document.getElementById('snrChart').getContext('2d');
+        const contextSizes = Array.from({ length: 100 }, (_, i) => i + 1);
 
-        // Generate compression dots
-        const chaoticEl = document.getElementById('chaotic-dots');
-        for (let i = 0; i < 120; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'dot';
-            dot.style.opacity = Math.random() * 0.4 + 0.1;
-            chaoticEl.appendChild(dot);
-        }
+        // Simulation Formula: 1 / (1 + decay_factor * x)
+        // This simulates the "Lost in the Middle" effect
+        const snrData = contextSizes.map(x => 100 / (1 + 0.15 * x));
 
-        const crystalEl = document.getElementById('crystal-dots');
-        for (let i = 0; i < 24; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'dot';
-            dot.style.width = dot.style.height = '8px';
-            crystalEl.appendChild(dot);
-        }
-
-        // Scroll-triggered animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-
-                    // Animate bars when visible
-                    const baseline = document.getElementById('bar-baseline');
-                    const scp = document.getElementById('bar-scp');
-                    if (entry.target.contains(baseline)) {
-                        setTimeout(() => { baseline.style.width = '100%'; }, 200);
-                        setTimeout(() => { scp.style.width = '0.7%'; }, 600);
+        const snrChart = new Chart(snrCtx, {
+            type: 'line',
+            data: {
+                labels: contextSizes,
+                datasets: [{
+                    label: 'Signal-to-Noise Ratio (SNR)',
+                    data: snrData,
+                    borderColor: '#4f46e5', // Indigo 600
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Current Context',
+                    data: [], // Populated dynamically
+                    pointBackgroundColor: '#ef4444',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 8,
+                    showLine: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: (context) => `Signal Quality: ${context.raw.toFixed(1)}%`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Context Window (k Tokens)' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        title: { display: true, text: 'Architectural Fidelity' },
+                        min: 0,
+                        max: 100
                     }
                 }
+            }
+        });
+
+        const slider = document.getElementById('snrSlider');
+        const snrLabel = document.getElementById('snrLabel');
+        const snrStatus = document.getElementById('snrStatus');
+
+        function updateSNR(val) {
+            snrLabel.innerText = `${val}k Tokens`;
+
+            // Update Chart Point
+            const yVal = 100 / (1 + 0.15 * val);
+            const pointData = new Array(100).fill(null);
+            pointData[val - 1] = yVal;
+            snrChart.data.datasets[1].data = pointData;
+            snrChart.update();
+
+            // Update Status Text
+            if (val < 15) {
+                snrStatus.innerText = "High (Coherent)";
+                snrStatus.className = "text-lg font-bold text-emerald-600";
+            } else if (val < 50) {
+                snrStatus.innerText = "Degrading (Noisy)";
+                snrStatus.className = "text-lg font-bold text-amber-500";
+            } else {
+                snrStatus.innerText = "Foggy Boundary (Lost)";
+                snrStatus.className = "text-lg font-bold text-rose-600";
+            }
+        }
+
+        slider.addEventListener('input', (e) => updateSNR(e.target.value));
+        updateSNR(20); // Init
+
+        // --- SECTION 2: RAG DENIAL VISUALIZER ---
+        const btnStandard = document.getElementById('viewStandard');
+        const btnSCP = document.getElementById('viewSCP');
+        const shieldA = document.getElementById('shieldA');
+        const implDetails = document.querySelectorAll('.impl-detail');
+        const llmPerception = document.getElementById('llmPerception');
+
+        btnStandard.addEventListener('click', () => {
+            // Button Styles
+            btnStandard.className = "px-4 py-2 text-sm font-medium rounded-md bg-white text-slate-800 shadow-sm transition-all";
+            btnSCP.className = "px-4 py-2 text-sm font-medium rounded-md text-slate-500 hover:text-indigo-600 transition-all";
+
+            // Visuals: Remove Shield, Show Details
+            shieldA.classList.remove('opacity-100');
+            shieldA.classList.add('opacity-0');
+
+            implDetails.forEach(el => {
+                el.classList.remove('blur-text');
+                el.classList.add('text-slate-400');
             });
-        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
 
-        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+            // LLM Text
+            llmPerception.innerHTML = `
+                <span class="text-rose-400">Warning:</span> Full source code of Module_Auth is visible. <br>
+                <span class="text-slate-400 text-xs mt-1 block">Risk: Model may hallucinate based on 'db.connect' logic intended to be private.</span>
+            `;
+            llmPerception.className = "p-3 bg-slate-800 rounded border border-slate-700 transition-all duration-300";
+        });
+
+        btnSCP.addEventListener('click', () => {
+            // Button Styles
+            btnSCP.className = "px-4 py-2 text-sm font-medium rounded-md bg-white text-indigo-600 shadow-sm transition-all";
+            btnStandard.className = "px-4 py-2 text-sm font-medium rounded-md text-slate-500 hover:text-slate-800 transition-all";
+
+            // Visuals: Add Shield, Blur Details
+            shieldA.classList.remove('opacity-0');
+            shieldA.classList.add('opacity-100');
+
+            implDetails.forEach(el => {
+                el.classList.remove('text-slate-400');
+                el.classList.add('blur-text');
+            });
+
+            // LLM Text
+            llmPerception.innerHTML = `
+                <span class="text-emerald-400">Secure:</span> Context Isolated. <br>
+                <span class="text-slate-400 text-xs mt-1 block">Model only sees interface signature. Coupling is impossible.</span>
+            `;
+            llmPerception.className = "p-3 bg-emerald-900/20 rounded border border-emerald-500/30 transition-all duration-300";
+        });
+
+        // --- SECTION 4: RESULTS CHARTS ---
+
+        // Regression Chart
+        const ctxReg = document.getElementById('regressionChart').getContext('2d');
+        new Chart(ctxReg, {
+            type: 'bar',
+            data: {
+                labels: ['Standard RAG', 'SCP Protocol'],
+                datasets: [{
+                    label: 'Regression Rate (%)',
+                    data: [14.3, 0.1],
+                    backgroundColor: ['#cbd5e1', '#10b981'], // Slate vs Emerald
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f5f9' },
+                        title: { display: true, text: 'Defect Rate (%)' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Compression Chart
+        const ctxComp = document.getElementById('compressionChart').getContext('2d');
+        new Chart(ctxComp, {
+            type: 'bar',
+            data: {
+                labels: ['Standard RAG', 'SCP Protocol'],
+                datasets: [{
+                    label: 'Context Size (Tokens)',
+                    data: [120000, 1100],
+                    backgroundColor: ['#cbd5e1', '#4f46e5'], // Slate vs Indigo
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        type: 'logarithmic',
+                        grid: { color: '#f1f5f9' },
+                        title: { display: true, text: 'Tokens (Log Scale)' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
     </script>
-
 </body>
 
 </html>
