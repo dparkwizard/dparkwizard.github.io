@@ -4,760 +4,751 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spatial Constraint Protocol: Revised Analysis</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>MagicPoint.ai — Spatial Constraint Protocol</title>
+    <meta name="description"
+        content="MagicPoint.ai: Mitigating Attention Entropy via Neuro-Symbolic Context Compression. Explore the Spatial Constraint Protocol (SCP) research and open-source tools.">
+    <meta name="keywords"
+        content="MagicPoint, SCP, Spatial Constraint Protocol, Attention Decay, LLM, AI, Neuro-Symbolic">
+    <meta property="og:title" content="MagicPoint.ai — Spatial Constraint Protocol">
+    <meta property="og:description"
+        content="Visualizing Attention Decay and the Spatial Constraint Protocol. Research paper and open-source tools.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://magicpoint.ai">
+    <link rel="canonical" href="https://magicpoint.ai">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-red: #fb7185;
+            --accent-green: #34d399;
+            --accent-purple: #c084fc;
+            --accent-gold: #fbbf24;
+        }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            /* Slate 50 */
-            color: #1e293b;
-            /* Slate 800 */
+            font-family: 'Inter', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
         }
 
-        h1,
-        h2,
-        h3,
-        h4 {
-            font-family: 'Inter', sans-serif;
-            letter-spacing: -0.025em;
+        /* ---- Navigation ---- */
+        .site-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
+        .site-nav .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .site-nav .logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
         }
 
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+        .site-nav .logo-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            border-radius: 4px;
+        .site-nav .logo-text .domain {
+            color: var(--accent-blue);
+            font-weight: 400;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Chart Container Utilities */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
+        .nav-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
         }
 
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
+        .nav-links a.btn-paper {
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-links a.btn-paper:hover {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--accent-blue);
+        }
+
+        .nav-links a.btn-github {
+            color: #fff;
+            background: linear-gradient(135deg, #6366f1, var(--accent-purple));
+            border: none;
+        }
+
+        .nav-links a.btn-github:hover {
+            filter: brightness(1.12);
+            transform: translateY(-1px);
+        }
+
+        .nav-links a svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 600px) {
+            .site-nav {
+                padding: 12px 16px;
+            }
+
+            .nav-links a span.label {
+                display: none;
+            }
+
+            .nav-links a {
+                padding: 9px 12px;
             }
         }
 
-        /* Interactive Card Effects */
-        .interactive-card {
-            transition: all 0.3s ease;
-            border: 1px solid #e2e8f0;
+        /* ---- Footer ---- */
+        .site-footer {
+            text-align: center;
+            padding: 48px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 0.9em;
         }
 
-        .interactive-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-color: #6366f1;
-            /* Indigo 500 */
+        .site-footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 20px;
         }
 
-        /* Module Box Styling for RAG Denial Demo */
-        .module-box {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        .site-footer .footer-links a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
         }
 
-        .blur-text {
-            color: transparent;
-            text-shadow: 0 0 5px rgba(148, 163, 184, 0.8);
-            user-select: none;
+        .site-footer .footer-links a:hover {
+            color: var(--accent-purple);
         }
 
-        /* Gradient Text */
-        .text-gradient {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(to right, #4f46e5, #0ea5e9);
+        .site-footer .copy {
+            font-size: 0.8em;
+            color: #475569;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .header h1 span {
+            color: var(--accent-blue);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.2em;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 45px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 15px;
+        }
+
+        .card-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .badge {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.55em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            vertical-align: middle;
+        }
+
+        .split-layout {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .split-layout>div {
+            flex: 1;
+        }
+
+        .text-content p {
+            margin-bottom: 20px;
+            font-size: 1.05em;
+            color: var(--text-muted);
+            text-align: justify;
+        }
+
+        .text-content strong {
+            color: var(--text-main);
+        }
+
+        .math-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .viz-container {
+            width: 100%;
+            background: #0b1120;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            padding: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Conclusion specific styles */
+        .conclusion-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .conclusion-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-purple), var(--accent-blue), var(--accent-green));
+        }
+
+        .conclusion-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .conclusion-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 10px;
+            border-top: 3px solid #475569;
+        }
+
+        .conclusion-box h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .conclusion-box p {
+            font-size: 0.95em;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Animations */
+        @keyframes roll {
+            0% {
+                transform: translate(120px, 160px);
+            }
+
+            10% {
+                transform: translate(120px, 160px);
+            }
+
+            40% {
+                transform: translate(250px, 120px);
+            }
+
+            70% {
+                transform: translate(450px, 280px);
+            }
+
+            100% {
+                transform: translate(450px, 280px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(0.9);
+                filter: drop-shadow(0 0 8px var(--accent-green));
+            }
+        }
+
+        @keyframes flow {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+
+        @keyframes rejectPulse {
+
+            0%,
+            100% {
+                stroke: var(--text-muted);
+            }
+
+            50% {
+                stroke: var(--accent-red);
+                filter: drop-shadow(0 0 5px var(--accent-red));
+            }
+        }
+
+        .anim-ball {
+            animation: roll 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .anim-pulse {
+            animation: pulse 3s infinite ease-in-out;
+            transform-origin: center;
+            transform-box: fill-box;
+        }
+
+        .anim-flow {
+            stroke-dasharray: 5 5;
+            animation: flow 1s linear infinite;
+        }
+
+        .anim-reject {
+            animation: rejectPulse 2s infinite ease-in-out;
+        }
+
+        @media (max-width: 900px) {
+
+            .split-layout,
+            .conclusion-grid {
+                flex-direction: column;
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 30px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
         }
     </style>
-    <!-- Chosen Palette: Slate (Neutral Foundation) + Indigo (Primary Logic) + Emerald (Success/Low Entropy) + Rose (Failure/High Entropy) -->
-
-    <!-- Application Structure Plan:
-         1. Hero: Title, Abstract Summary, and Key Metrics ticker.
-         2. The Foggy Boundary (Problem): Interactive visualization of SNR degrading as context expands (The "Billion Token Fallacy").
-         3. The SCP Solution (Methodology):
-            - RAG Denial Visualizer: Toggle between "Noisy" (Standard) and "Isolated" (SCP) views.
-            - High-Density Prompting: Comparison of English vs. Uiua DSL density.
-            - The Weaver: Card-based flow of the verification process.
-         4. Case Study Results (Evidence): Charts showing Regression Rate reduction and Context Compression.
-         5. Conclusion: Synthesis of the revised findings.
-    -->
-
-    <!-- Visualization & Content Choices:
-         - SNR Chart (Line): Demonstrates the continuous decay of attention signal.
-         - RAG Denial Demo (DOM Manipulation): Visually hides/reveals text to simulate context isolation.
-         - Comparison Bar Charts: Show the stark contrast in results (Regression/Context Size).
-         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
-    -->
 </head>
 
-<body class="antialiased min-h-screen flex flex-col">
+<body>
 
     <!-- Navigation -->
-    <nav
-        class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="bg-indigo-600 text-white w-8 h-8 rounded flex items-center justify-center font-bold font-mono">
-                        ◬</div>
-                    <span class="text-lg font-bold text-slate-800 tracking-tight">SCP <span
-                            class="text-indigo-600 font-normal">Interactive</span></span>
-                </div>
-                <div class="hidden md:flex items-center space-x-6">
-                    <button onclick="scrollToSection('foggy-boundary')"
-                        class="text-slate-600 hover:text-indigo-600 text-sm font-medium transition">Foggy
-                        Boundary</button>
-                    <button onclick="scrollToSection('solution')"
-                        class="text-slate-600 hover:text-indigo-600 text-sm font-medium transition">The
-                        Solution</button>
-                    <button onclick="scrollToSection('results')"
-                        class="text-slate-600 hover:text-indigo-600 text-sm font-medium transition">Case Study</button>
-                    <a href="https://github.com/dparksports/dparksports/raw/main/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf"
-                        target="_blank"
-                        class="px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition">Read
-                        Paper</a>
-                </div>
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button class="text-slate-600 hover:text-indigo-600"
-                        onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 p-4">
-            <div class="flex flex-col space-y-4">
-                <button onclick="scrollToSection('foggy-boundary')" class="text-left text-slate-600 font-medium">Foggy
-                    Boundary</button>
-                <button onclick="scrollToSection('solution')" class="text-left text-slate-600 font-medium">The
-                    Solution</button>
-                <button onclick="scrollToSection('results')" class="text-left text-slate-600 font-medium">Case
-                    Study</button>
-            </div>
+    <nav class="site-nav">
+        <a href="https://magicpoint.ai" class="logo">
+            <div class="logo-icon">◬</div>
+            <div class="logo-text">MagicPoint<span class="domain">.ai</span></div>
+        </a>
+        <div class="nav-links">
+            <a class="btn-paper"
+                href="https://github.com/dparksports/dparksports/raw/main/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf"
+                target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z" />
+                </svg>
+                <span class="label">Read Paper</span>
+            </a>
+            <a class="btn-github" href="https://github.com/dparkwizard/dparkwizard.github.io" target="_blank"
+                rel="noopener">
+                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                </svg>
+                <span class="label">GitHub</span>
+            </a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="bg-white pt-12 pb-16 lg:pt-20 lg:pb-24 border-b border-slate-200 relative overflow-hidden">
-        <div
-            class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-indigo-50 rounded-full blur-3xl opacity-50 pointer-events-none">
+    <div class="container">
+        <div class="header">
+            <h1>Visualizing <span>Attention Decay</span></h1>
+            <p>An interactive infographic dashboard mapping the physical, mathematical, and architectural reality of the
+                Spatial Constraint Protocol (SCP).</p>
         </div>
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div
-                class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold mb-6 uppercase tracking-wider border border-indigo-100">
-                Revised Analysis • Feb 2026
+
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="badge"
+                        style="color: var(--accent-red); background: rgba(251, 113, 133, 0.1);">Thermodynamics</span>
+                    Channel Capacity Saturation</h2>
             </div>
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-6 leading-tight">
-                Spatial Constraint Protocol
-            </h1>
-            <p class="text-xl sm:text-2xl text-slate-500 font-light mb-8 max-w-3xl mx-auto">
-                Mitigating <span class="text-indigo-600 font-semibold">Attention Entropy</span> via Neuro-Symbolic
-                Context Compression.
-            </p>
-            <p class="mt-4 max-w-2xl mx-auto text-base text-slate-600 leading-relaxed mb-10">
-                The "Billion Token Fallacy" assumes more context equals better reasoning. This interactive report
-                demonstrates how <strong>High-Density Semantic Prompting</strong> and <strong>Context Isolation</strong>
-                resolve the "Foggy Boundary" in high-dimensional engineering.
-            </p>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div class="text-2xl font-bold text-slate-900">0.1%</div>
-                    <div class="text-xs text-slate-500 uppercase font-semibold">Regression Rate</div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div class="text-2xl font-bold text-indigo-600">106x</div>
-                    <div class="text-xs text-slate-500 uppercase font-semibold">Compression</div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div class="text-2xl font-bold text-emerald-600">100%</div>
-                    <div class="text-xs text-slate-500 uppercase font-semibold">Feature Velocity</div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div class="text-2xl font-bold text-slate-900">~1.1k</div>
-                    <div class="text-xs text-slate-500 uppercase font-semibold">Token Context</div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="flex-grow">
-
-        <!-- SECTION 1: THE FOGGY BOUNDARY -->
-        <section id="foggy-boundary" class="py-16 bg-slate-50 border-b border-slate-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
-                    <div class="lg:col-span-1">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div
-                                class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600">
-                                <i class="fas fa-smog"></i>
-                            </div>
-                            <h2 class="text-2xl font-bold text-slate-900">The Foggy Boundary</h2>
-                        </div>
-                        <p class="text-slate-600 mb-6 leading-relaxed">
-                            <strong>Problem:</strong> As the context window ($N$) expands, the <strong>Signal-to-Noise
-                                Ratio (SNR)</strong> of the attention mechanism degrades. We call this the "Foggy
-                            Boundary."
-                        </p>
-                        <p class="text-slate-600 mb-6 leading-relaxed">
-                            Implementation details act as "entropy," drowning out architectural invariants. The result
-                            is <strong>"Lost in the Middle"</strong>—the model retrieves code but fails to reason about
-                            its constraints.
-                        </p>
-
-                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                            <label class="block text-sm font-semibold text-slate-700 mb-3">Simulate Context
-                                Expansion</label>
-                            <input type="range" id="snrSlider" min="1" max="100" value="20"
-                                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 mb-4">
-                            <div class="flex justify-between items-end">
-                                <div>
-                                    <div class="text-xs text-slate-500 uppercase">Context Size</div>
-                                    <div id="snrLabel" class="text-lg font-bold text-slate-900">20k Tokens</div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-xs text-slate-500 uppercase">Signal Quality</div>
-                                    <div id="snrStatus" class="text-lg font-bold text-emerald-600">High</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-2">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="text-sm font-semibold text-slate-500 mb-4 uppercase tracking-wide">Attention SNR
-                                Degradation Curve</h3>
-                            <div class="chart-container">
-                                <canvas id="snrChart"></canvas>
-                            </div>
-                        </div>
+            <div class="split-layout">
+                <div class="text-content">
+                    <p>The "Billion Token Fallacy" assumes the Context Window acts as lossless memory. In reality, the
+                        Attention Mechanism is a <strong>Competitive Interference Channel</strong>.</p>
+                    <p>Every distractor token adds to the normalization constant ($Z$). As $N \to \infty$, the
+                        cumulative thermodynamic noise mathematically drowns out the specific target signal unless the
+                        model's dimensional resolution can outpace it logarithmically.</p>
+                    <div class="math-box">
+                        $$\Delta E = E_{\text{noise}} - E_{\text{signal}} > \ln(N)$$
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: THE SOLUTION (RAG Denial & Prompting) -->
-        <section id="solution" class="py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-3xl mx-auto mb-16">
-                    <h2 class="text-3xl font-bold text-slate-900 mb-4">The Spatial Constraint Protocol</h2>
-                    <p class="text-lg text-slate-600">
-                        SCP is not a model weight modification. It is a rigorous **Context Management Framework** built
-                        on three pillars: RAG Denial, Semantic Prompting, and Hybrid Verification.
-                    </p>
+                <div class="viz-container">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="50" y1="260" x2="380" y2="260" stroke="#475569" stroke-width="2" />
+                        <line x1="50" y1="260" x2="50" y2="40" stroke="#475569" stroke-width="2" />
+                        <text x="215" y="290" fill="#94a3b8" font-size="12" text-anchor="middle">Context Window Size
+                            (N)</text>
+                        <text x="30" y="150" fill="#94a3b8" font-size="12" text-anchor="middle"
+                            transform="rotate(-90 30,150)">Probability Mass</text>
+                        <path d="M 50 260 L 50 240 Q 150 150 350 50 L 350 260 Z" fill="rgba(251, 113, 133, 0.1)" />
+                        <path d="M 50 240 Q 150 150 350 50" fill="none" stroke="var(--accent-red)" stroke-width="3" />
+                        <path d="M 50 60 Q 150 80 350 240" fill="none" stroke="var(--accent-blue)" stroke-width="3" />
+                        <circle cx="200" cy="150" r="5" fill="#f8fafc" />
+                        <line x1="200" y1="150" x2="200" y2="260" stroke="#f8fafc" stroke-width="1"
+                            stroke-dasharray="4" />
+                        <text x="200" y="135" fill="#f8fafc" font-size="10" text-anchor="middle">Saturation Point</text>
+                        <text x="300" y="40" fill="var(--accent-red)" font-size="12" font-weight="bold">Noise (Z)</text>
+                        <text x="330" y="235" fill="var(--accent-blue)" font-size="12" font-weight="bold">Signal</text>
+                    </svg>
                 </div>
+            </div>
+        </div>
 
-                <!-- Pillar 1: RAG Denial -->
-                <div class="mb-20">
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="badge"
+                        style="color: var(--accent-purple); background: rgba(192, 132, 252, 0.1);">Latent Space</span>
+                    Confabulation as Relaxation</h2>
+            </div>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto;">When $Z$ explodes, the prompt's
+                    local "Context Valley" becomes washed out by high-entropy noise. The model's latent state naturally
+                    rolls out of the shallow context and settles into the deep <strong>Prior Canyon</strong> (its
+                    pre-trained defaults). Hallucination is merely thermodynamic relaxation to the mean.</p>
+                <div class="math-box" style="display: inline-block; padding: 10px 20px;">
+                    $$\hat{y} = \arg\max P(y) $$
+                </div>
+            </div>
+            <div class="viz-container">
+                <svg viewBox="0 0 800 350" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="140" width="800" height="210" fill="rgba(251, 113, 133, 0.05)" />
+                    <line x1="0" y1="140" x2="800" y2="140" stroke="rgba(251, 113, 133, 0.5)" stroke-width="2"
+                        stroke-dasharray="5" />
+                    <text x="20" y="130" fill="var(--accent-red)" font-size="12">High Entropy Noise Floor (Exploded
+                        Z)</text>
+                    <path
+                        d="M 0 150 C 50 150, 100 180, 150 180 C 200 180, 220 100, 300 100 C 350 100, 420 300, 480 300 C 550 300, 600 50, 800 50"
+                        fill="none" stroke="#64748b" stroke-width="4" />
+                    <text x="150" y="210" fill="var(--text-main)" font-size="14" text-anchor="middle"
+                        font-weight="bold">"Context Valley"</text>
+                    <text x="150" y="230" fill="#94a3b8" font-size="11" text-anchor="middle">(Washed out by
+                        noise)</text>
+                    <text x="480" y="330" fill="var(--accent-purple)" font-size="14" text-anchor="middle"
+                        font-weight="bold">"Prior Canyon"</text>
+                    <text x="480" y="190" fill="#94a3b8" font-size="11" text-anchor="middle">Deep pre-trained
+                        attractors</text>
+                    <circle cx="0" cy="0" r="10" fill="var(--accent-blue)" class="anim-ball" />
+                    <path d="M 120 160 Q 250 120 450 280" fill="none" stroke="var(--accent-blue)" stroke-width="2"
+                        stroke-dasharray="6 4" opacity="0.5" />
+                    <text x="320" y="150" fill="var(--accent-blue)" font-size="14" font-weight="bold"
+                        font-style="italic">Confabulation</text>
+                    <text x="320" y="165" fill="#94a3b8" font-size="11">Path of least resistance</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="badge"
+                        style="color: var(--accent-green); background: rgba(52, 211, 153, 0.1);">Geometry</span>
+                    Semantic Crosstalk vs Orthogonality</h2>
+            </div>
+            <div class="split-layout">
+                <div class="viz-container" style="display: flex; flex-direction: column;">
                     <div
-                        class="flex flex-col md:flex-row justify-between items-end mb-6 border-b border-slate-100 pb-4">
-                        <div>
-                            <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <span class="text-indigo-600">01.</span> RAG Denial (Context Isolation)
-                            </h3>
-                            <p class="text-slate-500 mt-2 max-w-xl">
-                                Standard RAG retrieves implementation details, causing contamination. SCP denies access
-                                to implementation, showing only <strong>Interface Contracts</strong>.
-                            </p>
-                        </div>
-                        <div class="mt-4 md:mt-0">
-                            <div class="inline-flex bg-slate-100 p-1 rounded-lg">
-                                <button id="viewStandard"
-                                    class="px-4 py-2 text-sm font-medium rounded-md bg-white text-slate-800 shadow-sm transition-all">Standard
-                                    RAG</button>
-                                <button id="viewSCP"
-                                    class="px-4 py-2 text-sm font-medium rounded-md text-slate-500 hover:text-indigo-600 transition-all">SCP
-                                    Protocol</button>
+                        style="flex: 1; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; display: flex; align-items: center; justify-content: space-around; padding: 20px;">
+                        <div style="z-index: 2; text-align: left;">
+                            <div style="color: var(--accent-red); font-weight: bold; font-size: 1.1em;">Standard Text
+                                (BPE)</div>
+                            <div style="font-size: 0.85em; color: var(--text-muted);">Overloaded "Clouds of Meaning"
                             </div>
                         </div>
+                        <svg width="200" height="120">
+                            <ellipse cx="70" cy="50" rx="45" ry="30" fill="rgba(251, 113, 133, 0.15)"
+                                stroke="var(--accent-red)" stroke-width="1" />
+                            <ellipse cx="120" cy="40" rx="50" ry="35" fill="rgba(56, 189, 248, 0.15)"
+                                stroke="var(--accent-blue)" stroke-width="1" />
+                            <ellipse cx="100" cy="80" rx="50" ry="30" fill="rgba(52, 211, 153, 0.15)"
+                                stroke="var(--accent-green)" stroke-width="1" />
+                            <text x="60" y="55" fill="#f8fafc" font-size="11">"sort"</text>
+                            <text x="130" y="40" fill="#f8fafc" font-size="11">"order"</text>
+                            <text x="100" y="90" fill="#f8fafc" font-size="11">"arrange"</text>
+                        </svg>
                     </div>
-
-                    <!-- Visualizer -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-8 rounded-2xl border border-slate-200"
-                        id="ragVisualizer">
-                        <!-- Module A -->
-                        <div class="bg-white p-6 rounded-xl border border-slate-300 shadow-sm relative overflow-hidden transition-all duration-500"
-                            id="moduleA">
-                            <div class="flex justify-between items-center mb-4">
-                                <div class="font-bold text-slate-800 font-mono">Module_Auth.py</div>
-                                <div class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500">Dependency</div>
-                            </div>
-                            <div class="space-y-2 font-mono text-xs">
-                                <div class="text-indigo-600 font-bold">def validate_user(user):</div>
-                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500"># Connect to DB
-                                </div>
-                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500">conn =
-                                    db.connect(URI)</div>
-                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500">cursor =
-                                    conn.cursor()</div>
-                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500"># Check
-                                    password hash</div>
-                                <div class="pl-4 text-slate-400 impl-detail transition-all duration-500">if
-                                    hash(user.pw) == row[0]:</div>
-                                <div class="pl-4 text-indigo-600 font-bold">return True</div>
-                            </div>
-                            <!-- Shield Overlay -->
-                            <div class="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center opacity-0 transition-opacity duration-500"
-                                id="shieldA">
-                                <div class="text-center">
-                                    <div class="text-emerald-500 text-3xl mb-2"><i class="fas fa-shield-alt"></i></div>
-                                    <div class="font-bold text-slate-800 text-sm">Implementation Hidden</div>
-                                </div>
-                            </div>
+                    <div
+                        style="flex: 1; position: relative; display: flex; align-items: center; justify-content: space-around; padding: 20px;">
+                        <div style="z-index: 2; text-align: left;">
+                            <div style="color: var(--accent-green); font-weight: bold; font-size: 1.1em;">SCP (Uiua
+                                Glyphs)</div>
+                            <div style="font-size: 0.85em; color: var(--text-muted);">Orthogonal Coordinates</div>
                         </div>
-
-                        <!-- LLM Context View -->
-                        <div class="bg-slate-900 p-6 rounded-xl shadow-lg text-slate-300 font-mono text-sm relative">
-                            <div
-                                class="absolute top-4 right-4 text-xs text-slate-500 uppercase font-bold tracking-wider">
-                                LLM Context Window</div>
-                            <div class="mb-4 text-emerald-400"># Generative Task: Create Login Flow</div>
-                            <div class="mb-2">import Module_Auth</div>
-                            <div class="mb-2 text-slate-500">...</div>
-                            <div id="llmPerception"
-                                class="p-3 bg-slate-800 rounded border border-slate-700 transition-all duration-300">
-                                <span class="text-rose-400">Warning:</span> Full source code of Module_Auth is visible.
-                                <br>
-                                <span class="text-slate-400 text-xs mt-1 block">Risk: Model may hallucinate based on
-                                    'db.connect' logic intended to be private.</span>
-                            </div>
-                        </div>
+                        <svg width="200" height="120">
+                            <line x1="20" y1="60" x2="180" y2="60" stroke="#334155" stroke-width="1" />
+                            <line x1="100" y1="10" x2="100" y2="110" stroke="#334155" stroke-width="1" />
+                            <line x1="140" y1="10" x2="140" y2="110" stroke="#334155" stroke-width="1"
+                                stroke-dasharray="2" />
+                            <line x1="20" y1="30" x2="180" y2="30" stroke="#334155" stroke-width="1"
+                                stroke-dasharray="2" />
+                            <circle cx="60" cy="30" r="5" fill="var(--accent-green)" class="anim-pulse" />
+                            <text x="60" y="20" fill="var(--accent-green)" font-size="18" font-weight="bold"
+                                font-family="monospace" text-anchor="middle">⍋</text>
+                            <circle cx="140" cy="90" r="5" fill="var(--accent-green)" class="anim-pulse"
+                                style="animation-delay: 1.5s" />
+                            <text x="140" y="80" fill="var(--accent-green)" font-size="18" font-weight="bold"
+                                font-family="monospace" text-anchor="middle">⊏</text>
+                        </svg>
                     </div>
                 </div>
-
-                <!-- Pillar 2: High Density Prompting -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-20">
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2 mb-4">
-                            <span class="text-indigo-600">02.</span> High-Density Prompting
-                        </h3>
-                        <p class="text-slate-600 mb-6">
-                            We use the <strong>Chevron DSL</strong> (based on Uiua glyphs) to maximize Information Per
-                            Token (IPT). These "High-Density Anchor Tokens" create spikes in attention, locking
-                            architectural constraints with minimal noise.
-                        </p>
-
-                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
-                            <h4 class="font-bold text-indigo-900 mb-3">The "Chevron" Glossary</h4>
-                            <div class="grid grid-cols-3 gap-4 text-center">
-                                <div class="bg-white p-3 rounded shadow-sm">
-                                    <div class="text-2xl text-indigo-600 font-mono mb-1">◬</div>
-                                    <div class="text-xs font-bold text-slate-700">Origin</div>
-                                    <div class="text-[10px] text-slate-500">State Root</div>
-                                </div>
-                                <div class="bg-white p-3 rounded shadow-sm">
-                                    <div class="text-2xl text-indigo-600 font-mono mb-1">Ө</div>
-                                    <div class="text-xs font-bold text-slate-700">Filter</div>
-                                    <div class="text-[10px] text-slate-500">Pure Func</div>
-                                </div>
-                                <div class="bg-white p-3 rounded shadow-sm">
-                                    <div class="text-2xl text-indigo-600 font-mono mb-1">☾</div>
-                                    <div class="text-xs font-bold text-slate-700">Fold</div>
-                                    <div class="text-[10px] text-slate-500">Aggregate</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <!-- Comparison -->
-                        <div class="bg-white border border-slate-200 rounded-xl p-5">
-                            <div class="flex justify-between text-xs text-slate-500 uppercase font-bold mb-2">
-                                <span>Standard Prompt (Natural Language)</span>
-                                <span>~18 Tokens</span>
-                            </div>
-                            <div class="bg-slate-100 p-3 rounded text-slate-600 text-sm">
-                                "This is the root of the module. It maintains state but should not be modified directly
-                                by children."
-                            </div>
-                        </div>
-
-                        <div class="flex justify-center text-slate-400">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-
-                        <div
-                            class="bg-indigo-900 border border-indigo-700 rounded-xl p-5 shadow-lg relative overflow-hidden">
-                            <div class="absolute right-0 top-0 p-4 opacity-10">
-                                <i class="fas fa-compress-arrows-alt text-6xl text-white"></i>
-                            </div>
-                            <div class="flex justify-between text-xs text-indigo-300 uppercase font-bold mb-2">
-                                <span>SCP Prompt (Chevron DSL)</span>
-                                <span class="text-emerald-400">3 Tokens</span>
-                            </div>
-                            <div
-                                class="bg-indigo-950/50 p-3 rounded text-white font-mono text-lg border border-indigo-500/30">
-                                """◬ Origin"""
-                            </div>
-                            <div class="mt-2 text-xs text-indigo-300">
-                                <i class="fas fa-bolt mr-1"></i> High Attention Activation
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pillar 3: The Weaver -->
-                <div class="border-t border-slate-100 pt-16">
-                    <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2 mb-8 justify-center">
-                        <span class="text-indigo-600">03.</span> The Weaver: Hybrid Verification
-                    </h3>
-
-                    <div class="flex flex-col md:flex-row gap-4 justify-center items-stretch">
-                        <div
-                            class="flex-1 bg-slate-50 p-6 rounded-xl border border-slate-200 text-center interactive-card">
-                            <div
-                                class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-indigo-600 mx-auto mb-4 shadow-sm text-xl border border-slate-100">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <h4 class="font-bold text-slate-800 mb-2">1. Static Analysis</h4>
-                            <p class="text-sm text-slate-500">Deterministic AST parsing checks for forbidden imports and
-                                global state mutations.</p>
-                        </div>
-
-                        <div class="flex items-center justify-center text-slate-300">
-                            <i class="fas fa-arrow-right text-xl hidden md:block"></i>
-                            <i class="fas fa-arrow-down text-xl md:hidden"></i>
-                        </div>
-
-                        <div
-                            class="flex-1 bg-slate-50 p-6 rounded-xl border border-slate-200 text-center interactive-card">
-                            <div
-                                class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-indigo-600 mx-auto mb-4 shadow-sm text-xl border border-slate-100">
-                                <i class="fas fa-brain"></i>
-                            </div>
-                            <h4 class="font-bold text-slate-800 mb-2">2. Neural Verification</h4>
-                            <p class="text-sm text-slate-500">Heuristic LLM pass verifies semantic intent and Chevron
-                                contract adherence.</p>
-                        </div>
-
-                        <div class="flex items-center justify-center text-slate-300">
-                            <i class="fas fa-arrow-right text-xl hidden md:block"></i>
-                            <i class="fas fa-arrow-down text-xl md:hidden"></i>
-                        </div>
-
-                        <div
-                            class="flex-1 bg-emerald-50 p-6 rounded-xl border border-emerald-100 text-center interactive-card">
-                            <div
-                                class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4 shadow-sm text-xl border border-emerald-100">
-                                <i class="fas fa-check-double"></i>
-                            </div>
-                            <h4 class="font-bold text-emerald-900 mb-2">Verified Code</h4>
-                            <p class="text-sm text-emerald-700">Code is committed only if both checks pass.</p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SECTION 4: CASE STUDY RESULTS -->
-        <section id="results" class="py-16 bg-slate-50 border-t border-slate-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="mb-12 text-center">
-                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Case Study: Resolving "Regression Hell"</h2>
-                    <p class="text-lg text-slate-600">
-                        Applied to a Windows/CUDA engineering project (~50k LOC). Comparison between Standard RAG and
-                        SCP.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Regression Chart -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-bold text-slate-800">Regression Rate</h3>
-                            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded">-99.3%
-                                Reduction</span>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="regressionChart"></canvas>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-4 text-center">Percentage of new features causing defects in
-                            existing code.</p>
-                    </div>
-
-                    <!-- Compression Chart -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-bold text-slate-800">Context Compression</h3>
-                            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">106x
-                                Improvement</span>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="compressionChart"></canvas>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-4 text-center">Tokens required to maintain architectural
-                            coherence (Log Scale).</p>
+                <div class="text-content">
+                    <p>Standard BPE tokens suffer from massive <strong>semantic cross-talk</strong>. A common word like
+                        "sort" has appeared in millions of conflicting contexts during pre-training, creating diffuse,
+                        shallow attractor basins.</p>
+                    <p><strong>SCP replaces text with rare mathematical symbols (Uiua).</strong> Because they are
+                        exceedingly rare, their continuous embeddings are highly <em>orthogonal</em> to the dense noise
+                        of English words. They dig isolated, steep attractors that are immune to context washout.</p>
+                    <div class="math-box">
+                        $$\mathbb{E}[\text{sim}(e_{SCP}, e_{\text{distractor}})] \approx 0$$
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Footer -->
-        <footer class="bg-slate-900 text-slate-400 py-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <div class="flex justify-center items-center gap-2 mb-4 text-white">
-                    <span class="text-xl font-mono">◬</span>
-                    <span class="font-bold text-lg">Spatial Constraint Protocol</span>
-                </div>
-                <p class="mb-6 max-w-lg mx-auto text-sm">
-                    "The future of AI software engineering lies not in feeding models MORE tokens, but in feeding them
-                    BETTER tokens."
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="badge"
+                        style="color: var(--accent-blue); background: rgba(56, 189, 248, 0.1);">Architecture</span> The
+                    Weaver (Maxwell's Demon)</h2>
+            </div>
+            <div class="text-content" style="margin-bottom: 30px;">
+                <p>Transformers cannot natively compute discrete Mutual Information during a continuous forward pass.
+                    SCP addresses this via an external System 2 algorithmic loop. <strong>The Weaver acts as Maxwell's
+                        Demon</strong>: it parses the AST, calculates structural coupling, and applies classic rejection
+                    sampling to force the LLM to search for a valid architecture.</p>
+            </div>
+            <div class="viz-container">
+                <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L9,3 z" fill="var(--accent-blue)" />
+                        </marker>
+                        <marker id="arrow-reject" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L9,3 z" fill="var(--accent-red)" />
+                        </marker>
+                    </defs>
+                    <rect x="50" y="110" width="140" height="70" rx="8" fill="#1e293b" stroke="var(--accent-blue)"
+                        stroke-width="2" />
+                    <text x="120" y="140" fill="#f8fafc" font-size="14" text-anchor="middle" font-weight="bold">System
+                        1</text>
+                    <text x="120" y="160" fill="#94a3b8" font-size="11" text-anchor="middle">Intuitive LLM
+                        Generation</text>
+
+                    <line x1="190" y1="145" x2="270" y2="145" stroke="var(--accent-blue)" stroke-width="2"
+                        marker-end="url(#arrow)" class="anim-flow" />
+                    <text x="230" y="135" fill="#94a3b8" font-size="10" text-anchor="middle">Code Output</text>
+
+                    <rect x="280" y="70" width="220" height="150" rx="8" fill="#1e293b" stroke="var(--accent-purple)"
+                        stroke-width="2" stroke-dasharray="8 4" />
+                    <text x="390" y="100" fill="var(--accent-purple)" font-size="14" text-anchor="middle"
+                        font-weight="bold">System 2 Verification</text>
+
+                    <rect x="300" y="115" width="180" height="40" rx="4" fill="#0f172a" stroke="#475569" />
+                    <text x="390" y="140" fill="#f8fafc" font-size="12" text-anchor="middle">Extract AST Graph
+                        G=(M,E)</text>
+
+                    <rect x="300" y="165" width="180" height="40" rx="4" fill="#0f172a" stroke="#475569" />
+                    <text x="390" y="190" fill="var(--accent-purple)" font-size="12" text-anchor="middle"
+                        font-family="monospace">W(G) = ∑ MI(m_i, m_j)</text>
+
+                    <line x1="500" y1="145" x2="620" y2="145" stroke="var(--accent-blue)" stroke-width="2"
+                        marker-end="url(#arrow)" />
+                    <text x="560" y="135" fill="var(--accent-green)" font-size="14" text-anchor="middle"
+                        font-weight="bold">W(G) = 0</text>
+
+                    <rect x="630" y="120" width="130" height="50" rx="8" fill="rgba(52, 211, 153, 0.1)"
+                        stroke="var(--accent-green)" stroke-width="2" />
+                    <text x="695" y="145" fill="var(--accent-green)" font-size="14" text-anchor="middle"
+                        font-weight="bold">Valid Architecture</text>
+                    <text x="695" y="160" fill="#94a3b8" font-size="10" text-anchor="middle">(Independent
+                        Modules)</text>
+
+                    <path d="M 390 70 C 390 0, 120 0, 120 110" fill="none" stroke="var(--accent-red)" stroke-width="2"
+                        marker-end="url(#arrow-reject)" class="anim-reject" />
+                    <text x="250" y="25" fill="var(--accent-red)" font-size="12" text-anchor="middle"
+                        font-weight="bold">W(G) > 0 : Reject & Resample</text>
+                    <text x="250" y="45" fill="#94a3b8" font-size="11" text-anchor="middle">Classical Rejection Sampling
+                        (Maxwell's Demon)</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="card conclusion-card">
+            <div class="card-header" style="border-bottom: 1px solid rgba(251, 191, 36, 0.2); justify-content: center;">
+                <h2 style="justify-content: center; width: 100%;"><span class="badge"
+                        style="color: var(--accent-gold); background: rgba(251, 191, 36, 0.1);">Conclusion</span> The
+                    Paradigm Shift</h2>
+            </div>
+            <div class="text-content">
+                <p
+                    style="font-size: 1.15em; color: var(--text-main); text-align: center; max-width: 800px; margin: 0 auto 20px auto;">
+                    The relentless industry push to expand the context window to millions of tokens is optimizing the
+                    wrong variable. <strong>We are engineering exponentially larger haystacks while actively dulling the
+                        needle.</strong>
                 </p>
-                <div class="text-xs text-slate-500">
-                    Revised Analysis based on Park (2026). Generated for Interactive Review.
+            </div>
+
+            <div class="conclusion-grid">
+                <div class="conclusion-box" style="border-top-color: var(--accent-red);">
+                    <h3 style="color: var(--accent-red);">1. Acknowledge Physics</h3>
+                    <p>Stop fighting the Partition Function. Accept that infinite text context guarantees infinite
+                        thermodynamic noise and signal decay.</p>
+                </div>
+                <div class="conclusion-box" style="border-top-color: var(--accent-green);">
+                    <h3 style="color: var(--accent-green);">2. Change Geometry</h3>
+                    <p>Abandon overloaded words. Use precise mathematical glyphs (Uiua) to map to orthogonal,
+                        un-interfered vector embeddings.</p>
+                </div>
+                <div class="conclusion-box" style="border-top-color: var(--accent-purple);">
+                    <h3 style="color: var(--accent-purple);">3. Force Constraints</h3>
+                    <p>Layer classical System 2 search (Maxwell's Demon) over neural generation to deterministically
+                        reject mode collapse.</p>
                 </div>
             </div>
-        </footer>
 
-    </main>
+            <div
+                style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05);">
+                <p
+                    style="font-size: 1.25em; color: var(--text-muted); line-height: 1.5; font-weight: 300; margin-bottom: 15px;">
+                    The cognitive ceiling of next-generation AI will not be defined by <span
+                        style="text-decoration: line-through;">how broadly it can remember</span>.
+                </p>
+                <p
+                    style="color: var(--accent-gold); font-size: 1.5em; font-weight: bold; letter-spacing: 0.5px; line-height: 1.5; margin: 0;">
+                    It will be defined by how precisely we can constrain it to think.
+                </p>
+            </div>
+        </div>
 
-    <script>
-        // --- Navigation Logic ---
-        function scrollToSection(id) {
-            const element = document.getElementById(id);
-            if (element) {
-                const navbarHeight = 64;
-                const elementPosition = element.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: "smooth"
-                });
-            }
-        }
+    </div>
 
-        // --- SECTION 1: SNR CHART LOGIC ---
-        const snrCtx = document.getElementById('snrChart').getContext('2d');
-        const contextSizes = Array.from({ length: 100 }, (_, i) => i + 1);
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="https://github.com/dparksports/dparksports/raw/main/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf"
+                target="_blank" rel="noopener">📄 Read Paper</a>
+            <a href="https://github.com/dparkwizard/dparkwizard.github.io" target="_blank" rel="noopener">⭐ GitHub
+                Repo</a>
+        </div>
+        <div class="copy">© 2026 MagicPoint.ai · Spatial Constraint Protocol</div>
+    </footer>
 
-        // Simulation Formula: 1 / (1 + decay_factor * x)
-        // This simulates the "Lost in the Middle" effect
-        const snrData = contextSizes.map(x => 100 / (1 + 0.15 * x));
-
-        const snrChart = new Chart(snrCtx, {
-            type: 'line',
-            data: {
-                labels: contextSizes,
-                datasets: [{
-                    label: 'Signal-to-Noise Ratio (SNR)',
-                    data: snrData,
-                    borderColor: '#4f46e5', // Indigo 600
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    borderWidth: 3,
-                    pointRadius: 0,
-                    fill: true,
-                    tension: 0.4
-                }, {
-                    label: 'Current Context',
-                    data: [], // Populated dynamically
-                    pointBackgroundColor: '#ef4444',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 8,
-                    showLine: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: (context) => `Signal Quality: ${context.raw.toFixed(1)}%`
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        title: { display: true, text: 'Context Window (k Tokens)' },
-                        grid: { display: false }
-                    },
-                    y: {
-                        title: { display: true, text: 'Architectural Fidelity' },
-                        min: 0,
-                        max: 100
-                    }
-                }
-            }
-        });
-
-        const slider = document.getElementById('snrSlider');
-        const snrLabel = document.getElementById('snrLabel');
-        const snrStatus = document.getElementById('snrStatus');
-
-        function updateSNR(val) {
-            snrLabel.innerText = `${val}k Tokens`;
-
-            // Update Chart Point
-            const yVal = 100 / (1 + 0.15 * val);
-            const pointData = new Array(100).fill(null);
-            pointData[val - 1] = yVal;
-            snrChart.data.datasets[1].data = pointData;
-            snrChart.update();
-
-            // Update Status Text
-            if (val < 15) {
-                snrStatus.innerText = "High (Coherent)";
-                snrStatus.className = "text-lg font-bold text-emerald-600";
-            } else if (val < 50) {
-                snrStatus.innerText = "Degrading (Noisy)";
-                snrStatus.className = "text-lg font-bold text-amber-500";
-            } else {
-                snrStatus.innerText = "Foggy Boundary (Lost)";
-                snrStatus.className = "text-lg font-bold text-rose-600";
-            }
-        }
-
-        slider.addEventListener('input', (e) => updateSNR(e.target.value));
-        updateSNR(20); // Init
-
-        // --- SECTION 2: RAG DENIAL VISUALIZER ---
-        const btnStandard = document.getElementById('viewStandard');
-        const btnSCP = document.getElementById('viewSCP');
-        const shieldA = document.getElementById('shieldA');
-        const implDetails = document.querySelectorAll('.impl-detail');
-        const llmPerception = document.getElementById('llmPerception');
-
-        btnStandard.addEventListener('click', () => {
-            // Button Styles
-            btnStandard.className = "px-4 py-2 text-sm font-medium rounded-md bg-white text-slate-800 shadow-sm transition-all";
-            btnSCP.className = "px-4 py-2 text-sm font-medium rounded-md text-slate-500 hover:text-indigo-600 transition-all";
-
-            // Visuals: Remove Shield, Show Details
-            shieldA.classList.remove('opacity-100');
-            shieldA.classList.add('opacity-0');
-
-            implDetails.forEach(el => {
-                el.classList.remove('blur-text');
-                el.classList.add('text-slate-400');
-            });
-
-            // LLM Text
-            llmPerception.innerHTML = `
-                <span class="text-rose-400">Warning:</span> Full source code of Module_Auth is visible. <br>
-                <span class="text-slate-400 text-xs mt-1 block">Risk: Model may hallucinate based on 'db.connect' logic intended to be private.</span>
-            `;
-            llmPerception.className = "p-3 bg-slate-800 rounded border border-slate-700 transition-all duration-300";
-        });
-
-        btnSCP.addEventListener('click', () => {
-            // Button Styles
-            btnSCP.className = "px-4 py-2 text-sm font-medium rounded-md bg-white text-indigo-600 shadow-sm transition-all";
-            btnStandard.className = "px-4 py-2 text-sm font-medium rounded-md text-slate-500 hover:text-slate-800 transition-all";
-
-            // Visuals: Add Shield, Blur Details
-            shieldA.classList.remove('opacity-0');
-            shieldA.classList.add('opacity-100');
-
-            implDetails.forEach(el => {
-                el.classList.remove('text-slate-400');
-                el.classList.add('blur-text');
-            });
-
-            // LLM Text
-            llmPerception.innerHTML = `
-                <span class="text-emerald-400">Secure:</span> Context Isolated. <br>
-                <span class="text-slate-400 text-xs mt-1 block">Model only sees interface signature. Coupling is impossible.</span>
-            `;
-            llmPerception.className = "p-3 bg-emerald-900/20 rounded border border-emerald-500/30 transition-all duration-300";
-        });
-
-        // --- SECTION 4: RESULTS CHARTS ---
-
-        // Regression Chart
-        const ctxReg = document.getElementById('regressionChart').getContext('2d');
-        new Chart(ctxReg, {
-            type: 'bar',
-            data: {
-                labels: ['Standard RAG', 'SCP Protocol'],
-                datasets: [{
-                    label: 'Regression Rate (%)',
-                    data: [14.3, 0.1],
-                    backgroundColor: ['#cbd5e1', '#10b981'], // Slate vs Emerald
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: '#f1f5f9' },
-                        title: { display: true, text: 'Defect Rate (%)' }
-                    },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Compression Chart
-        const ctxComp = document.getElementById('compressionChart').getContext('2d');
-        new Chart(ctxComp, {
-            type: 'bar',
-            data: {
-                labels: ['Standard RAG', 'SCP Protocol'],
-                datasets: [{
-                    label: 'Context Size (Tokens)',
-                    data: [120000, 1100],
-                    backgroundColor: ['#cbd5e1', '#4f46e5'], // Slate vs Indigo
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: {
-                        type: 'logarithmic',
-                        grid: { color: '#f1f5f9' },
-                        title: { display: true, text: 'Tokens (Log Scale)' }
-                    },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-    </script>
 </body>
 
 </html>
