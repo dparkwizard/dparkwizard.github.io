@@ -446,9 +446,7 @@
             <div class="logo-text">MagicPoint<span class="domain">.ai</span></div>
         </a>
         <div class="nav-links">
-            <a class="btn-paper"
-                href="https://github.com/dparksports/dparksports/blob/main/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf"
-                target="_blank" rel="noopener">
+            <a class="btn-paper" href="#" onclick="downloadPaper(event)">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z" />
@@ -741,14 +739,31 @@
     <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-links">
-            <a href="https://github.com/dparksports/dparksports/blob/main/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf"
-                target="_blank" rel="noopener">📄 Read Paper</a>
+            <a href="#" onclick="downloadPaper(event)">📄 Read Paper</a>
             <a href="https://github.com/dparkwizard/dparkwizard.github.io" target="_blank" rel="noopener">⭐ GitHub
                 Repo</a>
         </div>
         <div class="copy">© 2026 MagicPoint.ai · Spatial Constraint Protocol</div>
     </footer>
 
+    <script>
+        function downloadPaper(e) {
+            e.preventDefault();
+            const url = 'https://raw.githubusercontent.com/dparksports/dparksports/main/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf';
+            fetch(url)
+                .then(res => res.blob())
+                .then(blob => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = 'SCP II - Neuro-Symbolic Resolution.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(a.href);
+                })
+                .catch(() => window.open(url, '_blank'));
+        }
+    </script>
 </body>
 
 </html>
