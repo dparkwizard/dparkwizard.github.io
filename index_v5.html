@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicPoint.ai — Spatial Constraint Protocol</title>
+    <meta name="description"
+        content="MagicPoint.ai: Mitigating Attention Entropy via Neuro-Symbolic Context Compression. Explore the Spatial Constraint Protocol (SCP) research and open-source tools.">
+    <meta name="keywords"
+        content="MagicPoint, SCP, Spatial Constraint Protocol, Attention Decay, LLM, AI, Neuro-Symbolic">
+    <meta property="og:title" content="MagicPoint.ai — Spatial Constraint Protocol">
+    <meta property="og:description"
+        content="Visualizing Attention Decay and the Spatial Constraint Protocol. Research paper and open-source tools.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://magicpoint.ai">
+    <link rel="canonical" href="https://magicpoint.ai">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-red: #fb7185;
+            --accent-green: #34d399;
+            --accent-purple: #c084fc;
+            --accent-gold: #fbbf24;
+        }
+
+        body {
+            font-family: 'Inter', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* ---- Navigation ---- */
+        .site-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .site-nav .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .site-nav .logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .site-nav .logo-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .site-nav .logo-text .domain {
+            color: var(--accent-blue);
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a.btn-paper {
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-links a.btn-paper:hover {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--accent-blue);
+        }
+
+        .nav-links a.btn-github {
+            color: #fff;
+            background: linear-gradient(135deg, #6366f1, var(--accent-purple));
+            border: none;
+        }
+
+        .nav-links a.btn-github:hover {
+            filter: brightness(1.12);
+            transform: translateY(-1px);
+        }
+
+        .nav-links a svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 600px) {
+            .site-nav {
+                padding: 12px 16px;
+            }
+
+            .nav-links a span.label {
+                display: none;
+            }
+
+            .nav-links a {
+                padding: 9px 12px;
+            }
+        }
+
+        /* ---- Footer ---- */
+        .site-footer {
+            text-align: center;
+            padding: 48px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        .site-footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .site-footer .footer-links a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .site-footer .footer-links a:hover {
+            color: var(--accent-purple);
+        }
+
+        .site-footer .copy {
+            font-size: 0.8em;
+            color: #475569;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .header h1 span {
+            color: var(--accent-blue);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.2em;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 45px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 15px;
+        }
+
+        .card-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .badge {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.55em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            vertical-align: middle;
+        }
+
+        .split-layout {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .split-layout>div {
+            flex: 1;
+        }
+
+        .text-content p {
+            margin-bottom: 20px;
+            font-size: 1.05em;
+            color: var(--text-muted);
+            text-align: justify;
+        }
+
+        .text-content strong {
+            color: var(--text-main);
+        }
+
+        .math-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .viz-container {
+            width: 100%;
+            background: #0b1120;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            padding: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Conclusion specific styles */
+        .conclusion-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .conclusion-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-purple), var(--accent-blue), var(--accent-green));
+        }
+
+        .conclusion-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .conclusion-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 10px;
+            border-top: 3px solid #475569;
+        }
+
+        .conclusion-box h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .conclusion-box p {
+            font-size: 0.95em;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Animations */
+        @keyframes roll {
+            0% {
+                transform: translate(120px, 160px);
+            }
+
+            10% {
+                transform: translate(120px, 160px);
+            }
+
+            40% {
+                transform: translate(250px, 120px);
+            }
+
+            70% {
+                transform: translate(450px, 280px);
+            }
+
+            100% {
+                transform: translate(450px, 280px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(0.9);
+                filter: drop-shadow(0 0 8px var(--accent-green));
+            }
+        }
+
+        @keyframes flow {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+
+        @keyframes rejectPulse {
+
+            0%,
+            100% {
+                stroke: var(--text-muted);
+            }
+
+            50% {
+                stroke: var(--accent-red);
+                filter: drop-shadow(0 0 5px var(--accent-red));
+            }
+        }
+
+        .anim-ball {
+            animation: roll 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .anim-pulse {
+            animation: pulse 3s infinite ease-in-out;
+            transform-origin: center;
+            transform-box: fill-box;
+        }
+
+        .anim-flow {
+            stroke-dasharray: 5 5;
+            animation: flow 1s linear infinite;
+        }
+
+        .anim-reject {
+            animation: rejectPulse 2s infinite ease-in-out;
+        }
+
+        @media (max-width: 900px) {
+
+            .split-layout,
+            .conclusion-grid {
+                flex-direction: column;
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 30px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="site-nav">
+        <a href="https://magicpoint.ai" class="logo">
+            <div class="logo-icon">◬</div>
+            <div class="logo-text">MagicPoint<span class="domain">.ai</span></div>
+        </a>
+        <div class="nav-links">
+            <a class="btn-paper" href="SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf" download>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z" />
+                </svg>
+                <span class="label">Read Paper</span>
+            </a>
+            <a class="btn-github" href="https://github.com/dparksports/Project-Chevron" target="_blank" rel="noopener">
+                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                </svg>
+                <span class="label">GitHub</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Visualizing <span>Attention Decay</span></h1>
+            <p>An interactive infographic dashboard mapping the physical, mathematical, and architectural reality of the
+                Spatial Constraint Protocol (SCP).</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="badge"
+                        style="color: var(--accent-red); background: rgba(251, 113, 133, 0.1);">Thermodynamics</span>
+                    Channel Capacity Saturation</h2>
+            </div>
+            <div class="split-layout">
+                <div class="text-content">
+                    <p>The "Billion Token Fallacy" assumes the Context Window acts as lossless memory. In reality, the
+                        Attention Mechanism is a <strong>Competitive Interference Channel</strong>.</p>
+                    <p>Every distractor token adds to the normalization constant ($Z$). As $N \to \infty$, the
+                        cumulative thermodynamic noise mathematically drowns out the specific target signal unless the
+                        model's dimensional resolution can outpace it logarithmically.</p>
+                    <div class="math-box">
+                        $$\Delta E = E_{\text{noise}} - E_{\text{signal}} > \ln(N)$$
+                    </div>
+                </div>
+                <div class="viz-container">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="50" y1="260" x2="380" y2="260" stroke="#475569" stroke-width="2" />
+                        <line x1="50" y1="260" x2="50" y2="40" stroke="#475569" stroke-width="2" />
+                        <text x="215" y="290" fill="#94a3b8" font-size="12" text-anchor="middle">Context Window Size
+                            (N)</text>
+                        <text x="30" y="150" fill="#94a3b8" font-size="12" text-anchor="middle"
+                            transform="rotate(-90 30,150)">Probability Mass</text>
+                        <path d="M 50 260 L 50 240 Q 150 150 350 50 L 350 260 Z" fill="rgba(251, 113, 133, 0.1)" />
+                        <path d="M 50 240 Q 150 150 350 50" fill="none" stroke="var(--accent-red)" stroke-width="3" />
+                        <path d="M 50 60 Q 150 80 350 240" fill="none" stroke="var(--accent-blue)" stroke-width="3" />
+                        <circle cx="200" cy="150" r="5" fill="#f8fafc" />
+                        <line x1="200" y1="150" x2="200" y2="260" stroke="#f8fafc" stroke-width="1"
+                            stroke-dasharray="4" />
+                        <text x="200" y="135" fill="#f8fafc" font-size="10" text-anchor="middle">Saturation Point</text>
+                        <text x="300" y="40" fill="var(--accent-red)" font-size="12" font-weight="bold">Noise (Z)</text>
+                        <text x="330" y="235" fill="var(--accent-blue)" font-size="12" font-weight="bold">Signal</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="badge"
+                        style="color: var(--accent-purple); background: rgba(192, 132, 252, 0.1);">Latent Space</span>
+                    Confabulation as Relaxation</h2>
+            </div>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto;">When $Z$ explodes, the prompt's
+                    local "Context Valley" becomes washed out by high-entropy noise. The model's latent state naturally
+                    rolls out of the shallow context and settles into the deep <strong>Prior Canyon</strong> (its
+                    pre-trained defaults). Hallucination is merely thermodynamic relaxation to the mean.</p>
+                <div class="math-box" style="display: inline-block; padding: 10px 20px;">
+                    $$\hat{y} = \arg\max P(y) $$
+                </div>
+            </div>
+            <div class="viz-container">
+                <svg viewBox="0 0 800 350" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="140" width="800" height="210" fill="rgba(251, 113, 133, 0.05)" />
+                    <line x1="0" y1="140" x2="800" y2="140" stroke="rgba(251, 113, 133, 0.5)" stroke-width="2"
+                        stroke-dasharray="5" />
+                    <text x="20" y="130" fill="var(--accent-red)" font-size="12">High Entropy Noise Floor (Exploded
+                        Z)</text>
+                    <path
+                        d="M 0 150 C 50 150, 100 180, 150 180 C 200 180, 220 100, 300 100 C 350 100, 420 300, 480 300 C 550 300, 600 50, 800 50"
+                        fill="none" stroke="#64748b" stroke-width="4" />
+                    <text x="150" y="210" fill="var(--text-main)" font-size="14" text-anchor="middle"
+                        font-weight="bold">"Context Valley"</text>
+                    <text x="150" y="230" fill="#94a3b8" font-size="11" text-anchor="middle">(Washed out by
+                        noise)</text>
+                    <text x="480" y="330" fill="var(--accent-purple)" font-size="14" text-anchor="middle"
+                        font-weight="bold">"Prior Canyon"</text>
+                    <text x="480" y="190" fill="#94a3b8" font-size="11" text-anchor="middle">Deep pre-trained
+                        attractors</text>
+                    <circle cx="0" cy="0" r="10" fill="var(--accent-blue)" class="anim-ball" />
+                    <path d="M 120 160 Q 250 120 450 280" fill="none" stroke="var(--accent-blue)" stroke-width="2"
+                        stroke-dasharray="6 4" opacity="0.5" />
+                    <text x="320" y="150" fill="var(--accent-blue)" font-size="14" font-weight="bold"
+                        font-style="italic">Confabulation</text>
+                    <text x="320" y="165" fill="#94a3b8" font-size="11">Path of least resistance</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="badge"
+                        style="color: var(--accent-green); background: rgba(52, 211, 153, 0.1);">Geometry</span>
+                    Semantic Crosstalk vs Orthogonality</h2>
+            </div>
+            <div class="split-layout">
+                <div class="viz-container" style="display: flex; flex-direction: column;">
+                    <div
+                        style="flex: 1; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; display: flex; align-items: center; justify-content: space-around; padding: 20px;">
+                        <div style="z-index: 2; text-align: left;">
+                            <div style="color: var(--accent-red); font-weight: bold; font-size: 1.1em;">Standard Text
+                                (BPE)</div>
+                            <div style="font-size: 0.85em; color: var(--text-muted);">Overloaded "Clouds of Meaning"
+                            </div>
+                        </div>
+                        <svg width="200" height="120">
+                            <ellipse cx="70" cy="50" rx="45" ry="30" fill="rgba(251, 113, 133, 0.15)"
+                                stroke="var(--accent-red)" stroke-width="1" />
+                            <ellipse cx="120" cy="40" rx="50" ry="35" fill="rgba(56, 189, 248, 0.15)"
+                                stroke="var(--accent-blue)" stroke-width="1" />
+                            <ellipse cx="100" cy="80" rx="50" ry="30" fill="rgba(52, 211, 153, 0.15)"
+                                stroke="var(--accent-green)" stroke-width="1" />
+                            <text x="60" y="55" fill="#f8fafc" font-size="11">"sort"</text>
+                            <text x="130" y="40" fill="#f8fafc" font-size="11">"order"</text>
+                            <text x="100" y="90" fill="#f8fafc" font-size="11">"arrange"</text>
+                        </svg>
+                    </div>
+                    <div
+                        style="flex: 1; position: relative; display: flex; align-items: center; justify-content: space-around; padding: 20px;">
+                        <div style="z-index: 2; text-align: left;">
+                            <div style="color: var(--accent-green); font-weight: bold; font-size: 1.1em;">SCP (Uiua
+                                Glyphs)</div>
+                            <div style="font-size: 0.85em; color: var(--text-muted);">Orthogonal Coordinates</div>
+                        </div>
+                        <svg width="200" height="120">
+                            <line x1="20" y1="60" x2="180" y2="60" stroke="#334155" stroke-width="1" />
+                            <line x1="100" y1="10" x2="100" y2="110" stroke="#334155" stroke-width="1" />
+                            <line x1="140" y1="10" x2="140" y2="110" stroke="#334155" stroke-width="1"
+                                stroke-dasharray="2" />
+                            <line x1="20" y1="30" x2="180" y2="30" stroke="#334155" stroke-width="1"
+                                stroke-dasharray="2" />
+                            <circle cx="60" cy="30" r="5" fill="var(--accent-green)" class="anim-pulse" />
+                            <text x="60" y="20" fill="var(--accent-green)" font-size="18" font-weight="bold"
+                                font-family="monospace" text-anchor="middle">⍋</text>
+                            <circle cx="140" cy="90" r="5" fill="var(--accent-green)" class="anim-pulse"
+                                style="animation-delay: 1.5s" />
+                            <text x="140" y="80" fill="var(--accent-green)" font-size="18" font-weight="bold"
+                                font-family="monospace" text-anchor="middle">⊏</text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-content">
+                    <p>Standard BPE tokens suffer from massive <strong>semantic cross-talk</strong>. A common word like
+                        "sort" has appeared in millions of conflicting contexts during pre-training, creating diffuse,
+                        shallow attractor basins.</p>
+                    <p><strong>SCP replaces text with rare mathematical symbols (Uiua).</strong> Because they are
+                        exceedingly rare, their continuous embeddings are highly <em>orthogonal</em> to the dense noise
+                        of English words. They dig isolated, steep attractors that are immune to context washout.</p>
+                    <div class="math-box">
+                        $$\mathbb{E}[\text{sim}(e_{SCP}, e_{\text{distractor}})] \approx 0$$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><span class="badge"
+                        style="color: var(--accent-blue); background: rgba(56, 189, 248, 0.1);">Architecture</span> The
+                    Weaver (Maxwell's Demon)</h2>
+            </div>
+            <div class="text-content" style="margin-bottom: 30px;">
+                <p>Transformers cannot natively compute discrete Mutual Information during a continuous forward pass.
+                    SCP addresses this via an external System 2 algorithmic loop. <strong>The Weaver acts as Maxwell's
+                        Demon</strong>: it parses the AST, calculates structural coupling, and applies classic rejection
+                    sampling to force the LLM to search for a valid architecture.</p>
+            </div>
+            <div class="viz-container">
+                <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L9,3 z" fill="var(--accent-blue)" />
+                        </marker>
+                        <marker id="arrow-reject" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L9,3 z" fill="var(--accent-red)" />
+                        </marker>
+                    </defs>
+                    <rect x="50" y="110" width="140" height="70" rx="8" fill="#1e293b" stroke="var(--accent-blue)"
+                        stroke-width="2" />
+                    <text x="120" y="140" fill="#f8fafc" font-size="14" text-anchor="middle" font-weight="bold">System
+                        1</text>
+                    <text x="120" y="160" fill="#94a3b8" font-size="11" text-anchor="middle">Intuitive LLM
+                        Generation</text>
+
+                    <line x1="190" y1="145" x2="270" y2="145" stroke="var(--accent-blue)" stroke-width="2"
+                        marker-end="url(#arrow)" class="anim-flow" />
+                    <text x="230" y="135" fill="#94a3b8" font-size="10" text-anchor="middle">Code Output</text>
+
+                    <rect x="280" y="70" width="220" height="150" rx="8" fill="#1e293b" stroke="var(--accent-purple)"
+                        stroke-width="2" stroke-dasharray="8 4" />
+                    <text x="390" y="100" fill="var(--accent-purple)" font-size="14" text-anchor="middle"
+                        font-weight="bold">System 2 Verification</text>
+
+                    <rect x="300" y="115" width="180" height="40" rx="4" fill="#0f172a" stroke="#475569" />
+                    <text x="390" y="140" fill="#f8fafc" font-size="12" text-anchor="middle">Extract AST Graph
+                        G=(M,E)</text>
+
+                    <rect x="300" y="165" width="180" height="40" rx="4" fill="#0f172a" stroke="#475569" />
+                    <text x="390" y="190" fill="var(--accent-purple)" font-size="12" text-anchor="middle"
+                        font-family="monospace">W(G) = ∑ MI(m_i, m_j)</text>
+
+                    <line x1="500" y1="145" x2="620" y2="145" stroke="var(--accent-blue)" stroke-width="2"
+                        marker-end="url(#arrow)" />
+                    <text x="560" y="135" fill="var(--accent-green)" font-size="14" text-anchor="middle"
+                        font-weight="bold">W(G) = 0</text>
+
+                    <rect x="630" y="120" width="130" height="50" rx="8" fill="rgba(52, 211, 153, 0.1)"
+                        stroke="var(--accent-green)" stroke-width="2" />
+                    <text x="695" y="145" fill="var(--accent-green)" font-size="14" text-anchor="middle"
+                        font-weight="bold">Valid Architecture</text>
+                    <text x="695" y="160" fill="#94a3b8" font-size="10" text-anchor="middle">(Independent
+                        Modules)</text>
+
+                    <path d="M 390 70 C 390 0, 120 0, 120 110" fill="none" stroke="var(--accent-red)" stroke-width="2"
+                        marker-end="url(#arrow-reject)" class="anim-reject" />
+                    <text x="250" y="25" fill="var(--accent-red)" font-size="12" text-anchor="middle"
+                        font-weight="bold">W(G) > 0 : Reject & Resample</text>
+                    <text x="250" y="45" fill="#94a3b8" font-size="11" text-anchor="middle">Classical Rejection Sampling
+                        (Maxwell's Demon)</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="card conclusion-card">
+            <div class="card-header" style="border-bottom: 1px solid rgba(251, 191, 36, 0.2); justify-content: center;">
+                <h2 style="justify-content: center; width: 100%;"><span class="badge"
+                        style="color: var(--accent-gold); background: rgba(251, 191, 36, 0.1);">Conclusion</span> The
+                    Paradigm Shift</h2>
+            </div>
+            <div class="text-content">
+                <p
+                    style="font-size: 1.15em; color: var(--text-main); text-align: center; max-width: 800px; margin: 0 auto 20px auto;">
+                    The relentless industry push to expand the context window to millions of tokens is optimizing the
+                    wrong variable. <strong>We are engineering exponentially larger haystacks while actively dulling the
+                        needle.</strong>
+                </p>
+            </div>
+
+            <div class="conclusion-grid">
+                <div class="conclusion-box" style="border-top-color: var(--accent-red);">
+                    <h3 style="color: var(--accent-red);">1. Acknowledge Physics</h3>
+                    <p>Stop fighting the Partition Function. Accept that infinite text context guarantees infinite
+                        thermodynamic noise and signal decay.</p>
+                </div>
+                <div class="conclusion-box" style="border-top-color: var(--accent-green);">
+                    <h3 style="color: var(--accent-green);">2. Change Geometry</h3>
+                    <p>Abandon overloaded words. Use precise mathematical glyphs (Uiua) to map to orthogonal,
+                        un-interfered vector embeddings.</p>
+                </div>
+                <div class="conclusion-box" style="border-top-color: var(--accent-purple);">
+                    <h3 style="color: var(--accent-purple);">3. Force Constraints</h3>
+                    <p>Layer classical System 2 search (Maxwell's Demon) over neural generation to deterministically
+                        reject mode collapse.</p>
+                </div>
+            </div>
+
+            <div
+                style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05);">
+                <p
+                    style="font-size: 1.25em; color: var(--text-muted); line-height: 1.5; font-weight: 300; margin-bottom: 15px;">
+                    The cognitive ceiling of next-generation AI will not be defined by <span
+                        style="text-decoration: line-through;">how broadly it can remember</span>.
+                </p>
+                <p
+                    style="color: var(--accent-gold); font-size: 1.5em; font-weight: bold; letter-spacing: 0.5px; line-height: 1.5; margin: 0;">
+                    It will be defined by how precisely we can constrain it to think.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf" download>📄 Read Paper</a>
+            <a href="https://github.com/dparksports/Project-Chevron" target="_blank" rel="noopener">⭐ GitHub
+                Repo</a>
+        </div>
+        <div class="copy">© 2026 MagicPoint.ai · Spatial Constraint Protocol</div>
+    </footer>
+
+</body>
+
+</html>
