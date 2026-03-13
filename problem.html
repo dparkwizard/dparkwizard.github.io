@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Problem — Holographic Language Framework</title>
+    <meta name="description"
+        content="Why bigger context windows aren't enough: the mathematical limits of scaling attention in large language models.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="site.htm" class="brand">HL Framework</a>
+        <div class="links">
+            <a href="problem.html" class="active">The Problem</a>
+            <a href="solution.html">The Solution</a>
+            <a href="enforcement.html">Enforcement</a>
+            <a href="roadmap.html">Roadmap</a>
+            <a href="https://magicpoint.ai/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf">Full Paper ↗</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="section-label">The Problem</div>
+        <h1>🚧 Why bigger context windows aren't enough</h1>
+        <p class="page-lead">
+            The standard playbook for making AI smarter boils down to one idea: feed it more text.
+            But throwing more words at the model creates three compounding problems.
+        </p>
+    </div>
+
+    <div class="container content">
+
+        <h2>Signal Drowning</h2>
+        <p>
+            The more text in the window, the harder it is for the model to find the one fact it
+            actually needs. Modern LLMs now process hundreds of thousands of words at once — but
+            relevance gets buried under sheer volume.
+        </p>
+
+        <div class="analogy">
+            Like searching for a whisper in a stadium of shouting fans. No matter how good your
+            hearing is, the noise eventually wins.
+        </div>
+
+        <h2>Word Ambiguity (Adversarial Polysemy)</h2>
+        <p>
+            Human language is naturally fuzzy. "Bank" can mean a riverbank or a financial
+            institution. In the model's internal math, these meanings blur together, creating noise
+            that compounds at scale. The paper calls this <strong>Adversarial Polysemy</strong> —
+            words actively fighting each other for space in the model's limited dimensions.
+        </p>
+
+        <h2>Compute Explosion</h2>
+        <p>
+            Processing twice as many words costs roughly <strong>four times</strong> the compute
+            (it grows quadratically, O(N²)). Even the fastest custom hardware — like NVIDIA's
+            B200 running FlashAttention-4 at 1,605 TFLOP/s — can only optimise the speed of this
+            process. It can't change the underlying math.
+        </p>
+
+        <div class="analogy">
+            Imagine a librarian in a room with 10 books — finding the right passage is easy. Now
+            put them in a warehouse with a million books, all with overlapping titles and shuffled
+            pages. No matter how fast the librarian runs, the task is fundamentally harder. The
+            Holographic Language Framework doesn't try to make the librarian faster — it
+            <strong>reorganises the warehouse</strong>.
+        </div>
+
+        <!-- ── Technical Deep Dives ─────────────────────── -->
+        <details>
+            <summary>🔬 Technical Deep Dive — Softmax & the Critical Energy Gap</summary>
+            <div class="deep-dive">
+                <p>
+                    In standard transformer attention, retrieval probability is governed by the softmax
+                    partition function: <code>O = softmax(QKᵀ / √d) V</code>. For reliable retrieval
+                    (P<sub>sig</sub> &gt; 1−ε), the target signal must exceed the <strong>Critical Energy
+                    Gap</strong>:
+                </p>
+                <p>
+                    <code>ΔE = E_sig − Ē_noise > ln(N−1) + ln((1−ε)/ε)</code>
+                </p>
+                <p>
+                    As sequence length <em>N</em> grows, the log-barrier forces the signal to work
+                    exponentially harder to stand out. Meanwhile, the model packs millions of concepts
+                    into a fixed hidden dimension (e.g. d<sub>k</sub>=12,288). The <strong>Welch Bound</strong>
+                    proves that perfect orthogonality is mathematically impossible when vectors exceed
+                    available dimensions — so word embeddings inevitably overlap, inflating
+                    Ē<sub>noise</sub>. The paper terms this <em>Adversarial Polysemy</em>.
+                </p>
+                <p>
+                    Empirical measurements on Meta-Llama-3-8B show English BPE tokens have a
+                    <strong>Participation Ratio of 94.34</strong> (highly diffuse) vs. <strong>31.93</strong>
+                    for topo-categorical clusters (concentrated). This validates the geometric argument
+                    that natural language representations occupy a noisier, more spread-out region of
+                    embedding space.
+                </p>
+            </div>
+        </details>
+
+        <details>
+            <summary>🔬 Technical Deep Dive — FlashAttention 1→4: optimising the symptom</summary>
+            <div class="deep-dive">
+                <p>
+                    The FlashAttention lineage addresses the IO bottleneck of self-attention:<br>
+                    <strong>FA-1/2:</strong> Loop tiling avoids O(N²) matrix materialisation in HBM.<br>
+                    <strong>FA-3:</strong> Exploits Hopper (H100) async pipelines + FP8 block quantisation
+                    (RMSE drops from 3.2e-4 to 1.9e-4 in FP16).<br>
+                    <strong>FA-4:</strong> On Blackwell B200, shifts to integer ALUs for Taylor-series
+                    exponential approximation, achieving <strong>1,605 TFLOP/s</strong>.
+                </p>
+                <p>
+                    Despite these feats, processing 100K–1M tokens still requires <em>linear memory and
+                    quadratic FLOPs</em>. FlashAttention-4 is the pinnacle of optimising the symptom,
+                    not a cure for softmax partition function inflation.
+                </p>
+            </div>
+        </details>
+
+        <!-- ── Page Navigation ──────────────────────────── -->
+        <div class="page-nav">
+            <a href="site.htm">
+                <span class="dir">← Home</span>
+                <span class="title">Overview</span>
+            </a>
+            <a href="solution.html" class="next">
+                <span class="dir">Next →</span>
+                <span class="title">The Solution</span>
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>
+            © 2026 Dan Park · <a href="https://magicpoint.ai">magicpoint.ai</a> ·
+            <a href="https://www.linkedin.com/in/dparksports/">LinkedIn</a>
+        </p>
+    </footer>
+
+</body>
+
+</html>

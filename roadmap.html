@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap — Holographic Language Framework</title>
+    <meta name="description"
+        content="A 5-stage engineering curriculum to move AI from probabilistic prediction to hybrid deterministic reasoning.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="site.htm" class="brand">HL Framework</a>
+        <div class="links">
+            <a href="problem.html">The Problem</a>
+            <a href="solution.html">The Solution</a>
+            <a href="enforcement.html">Enforcement</a>
+            <a href="roadmap.html" class="active">Roadmap</a>
+            <a href="https://magicpoint.ai/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf">Full Paper ↗</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="section-label">Roadmap</div>
+        <h1>🗺️ How we get there — a 5-stage plan</h1>
+        <p class="page-lead">
+            This isn't a "flip a switch" proposal. The paper outlines a phased engineering
+            curriculum to gradually move AI from purely probabilistic text prediction toward
+            hybrid deterministic reasoning.
+        </p>
+    </div>
+
+    <div class="container content">
+
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <div class="phase-label near">Phase 1 · Token-Based Interoperability</div>
+                <h3>Stage 1: Embedding Surgery</h3>
+                <p>Forcefully reset and orthogonalise ~100 operator tokens so they have clean,
+                   unambiguous mathematical meanings — pristine coordinates 90° apart in the
+                   model's internal space.</p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>Stage 2: Synthetic Data Generation</h3>
+                <p>Use The Weaver to generate millions of flawless, verified mathematical
+                   reasoning traces via rejection sampling — building the training dataset
+                   from scratch.</p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>Stage 3: Supervised Distillation</h3>
+                <p>Fine-tune the model, but <em>only</em> penalise it for missing the exact
+                   mathematical operations. The English prompt stays in the input for context
+                   but is masked from the loss function — preventing distraction by word
+                   prediction.</p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>Stage 4: Reinforcement Learning</h3>
+                <p>Use PPO/GRPO with The Weaver as the reward model. Correct math = reward.
+                   Hallucinated English during a math operation = Cognitive Segfault penalty.</p>
+            </div>
+
+            <div class="timeline-item phase2">
+                <div class="phase-label far">Phase 2 · Continuous Latent Execution</div>
+                <h3>Stage 5: Native Vector Reasoning</h3>
+                <p>The ambitious end-goal: the model internalises the VSA algebra natively via
+                   "grokking" — a phenomenon where neural networks suddenly discover exact
+                   algebraic circuits after prolonged training. The Weaver is no longer needed
+                   because the model reasons directly in vector space, bypassing token
+                   generation entirely.</p>
+            </div>
+
+        </div>
+
+        <details>
+            <summary>🔬 Technical Deep Dive — Stage 5 Loss Function & Grokking</summary>
+            <div class="deep-dive">
+                <p>
+                    Stage 5 replaces cross-entropy loss entirely with a physics-inspired loss:
+                    <code>ℒ_latent = ||h_predict − V_target||² + λ(1 − cos(h_predict, V_target))</code>.
+                </p>
+                <p>
+                    The hypothesis rests on <em>grokking</em> (Power et al., 2022): over-parameterised
+                    networks, long after achieving zero training error by memorisation, can undergo
+                    sudden phase transitions where they discover exact, generalising algebraic circuits
+                    (e.g. modular arithmetic). Combined with Neural Algorithmic Reasoning (Veličković
+                    et al., 2021), this suggests prolonged continuous distillation could induce native
+                    VSA internalisation — but this remains an <strong>unproven, open research
+                    question</strong>.
+                </p>
+            </div>
+        </details>
+
+        <!-- ── CTA ────────────────────────────────────── -->
+        <div class="card" style="text-align: center; border: 1px solid rgba(56,189,248,0.25); background: linear-gradient(135deg, var(--bg-card), rgba(56,189,248,0.05)); margin-top: 2.5rem;">
+            <h2 style="margin-bottom: 1rem;">Want the full picture?</h2>
+            <p style="max-width: 600px; margin: 0 auto 1.5rem;">
+                The complete paper includes detailed mathematical formulations, complexity proofs,
+                data tables, and the full reference list.
+            </p>
+            <a href="https://magicpoint.ai/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf" class="btn">Read the Full Research Paper →</a>
+        </div>
+
+        <div class="page-nav">
+            <a href="enforcement.html">
+                <span class="dir">← Previous</span>
+                <span class="title">Enforcement</span>
+            </a>
+            <a href="site.htm" class="next">
+                <span class="dir">Back to →</span>
+                <span class="title">Home</span>
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>
+            © 2026 Dan Park · <a href="https://magicpoint.ai">magicpoint.ai</a> ·
+            <a href="https://www.linkedin.com/in/dparksports/">LinkedIn</a>
+        </p>
+    </footer>
+
+</body>
+
+</html>

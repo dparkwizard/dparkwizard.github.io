@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Solution — Holographic Language Framework</title>
+    <meta name="description"
+        content="How Vector Symbolic Architectures give AI a native algebra for reasoning with O(1) memory retrieval.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="site.htm" class="brand">HL Framework</a>
+        <div class="links">
+            <a href="problem.html">The Problem</a>
+            <a href="solution.html" class="active">The Solution</a>
+            <a href="enforcement.html">Enforcement</a>
+            <a href="roadmap.html">Roadmap</a>
+            <a href="https://magicpoint.ai/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf">Full Paper ↗</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="section-label">The Solution</div>
+        <h1>🧬 A different kind of memory for AI</h1>
+        <p class="page-lead">
+            Instead of searching through a wall of text, the Holographic Language framework encodes
+            logic using mathematical operations on high-dimensional vectors.
+        </p>
+    </div>
+
+    <div class="container content">
+
+        <div class="stat-row">
+            <div class="stat">
+                <div class="number">O(1)</div>
+                <div class="label">Memory retrieval (vs O(N²) for attention)</div>
+            </div>
+            <div class="stat">
+                <div class="number">~100</div>
+                <div class="label">Pristine anchor vectors, mathematically orthogonal</div>
+            </div>
+            <div class="stat">
+                <div class="number">90°</div>
+                <div class="label">Angular separation via Gram-Schmidt surgery</div>
+            </div>
+        </div>
+
+        <h2>Vector Symbolic Architectures</h2>
+        <p>
+            This technique, rooted in cognitive science, gives the AI a <strong>native algebra for
+            reasoning</strong> rather than making it reason by predicting the next word. Think of
+            it as a built-in calculator for logic that operates on the structure of information
+            itself.
+        </p>
+
+        <p>Three core operations power this algebra:</p>
+        <ol>
+            <li><strong>Binding</strong> — Links a role to a value (like assigning a variable). Uses
+                circular convolution in the Fourier domain.</li>
+            <li><strong>Superposition</strong> — Combines multiple bound states into one vector (like
+                working memory holding several facts simultaneously).</li>
+            <li><strong>Unbinding</strong> — Retrieves a specific value from a superposed state (like
+                a dictionary lookup by key) — instantly.</li>
+        </ol>
+
+        <div class="analogy">
+            Imagine encoding information on a vinyl record. You "bind" a fact by pressing a groove
+            at a unique frequency. You "superpose" facts by pressing many frequencies onto the same
+            record. To "unbind", you play the record through a filter tuned to one frequency and
+            the original fact comes back — instantly, no matter how many other grooves are there.
+        </div>
+
+        <h2>Physical Embedding Surgery</h2>
+        <p>
+            Before any of this algebra can work cleanly, the framework must fix a critical problem:
+            the operator tokens (like <code>=></code> or <code>|</code>) already carry messy,
+            ambiguous meanings from their internet training data. So the framework performs
+            <strong>Physical Embedding Surgery</strong> — forcefully resetting ~50–100 operator
+            tokens and repositioning them to be exactly 90° apart in the model's internal space via
+            Gram-Schmidt orthogonalisation. These cleaned operators are then frozen so they never
+            drift back.
+        </p>
+
+        <details>
+            <summary>🔬 Technical Deep Dive — VSA Operations & Kanerva Limit</summary>
+            <div class="deep-dive">
+                <p>
+                    <strong>Binding</strong> uses Holographic Reduced Representations (HRR):
+                    <code>V_bound = F⁻¹(F(Role) ⊙ F(Value))</code>. Both Role and Value must be
+                    unitary (normalized) to prevent magnitude explosion in recursive chains, enforced
+                    via LayerNorm or cosine-similarity loss penalties.
+                </p>
+                <p>
+                    <strong>Topo-Categorical Anchors:</strong> ~50–100 ASCII operator tokens undergo
+                    <em>Physical Embedding Surgery</em> — their pre-trained weights are forcefully
+                    reset and orthogonalised via Gram-Schmidt (<code>O(d·k²) ≈ 1.5×10⁸ ops</code>
+                    at init), then frozen to prevent semantic drift.
+                </p>
+                <p>
+                    <strong>Kanerva Limit:</strong> The maximum items safely superposed is
+                    <code>k ≈ 0.10–0.15 × d_k</code>. For d<sub>k</sub>=12,288, that's ~1,200–1,800
+                    simultaneous bindings — orders of magnitude more efficient than attention-based
+                    retrieval over the same token count.
+                </p>
+                <p>
+                    Complexity comparison: HRR circular convolution is
+                    <code>O(d log d)</code> (FFT-bound), FHRR complex binding is <code>O(d)</code>,
+                    vs standard attention at <code>O(N·d)</code> per layer.
+                </p>
+            </div>
+        </details>
+
+        <div class="page-nav">
+            <a href="problem.html">
+                <span class="dir">← Previous</span>
+                <span class="title">The Problem</span>
+            </a>
+            <a href="enforcement.html" class="next">
+                <span class="dir">Next →</span>
+                <span class="title">Enforcement</span>
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>
+            © 2026 Dan Park · <a href="https://magicpoint.ai">magicpoint.ai</a> ·
+            <a href="https://www.linkedin.com/in/dparksports/">LinkedIn</a>
+        </p>
+    </footer>
+
+</body>
+
+</html>

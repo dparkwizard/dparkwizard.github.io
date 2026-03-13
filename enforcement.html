@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enforcement — Holographic Language Framework</title>
+    <meta name="description"
+        content="How The Weaver and Continuous Hopfield Networks prevent AI hallucination through strict syntactic and mathematical enforcement.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="site.htm" class="brand">HL Framework</a>
+        <div class="links">
+            <a href="problem.html">The Problem</a>
+            <a href="solution.html">The Solution</a>
+            <a href="enforcement.html" class="active">Enforcement</a>
+            <a href="roadmap.html">Roadmap</a>
+            <a href="https://magicpoint.ai/SCP%20II%20-%20Neuro-Symbolic%20Resolution.pdf">Full Paper ↗</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="section-label">Enforcement</div>
+        <h1>🛡️ How the framework prevents hallucination</h1>
+        <p class="page-lead">
+            Having a mathematical language is only half the battle — you also need a strict
+            enforcer to make sure the AI actually uses it correctly.
+        </p>
+    </div>
+
+    <div class="container content">
+
+        <h2>The Weaver — A Deterministic Compiler</h2>
+        <p>
+            The Weaver is a module that parses every output the model generates as a structured
+            <strong>Abstract Syntax Tree (AST)</strong>. It enforces a strict Context-Free Grammar
+            defined in Extended Backus-Naur Form — essentially treating the model's output like
+            source code that must compile.
+        </p>
+        <p>
+            If the AI slips back into vague, wordy English during a mathematical operation, The Weaver
+            triggers a <strong>"Cognitive Segfault"</strong> — it immediately halts the output,
+            rewinds the internal state (KV-cache), and heavily penalises the offending token with a
+            massive −100 logit penalty so the AI course-corrects on the very next attempt.
+        </p>
+
+        <div class="analogy">
+            Think of a strict math teacher grading homework who strikes through any answer that starts
+            with "I think maybe…" and says "Show me the exact equation." The Weaver doesn't
+            tolerate hand-waving — either the output is a valid mathematical expression, or it gets
+            rejected on the spot.
+        </div>
+
+        <h2>Continuous Hopfield Network — Error Scrubbing</h2>
+        <p>
+            Even with perfect syntax enforcement, numbers in a computer aren't truly perfect. Every
+            floating-point operation introduces a tiny rounding error, and over thousands of recursive
+            steps these errors can snowball. The <strong>Continuous Hopfield Network</strong> runs a
+            cleanup cycle after every logic step, snapping drifting vectors back toward the nearest
+            clean mathematical state.
+        </p>
+
+        <div class="analogy">
+            Like an eraser that cleans smudges off a whiteboard between each step so the next
+            calculation starts fresh. Without it, the smudges accumulate until the math becomes
+            unreadable.
+        </div>
+
+        <details>
+            <summary>🔬 Technical Deep Dive — Hopfield Energy & FLOP Comparison</summary>
+            <div class="deep-dive">
+                <p>
+                    The Continuous Hopfield Network minimises:
+                    <code>E = −lse(β, Xᵀξ) + ½ξᵀξ</code>,
+                    where the dictionary matrix <em>X</em> contains only the ~50–100 primitive anchors
+                    (never complex compositions), keeping complexity at <code>O(d·k)</code> per cycle.
+                </p>
+                <p>
+                    <strong>FLOP parity insight:</strong> 1,000 full reasoning steps with Hopfield
+                    cleanup ≈ <code>1,000 × 100 × 12,288 ≈ 1.23×10⁹ ops</code>. A single attention
+                    layer's forward pass at N=100K also costs ~<code>1.23×10⁹ ops</code>. So an entire
+                    1,000-step reasoning trace costs the same as <em>one layer</em> of standard
+                    attention on a large context.
+                </p>
+                <p>
+                    <strong>The Weaver</strong> enforces a Context-Free Grammar (EBNF) via a customised
+                    Python tree-sitter parser. On violation, it rewinds the KV-cache and applies a
+                    <code>−100</code> logit penalty to the offending BPE token.
+                </p>
+            </div>
+        </details>
+
+        <div class="page-nav">
+            <a href="solution.html">
+                <span class="dir">← Previous</span>
+                <span class="title">The Solution</span>
+            </a>
+            <a href="roadmap.html" class="next">
+                <span class="dir">Next →</span>
+                <span class="title">Roadmap</span>
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>
+            © 2026 Dan Park · <a href="https://magicpoint.ai">magicpoint.ai</a> ·
+            <a href="https://www.linkedin.com/in/dparksports/">LinkedIn</a>
+        </p>
+    </footer>
+
+</body>
+
+</html>
